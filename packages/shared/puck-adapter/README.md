@@ -17,9 +17,11 @@ InvalidContentDocument with structured issues for host error mapping. Content re
 routes, authentication, variable loading, publication and Next cache policy stay in hosts.
 No network/file/environment I/O occurs during resolve or render.
 
-The host explicitly loads layout-styles/default.css, styles/default.css and the two
-content-blocks.css entries as needed. Public component hooks remain owned by those
-packages. Editor CSS is separate from public rendering. Hosts can provide local editing and isolated RSC previews through the integration described below.
+The host loads structural defaults from `@frontend/ui/default.css` and
+`@frontend/content-blocks/default.css`. For the supplied appearance, also load
+`@frontend/styles/default.css` and `@frontend/styles/content-blocks.css`. Editor CSS is separate from public rendering. The [editor entry](#editor-entry)
+and [local integration](#local-editor-integration) below describe the host contract;
+no particular application directory or template is required.
 [Host integration](../../../docs/common/content-runtime.md) describes runtime boundaries.
 
 ## Editor entry
@@ -29,7 +31,7 @@ entry preserves its explicit client directive. Pass a raw document (JSON string 
 object), optional resolve context/limits, and an injected `onSave(document, signal)`
 callback returning ContentSaveResult. The callback owns transport/authentication;
 the editor never loads credentials, routes or environment settings. Only the
-editor host imports `component-owned CSS/puck-editor.css` and
+editor host imports `@frontend/puck-adapter/editor.css` and
 `@frontend/styles/puck-editor.css`, in addition to the ordinary content and layout
 styles. Public render routes do not load this stylesheet.
 
@@ -170,7 +172,7 @@ so canonical bookmarks stay short. Scopes use the anchor name grammar and cannot
 The host supplies a unique scope per embed and keeps
 its other DOM IDs distinct from content anchors.
 
-See content-blocks for Reveal presets and layout-styles for global styling. These nodes
+See content-blocks for Reveal presets and their structural stylesheet. These nodes
 need no database migration and no Studio/editor configuration to render.
 
 ## JSON ScrollBoundary
@@ -217,11 +219,11 @@ or read the state without changing content rendering. Native slot traversal pres
 bindings, nested component validation and media permission inspection. Puck node IDs
 continue to be bookkeeping IDs; use an explicit Anchor for public destinations.
 
-## Reading and discovery document nodes
+## Reading navigation in documents
 
-The public document registry also accepts `ContentNavigation` (native `content`
-editor and runtime aliases use one schema/slot inventory, including Anchor, Reveal
-and ScrollBoundary, so nested content remains available in Puck.
+The public document registry accepts `ContentNavigation` with its native
+`content` slot. The editor and renderer share the same inventory, including
+Anchor, Reveal and ScrollBoundary, so nested content remains available in Puck.
 
 ```json
 {
@@ -242,13 +244,9 @@ and ScrollBoundary, so nested content remains available in Puck.
 }
 ```
 
-Only one reading region is permitted per document. Every destination must declare
-an Anchor inside that region, outside TabPanels. The renderer scopes navigation
-hrefs and recommendation detailHref fragments along with Anchor names when embedded.
-Raw variables/bindings continue to resolve through content-data. Recommendation
-media inspection includes only the thumbnail/fallback variants actually displayed
-by cards and image badges, not unused originals/context. Empty recommendation
-rails do not satisfy publication content-presence requirements.
+Documents support one reading region. Each destination requires an Anchor in
+that region outside TabPanels. The renderer scopes navigation fragments and
+Anchor names when embedded, and ui-document resolves variables and bindings.
 
 ### Host-owned navigation presentations
 
