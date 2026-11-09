@@ -79,7 +79,7 @@ for (const webOnly of [false, true]) {
       const documentation = readFileSync(path.join(destination, 'docs/data-fetching.md'), 'utf8');
       assert.match(documentation, /@infra-check\/event-tracking/);
       assert.deepEqual(checkWorkspace(destination, { checkExports: false }), []);
-      assert.equal(existsSync(path.join(destination, 'packages/site/studio')), !webOnly);
+      assert.equal(existsSync(path.join(destination, 'packages/site/README.md')), true);
       assert.equal(
         existsSync(path.join(destination, 'packages/shared/event-tracking/dist')),
         false

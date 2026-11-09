@@ -1,0 +1,41 @@
+# {{projectName}}
+
+This is your independent pnpm monorepo. Application source and defaults are yours
+to edit; the source template repository is not needed to run this project.
+
+## Start here
+
+```sh
+pnpm install --frozen-lockfile
+pnpm bootstrap --source default
+pnpm apps:list
+pnpm dev --app <app-name>
+pnpm build --all
+pnpm validate
+```
+
+A bare workspace has no app to start. Its shared packages still build and validate.
+To add an app, run this from the template source repository:
+
+```sh
+pnpm template:clone --target <this-project-directory> --name web
+pnpm template:clone --target <this-project-directory> --name editor --template studio
+```
+
+The app name is required. The default app template is plain-next. These operations
+preserve existing apps/packages and create one separate commit per added app.
+
+## Own the project
+
+- Edit pages in apps/<name>/src/app and starter declarations in src/site.
+- Edit tracked resource defaults or use the app's ignored .local overrides; then
+  prepare explicitly with pnpm app:prepare --app <name>.
+- Starter mechanisms live in src/infra. You may replace them when needed.
+- packages/shared contains neutral capabilities. packages/site and
+  packages/adapters contain optional domain and service/runtime implementations.
+- Each app README explains its examples and which example routes can be removed.
+
+See [commands](docs/commands.md), [development](docs/development.md),
+[architecture](docs/architecture.md), [package conventions](docs/package-conventions.md),
+[code standards](docs/code-standards.md), [monorepo standards](docs/monorepo-standards.md)
+and [repository conventions](docs/repository-conventions.md).

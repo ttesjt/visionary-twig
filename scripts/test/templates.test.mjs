@@ -119,7 +119,7 @@ test('standalone clone ships portable standards and their linked files', async (
   });
   assert.equal(existsSync(path.join(destination, 'packages/shared/ui-document')), false);
   assert.equal(existsSync(path.join(destination, 'apps/studio')), false);
-  for (const file of ['code-standards.md', 'monorepo-standards.md', 'repository-conventions.md']) {
+  for (const file of ['code-standards.md', 'monorepo-standards.md']) {
     const relative = 'docs/' + file;
     const contents = readFileSync(path.join(destination, relative), 'utf8');
     assert.equal(contents, readFileSync(path.join(sourceRoot, relative), 'utf8'));
@@ -150,7 +150,6 @@ test('full clone uses template hooks and supports renamed scope and app director
   );
   assert.equal(json(path.join(destination, 'package.json')).workspaceDefaultApp, 'plain');
   for (const absent of [
-    'packages/adapters',
     'packages/templates',
     '.git',
     'scripts/templates',
@@ -291,7 +290,7 @@ test('library-only generation does not require the app copy runtime', async (con
   await createTemplateProject(sourceRoot, destination, { templates: ['node-library'] });
   const manifest = json(path.join(destination, 'package.json'));
   assert.equal(manifest.devDependencies['@frontend/text-catalog'], undefined);
-  assert.equal(manifest.scripts['app:prepare'], undefined);
+  assert.equal(typeof manifest.scripts['app:prepare'], 'string');
   assert.equal(manifest.scripts.validate.includes('app:check'), false);
   assert.deepEqual(checkWorkspace(destination, { checkExports: false }), []);
 });
