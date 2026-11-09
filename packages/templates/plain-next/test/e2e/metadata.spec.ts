@@ -70,3 +70,17 @@ for (const entry of [
     }
   );
 }
+test('child pages do not inherit the homepage canonical and supplied images are real assets', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/examples/event-tracking');
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  const image = await request.get('/metadata/share.png');
+  expect(image.status()).toBe(200);
+  expect(image.headers()['content-type']).toContain('image/png');
+  expect((await image.body()).subarray(0, 8)).toEqual(
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])
+  );
+});

@@ -38,16 +38,22 @@ Retained capabilities:
   survive reloads, follow the system and synchronize across tabs. The early script
   restores the root attribute before hydration. UI_THEME_POLICY still accepts
   selectable, light or dark; see [Theme preferences](template/README.md#theme-preferences).
+- SWR data reading at /examples/remote-settings: validated sample JSON, request
+  deduplication, refresh and failure states. This is not an AppConfig provider.
+- The event-tracking example uses the site's single browser tracker. Its prepared
+  AppConfig switch defaults to off. The root Layout applies the switch together
+  with the site's permission hook. See [Enabling tracking](template/README.md#enabling-tracking)
+  for the endpoint and consent setup.
 - Localized 404 and page-error recovery through Next's standard route conventions.
   A root failure uses an independent English fallback without resource Providers
   or dictionary requests. See [Page errors and recovery](template/README.md#page-errors-and-recovery).
 - Shared TypeScript, lint, Vitest, Playwright and root development tooling.
 
-Home, metadata and theme read namespace text through
+Home, metadata, theme and both original examples read namespace text through
 synchronous getters. Metadata is prepared on the server; Root Layout restores the global main snapshot synchronously and ordinary pages
 consume their scoped Text readers. Resource loading keeps business SWR unchanged.
 The homepage consumes its prepared app setting and base Content; it does not
-request remote sample settings or send events. Page-specific readers use independent scopes.
+request remote sample settings or send events. Examples are separate routes.
 
 Generate an independent workspace through:
 
@@ -145,7 +151,7 @@ HTTP exposes only registered resource payloads, never contracts/manifests/source
 
 AppConfig prepares/checks .generated/config/app.json and the root publishes its
 immutable reader. home.showIntroduction controls the existing introductory paragraph.
-Offline startup diagnostics remain
+Event and remote-settings behavior is retained. Offline startup diagnostics remain
 independent of dictionaries so initialization errors can be explained.
 
 Supported language variants of ordinary pages/index prerender through

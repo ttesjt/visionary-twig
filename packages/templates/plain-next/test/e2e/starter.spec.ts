@@ -25,7 +25,12 @@ for (const width of [320, 1440]) {
 test('homepage example links follow their displayed order with the keyboard', async ({ page }) => {
   await page.goto('/');
   const links = page.getByRole('navigation').getByRole('link');
-  const destinations = ['/examples/text', '/examples/content'];
+  const destinations = [
+    '/examples/event-tracking',
+    '/examples/remote-settings',
+    '/examples/text',
+    '/examples/content',
+  ];
   await expect(links).toHaveCount(destinations.length);
   await links.first().focus();
   for (const destination of destinations) {

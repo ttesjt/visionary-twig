@@ -478,10 +478,57 @@ test('text HTTP resources serve the generated revision and reject other artifact
     expect((await request.get(route)).status()).toBe(404);
 });
 
+for (const [route, heading] of [
+  ['/', 'Welcome.'],
+  ['/examples/remote-settings', 'Remote settings'],
+  ['/examples/event-tracking', 'Event tracking'],
+] as const) {
+  test(`page text ${route} hydrates from prepared snapshots without fetching dictionaries`, async ({
+    page,
+  }) => {
+    const requests: string[] = [];
+    const errors: string[] = [];
+    await page.route(resources, async (route) => {
+      requests.push(route.request().url());
+      await route.abort();
+    });
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(route);
+    await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible();
+    if (route === '/')
+      await page.getByRole('combobox', { name: 'Theme', exact: true }).selectOption('dark');
+    expect(requests).toEqual([]);
+    expect(errors).toEqual([]);
+    const html = await page.content();
+    expect(html).not.toContain(TITLE_EN);
+    expect(html).not.toContain(TITLE_ZH);
+  });
+}
 test('text metadata uses the requested resource locale', async ({ page }) => {
   await page.goto('/examples/text/ssr?lang=zh');
   await expect(page).toHaveTitle('简洁的 Next.js');
 });
+test('default text pages prerender without making the request-aware scenarios static', () => {
+  const manifest: unknown = JSON.parse(
+    readFileSync(
+      path.resolve(import.meta.dirname, '../../../.next/prerender-manifest.json'),
+      'utf8'
+    )
+  );
+  expect(manifest).toMatchObject({
+    routes: {
+      '/en': expect.any(Object),
+      '/zh': expect.any(Object),
+      '/en/examples/remote-settings': expect.any(Object),
+      '/zh/examples/remote-settings': expect.any(Object),
+      '/en/examples/event-tracking': expect.any(Object),
+      '/en/examples/text': expect.any(Object),
+    },
+  });
+  expect(manifest).not.toMatchObject({ routes: { '/en/examples/text/ssr': expect.any(Object) } });
+  expect(manifest).not.toMatchObject({ routes: { '/en/examples/text/csr': expect.any(Object) } });
+});
+
 test('layout resources survive navigation out of the text feature and back', async ({ page }) => {
   const reads: string[] = [];
   await page.route(resources, async (route) => {

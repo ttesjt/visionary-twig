@@ -152,6 +152,16 @@ and check selection, control dimensions and React diagnostics. Other cases cover
 refresh, client navigation, OS changes, real cross-tab storage events, blocked
 storage and both fixed policies. These infrastructure tests stay when deleting demos.
 
+## Enabling tracking
+
+Tracking starts off, including on the event-tracking example page. To opt in:
+
+1. Check the requirements in your deployment regions. Provide any required notice and consent UI. If consent is required, connect `src/site/tracking-permission.ts` to your reactive consent state. Return `false` while permission is unknown or revoked. The starter hook returns `true` and leaves the decision to AppConfig until you customize it.
+2. Set `{ "tracking": { "enabled": true } }` in `.local/config/app.json` and run `pnpm app:prepare --app {{appId}}`.
+3. Set `NEXT_PUBLIC_EVENT_TRACKING_URL` to your public HTTP(S) endpoint before starting dev or building for production.
+
+The root Layout applies both decisions to one browser tracker. Call `eventTracker.track(...)` from `src/infra/event-tracking/client.ts` on the interaction you want to measure. Revoking permission blocks subsequent calls. Skipped events are discarded.
+
 ## Adding page-specific content
 
 1. Add the JSON in `content/default/data/` and its schema to `src/site/content-schemas.ts`.
@@ -173,7 +183,7 @@ Page components use the public `@/infra/resources/client` hooks. Server preparat
 
 ## Removing the starter examples
 
-Remove the homepage links and `src/app/[locale]/examples/text/` and `src/app/[locale]/examples/content/`.
+Remove the homepage links and `src/app/[locale]/examples/text/` and `src/app/[locale]/examples/content/`, the event-tracking/remote-settings routes and `public/samples/remote-settings/`.
 Remove the corresponding `test/e2e/examples/` acceptance tests. Resource mechanism
 tests under `test/examples/` can remain while this infrastructure is in use.
 The core theme and page-status tests remain outside the route examples.

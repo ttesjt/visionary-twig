@@ -19,6 +19,12 @@ export function HomeContent() {
           <p className="example-description">{text.getText('main', 'home.description')}</p>
         )}
         <nav className="example-flow">
+          <Link href={localeHref('/examples/event-tracking', text.locale)}>
+            {text.getText('main', 'examples.tracking')}
+          </Link>
+          <Link href={localeHref('/examples/remote-settings', text.locale)}>
+            {text.getText('main', 'examples.remoteSettings')}
+          </Link>
           <Link href={localeHref('/examples/text', text.locale)}>
             {text.getText('main', 'examples.text')}
           </Link>
