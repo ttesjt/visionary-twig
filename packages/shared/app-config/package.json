@@ -1,0 +1,62 @@
+{
+  "name": "@frontend/app-config",
+  "version": "0.1.0",
+  "description": "Validated language-independent application configuration",
+  "private": true,
+  "type": "module",
+  "workspaceKind": "react-library",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rm -rf dist coverage *.tsbuildinfo",
+    "dev": "tsc --build tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "react": "catalog:",
+    "@types/react": "catalog:"
+  },
+  "dependencies": {
+    "zod": "catalog:",
+    "@frontend/prepared-data": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "workspaceEntrypoints": {
+    ".": "pure",
+    "./node": "node",
+    "./react": "client"
+  }
+}
