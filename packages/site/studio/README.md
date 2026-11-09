@@ -100,6 +100,58 @@ and `--ui-studio-page-inset`. No component stylesheets or authored inline styles
 are required. The appearance supports foundation themes, narrow viewports,
 reduced motion and forced colors.
 
+## Source editing and viewing
+
+The supported starter workflow uses `./json-editor` and `./viewer` separately.
+Keep `useProjectSession`, `useStudioJsonDrafts` and optional `useBrowserProjectFiles`
+in one persistent host layout/provider above mode routes. Passing the same session
+object to short-lived page components is insufficient if its hook owner unmounts.
+`StudioShell layout="focus"` hides chrome while preserving its children and state;
+returning to `layout="workspace"` restores navigation.
+
+```tsx
+const session = useProjectSession(initialProject);
+const drafts = useStudioJsonDrafts(session);
+// Render in separate routes or persistent tab panels:
+<StudioJsonEditor drafts={drafts} text={text.jsonEditor} />;
+<StudioViewer session={session} adapter={previewAdapter} theme={theme} />;
+```
+
+The JSON editor selects the raw layout document, all language catalogs or non-copy
+context. Text stays staged until Apply. Validate and Format do not mutate the
+working project. Apply parses every staged section together through the existing
+project protocol and creates one undoable working-copy commit. Malformed input or
+schema errors preserve every buffer. If another control changes a drafted section,
+Apply reports a conflict; explicit Reset discards only that section after confirmation.
+Independent section updates are retained. Apply also refuses to replace unapplied
+input owned by another editor; repair that input or explicitly replace the project. Confirmed content replacement resets
+buffers by session generation; cancelling replacement preserves them.
+
+`StudioSessionHistory` controls applied project undo/redo. Unapplied drafts block
+history, Save and Publish, preventing unnoticed export of earlier content. Hosts
+keep the draft controller mounted across route/tab changes. This is an in-memory
+working session, not persistence across refresh. Native textarea undo is local to
+its mounted source control; project history records Apply and other project edits.
+
+`StudioViewer` automatically requests the validated working copy on opening and
+on applied document/catalog/context/locale/theme changes. Draft text never becomes
+preview input. Missing dependencies block preview and retain language/source/field
+diagnostics; structure-valid incomplete work can still be saved locally. The host
+preview adapter returns an isolated render URL, with cancellation and late-response
+protection. A manual refresh remains available after failures or expiring snapshots.
+
+The editor has its own optional validated text scope, `./json-editor/text-catalog`, so
+existing consumers of `studioTextCatalogSchema` remain compatible. Hosts include its
+schema/default JSON in their normal prepared dictionaries. Public style hooks:
+`ui-studio-focus-workspace`, `ui-studio-focus-toolbar`, `ui-studio-focus-tabs`,
+`ui-studio-focus-panel`, `ui-studio-json-source`, `ui-studio-json-source-input` and
+`ui-studio-viewer`. Studio CSS entries provide responsive light/dark appearance.
+
+`StudioPuckEditor` at `./editor` is an experimental interactive canvas, not the
+default editor. Basic operations exist; interaction quality is not production-ready.
+Hosts must label that limitation and provide a supported source-editing fallback.
+The original `StudioEditor` composition and workbench API remain for existing hosts.
+
 ## Page-project editor
 
 Reusable, local-first Studio project editor. Hosts supply the component registry through the existing Puck adapter, optional page-preview and publication capabilities, and optional file adapters. This package has no SQL, Cloudflare, app or website-style dependency.
@@ -149,15 +201,16 @@ Use as publication target reads/links the selected target revision without repla
 
 Use the independent public entries when a resource page owns its workflow:
 
-| Entry          | Responsibility                                                                   |
-| -------------- | -------------------------------------------------------------------------------- |
-| `./shell`      | Registration, navigation and page containers                                     |
-| `./session`    | `useProjectSession`, `StudioTextCatalogProvider`, `StudioReplacementDialog`      |
-| `./editor`     | Legacy `StudioEditor` composition and experimental `StudioPuckEditor`            |
-| `./catalog`    | Standalone `StudioCatalogPanel`, without importing the interactive canvas        |
-| `./viewer`     | Automatically refreshed, isolated Viewer of the applied project                  |
-| `./files`      | Optional local file controller, browser adapter, file toolbar and catalog import |
-| `./publishing` | Optional injected publication controller and controls                            |
+| Entry           | Responsibility                                                                   |
+| --------------- | -------------------------------------------------------------------------------- |
+| `./shell`       | Registration, navigation and page containers                                     |
+| `./session`     | `useProjectSession`, `StudioTextCatalogProvider`, `StudioReplacementDialog`      |
+| `./editor`      | Legacy `StudioEditor` composition and experimental `StudioPuckEditor`            |
+| `./catalog`     | Standalone `StudioCatalogPanel`, without importing the interactive canvas        |
+| `./json-editor` | Staged JSON controller/editor and working-copy history actions                   |
+| `./viewer`      | Automatically refreshed, isolated Viewer of the applied project                  |
+| `./files`       | Optional local file controller, browser adapter, file toolbar and catalog import |
+| `./publishing`  | Optional injected publication controller and controls                            |
 
 `StudioEditor` accepts a caller-owned `session`. It creates no file picker,
 record list, database connection, load/save request or publisher. A resource page
@@ -195,7 +248,7 @@ Remote list/load/publish orchestration remains in the optional `./publishing`
 entry and never runs just because an editor is mounted.
 
 The original `StudioWorkbench` remains a compatibility composition of these same
-parts, including optional injected publishing.
+parts, including optional injected publishing. The Studio template's Demo Pages routes compose these capabilities with memory-backed publication and host-owned item association; there is no standalone `/editor` route in that starter.
 
 A resource-owned save can be as small as:
 
@@ -284,7 +337,29 @@ confirmation summary and publication I/O.
 metadata, null omits the repeated heading, and a node supplies host-specific
 content. Navigation, error boundaries and route content lifetime stay unchanged.
 
-## Empty page Viewer
+## Resource workspaces
+
+`./workspace` exposes `StudioResourceManager` with back/name/action/status slots
+and keyed content tabs, `StudioSourceWorkspace` with source/preview slots and a
+compact toolbar, and `StudioFocusToolbar`. Tab contents stay mounted. The source
+workspace accepts the independent JSON Editor and Viewer rather than constructing
+another session or choosing any transport. Hosts own resource reads, routing,
+publication, association cardinality and all content.
+
+### Page workspace lifetime
+
+`useStudioPageWorkspace` from `studio-ui/workspace` composes the existing project
+session, browser file adapter and staged JSON drafts. Mount it above Viewer,
+JSON and experimental Puck routes; changing modes then retains history, drafts
+and file handles. Publication, routing and resource identity remain host-owned.
+The separate `session` entry stays independent of file/publication transports.
+
+`studio-ui/viewer` exports `useStudioViewerTheme` and
+`StudioViewerThemeControl`: Viewer follows the supplied global preference by
+default, while an explicit override only affects the rendered preview. Fixed
+policies override both. The host provides labels and persists global appearance.
+
+### Empty page Viewer
 
 Viewer resolves the applied working document before inspecting renderer content
 semantics. Empty documents and recursively empty structural layouts show the
@@ -293,7 +368,7 @@ blank iframe. Unapplied JSON stays separate. Invalid content retains validation
 feedback; actual visual content, including section surfaces, uses the real preview
 adapter as before. Preview requests are cancelled when a document becomes empty.
 
-## Catalog draft and import protection
+### Catalog draft and import protection
 
 Unfinished catalog JSON keeps language, key, value-mode and import transitions
 disabled until the value is repaired. Catalog keys retain real button semantics

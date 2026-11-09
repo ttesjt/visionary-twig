@@ -53,6 +53,14 @@
       "types": "./dist/ui/publishing.d.ts",
       "import": "./dist/ui/publishing.js"
     },
+    "./json-editor": {
+      "types": "./dist/ui/json-editor.d.ts",
+      "import": "./dist/ui/json-editor.js"
+    },
+    "./json-editor/text-catalog": {
+      "types": "./dist/ui/json-editor/text-catalog.d.ts",
+      "import": "./dist/ui/json-editor/text-catalog.js"
+    },
     "./viewer": {
       "types": "./dist/ui/viewer.d.ts",
       "import": "./dist/ui/viewer.js"
@@ -60,6 +68,10 @@
     "./catalog": {
       "types": "./dist/ui/catalog.d.ts",
       "import": "./dist/ui/catalog.js"
+    },
+    "./workspace": {
+      "types": "./dist/ui/workspace.d.ts",
+      "import": "./dist/ui/workspace.js"
     },
     ".": {
       "types": "./dist/index.d.ts",

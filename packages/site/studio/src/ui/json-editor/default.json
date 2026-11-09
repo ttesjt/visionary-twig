@@ -1,0 +1,20 @@
+{
+  "title": "JSON source",
+  "section": "JSON section",
+  "sections": {
+    "document": "Layout document",
+    "catalogs": "Language catalogs",
+    "context": "Context"
+  },
+  "format": "Format",
+  "validate": "Validate",
+  "apply": "Apply",
+  "reset": "Reset section",
+  "resetTitle": "Discard this section draft?",
+  "resetDescription": "This replaces the selected JSON draft with the current working section. Other drafts are kept.",
+  "cancel": "Keep draft",
+  "draft": "Unapplied JSON. The viewer shows the working copy.",
+  "current": "JSON matches the working copy.",
+  "conflict": "This section changed elsewhere. Your draft is kept; reset it to edit the current version.",
+  "issues": "JSON input issues"
+}
