@@ -17,6 +17,8 @@ test('workspace skeleton delivers user tooling without source identity, generato
   });
   const read = (file) => readFileSync(path.join(target, file), 'utf8');
   const manifest = JSON.parse(read('package.json'));
+  assert.equal(manifest.license, 'MIT');
+  assert.equal(read('LICENSE'), readFileSync(path.join(source, 'LICENSE'), 'utf8'));
   for (const field of ['author', 'repository', 'homepage', 'bugs'])
     assert.equal(manifest[field], undefined);
   for (const command of ['template:clone', 'repo:clone', 'test:templates'])

@@ -18,6 +18,10 @@ test('bare delivery has complete target guides, preserves common standards and c
     name: '@docs/project',
   });
   checkDeliveredDocumentation(target);
+  assert.equal(
+    readFileSync(path.join(target, 'LICENSE'), 'utf8'),
+    readFileSync(path.join(source, 'LICENSE'), 'utf8')
+  );
   for (const file of ['code-standards.md', 'monorepo-standards.md'])
     assert.equal(
       readFileSync(path.join(target, 'docs', file), 'utf8'),

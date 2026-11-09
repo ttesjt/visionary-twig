@@ -68,3 +68,9 @@ are responsible for choosing and connecting concrete implementations.
 - [Code standards](docs/common/code-standards.md), [monorepo standards](docs/common/monorepo-standards.md) and [repository conventions](docs/template-repository/repository-conventions.md)
 - [Resource initialization](docs/common/resource-initialization.md), [resource model](docs/common/resource-model.md) and [Provider contracts](docs/template-repository/providers.md)
 - [Text](docs/common/text-catalog.md), [AppConfig](docs/common/app-config.md) and [private local inputs](docs/common/content-profiles.md)
+
+## License
+
+Framework and template sources are available under the [MIT License](LICENSE).
+Dependencies retain their respective licenses. Generated workspaces include this
+license for the framework and template code they receive.

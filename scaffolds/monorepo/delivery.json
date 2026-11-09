@@ -1,6 +1,7 @@
 {
   "version": 1,
   "files": [
+    "LICENSE",
     ".node-version",
     ".gitignore",
     ".prettierignore",
