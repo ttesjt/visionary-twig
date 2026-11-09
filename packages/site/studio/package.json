@@ -1,10 +1,9 @@
 {
   "name": "@frontend/studio",
   "version": "0.1.0",
-  "description": "Studio editing tools, document contracts and workspaces",
   "private": true,
   "type": "module",
-  "workspaceKind": "node-library",
+  "description": "Studio editing tools, document contracts and workspaces",
   "exports": {
     "./data": {
       "types": "./dist/data/index.d.ts",
@@ -14,15 +13,31 @@
       "types": "./dist/data/records.d.ts",
       "import": "./dist/data/records.js"
     },
+    "./shell": {
+      "types": "./dist/ui/shell.d.ts",
+      "import": "./dist/ui/shell.js"
+    },
+    "./shell/text-catalog": {
+      "types": "./dist/ui/shell/text-catalog.d.ts",
+      "import": "./dist/ui/shell/text-catalog.js"
+    },
+    "./shell/registry": {
+      "types": "./dist/ui/shell/registry.d.ts",
+      "import": "./dist/ui/shell/registry.js"
+    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./shell.css": "./src/styles/shell.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/styles"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "engines": {
     "node": ">=24.15.0 <25"
   },
@@ -39,14 +54,30 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
-  "devDependencies": {
-    "@types/node": "catalog:",
-    "@vitest/coverage-v8": "catalog:",
-    "typescript": "catalog:",
-    "vitest": "catalog:"
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
+  "devDependencies": {
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "@types/node": "catalog:"
+  },
+  "workspaceKind": "react-library",
   "dependencies": {
+    "@frontend/puck-adapter": "workspace:*",
+    "@frontend/ui": "workspace:*",
+    "@frontend/text-catalog": "workspace:*",
     "zod": "catalog:",
+    "@frontend/content-blocks": "workspace:*",
     "@frontend/ui-document": "workspace:*"
   },
   "workspaceEntrypoints": {

@@ -1,0 +1,15 @@
+{
+  "navigation": "Workspace navigation",
+  "openNavigation": "Open navigation",
+  "closeNavigation": "Close navigation",
+  "skipToContent": "Skip to workspace",
+  "loading": "Opening page\u2026",
+  "pageFailed": "This page could not be opened. Your workspace navigation is still available.",
+  "retry": "Try again",
+  "theme": {
+    "label": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}

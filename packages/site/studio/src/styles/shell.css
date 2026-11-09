@@ -1,0 +1,7 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+@import './studio-tokens.css' layer(ui-layout-tokens);
+@import './studio-controls.css' layer(ui-layout);
+@import './studio-focus.css' layer(ui-layout);
+@import './studio-resource.css' layer(ui-layout);
+@import './studio-actions.css' layer(ui-layout);
+@import './studio-shell/layout.css' layer(ui-layout);

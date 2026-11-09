@@ -1,0 +1,61 @@
+.ui-studio-navigation-dialog[open] {
+  inline-size: min(21rem, 90vw);
+  max-inline-size: 90vw;
+  block-size: 100dvh;
+  max-block-size: 100dvh;
+  margin: 0;
+  padding: 1.25rem;
+  border-radius: 0;
+}
+.ui-studio-navigation-dialog .ui-dialog-body {
+  padding-block-start: 2rem;
+}
+@media (max-width: 64rem) {
+  .ui-studio-shell {
+    --ui-studio-sidebar-width: 13rem;
+  }
+}
+@media (max-width: 50rem) {
+  .ui-studio-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-studio-sidebar {
+    display: none;
+  }
+  .ui-studio-topbar .ui-studio-menu-trigger {
+    display: grid;
+    flex: none;
+  }
+  .ui-studio-breadcrumb {
+    gap: 0.5rem;
+  }
+  .ui-studio-breadcrumb > span:first-of-type,
+  .ui-studio-breadcrumb > .ui-studio-symbol {
+    display: none;
+  }
+  .ui-studio-main {
+    padding-block-start: 1rem;
+  }
+  .ui-studio-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 25rem) {
+  .ui-studio-topbar {
+    gap: 0.5rem;
+  }
+  .ui-studio-topbar-actions {
+    gap: 0.5rem;
+  }
+  .ui-studio-topbar-actions > .ui-studio-button {
+    padding-inline: 0.625rem;
+    font-size: 0.75rem;
+  }
+  .ui-studio-feature {
+    min-block-size: 8rem;
+  }
+}
+
+.ui-studio-standalone-nav {
+  padding: 0.75rem var(--ui-layout-space-content, 1rem);
+}

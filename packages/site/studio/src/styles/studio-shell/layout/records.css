@@ -1,0 +1,76 @@
+/* Resource pages compose these regions; records and persistence remain host-owned. */
+.ui-studio-record-browser {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 1fr);
+  gap: var(--ui-studio-space-content);
+  min-inline-size: 0;
+  align-items: start;
+}
+.ui-studio-table-scroll {
+  overflow: auto;
+  max-inline-size: 100%;
+}
+.ui-studio-record-table {
+  border-collapse: collapse;
+  inline-size: 100%;
+  text-align: start;
+}
+.ui-studio-record-table th,
+.ui-studio-record-table td {
+  padding: 0.625rem;
+  text-align: start;
+  vertical-align: top;
+}
+.ui-studio-record-table code {
+  white-space: nowrap;
+}
+.ui-studio-record-link {
+  padding: 0;
+  text-align: start;
+}
+.ui-studio-field .ui-studio-field-summary {
+  min-block-size: 5.5rem;
+}
+.ui-studio-record-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  max-inline-size: 48rem;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+.ui-studio-record-image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.ui-studio-record-content {
+  display: grid;
+  gap: var(--ui-studio-space-control);
+  align-content: center;
+  padding: var(--ui-studio-panel-inset);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.ui-studio-notice {
+  padding-inline-start: 0.75rem;
+}
+.ui-studio-sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 70rem) {
+  .ui-studio-record-browser {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 35rem) {
+  .ui-studio-record-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

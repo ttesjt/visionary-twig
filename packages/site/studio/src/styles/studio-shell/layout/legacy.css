@@ -1,0 +1,33 @@
+.ui-studio-note-preview {
+  min-block-size: 16rem;
+  display: grid;
+  align-content: start;
+  gap: var(--ui-studio-space-content);
+  padding: var(--ui-studio-panel-inset);
+}
+.ui-studio-note-preview p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.ui-studio-empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--ui-studio-space-content);
+}
+.ui-studio-guide-list {
+  padding-inline-start: 1.25rem;
+  margin-block: 0;
+  display: grid;
+  gap: var(--ui-studio-space-section);
+}
+.ui-studio-guide-list strong {
+  display: block;
+  margin-block-end: 0.25rem;
+}
+.ui-studio-code {
+  display: block;
+  padding: var(--ui-studio-space-content);
+  overflow: auto;
+  white-space: pre;
+  max-inline-size: 100%;
+}

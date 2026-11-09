@@ -1,0 +1,25 @@
+/* Studio density is independent of the site and of the visual theme. */
+:where(
+  .ui-studio-shell,
+  .ui-studio-workbench,
+  .ui-studio-navigation-dialog,
+  .ui-studio-standalone-nav
+) {
+  --ui-studio-control-height: 2rem;
+  --ui-studio-space-tight: 0.375rem;
+  --ui-studio-space-control: 0.5rem;
+  --ui-studio-space-content: 0.75rem;
+  --ui-studio-space-section: 1rem;
+  --ui-studio-panel-inset: 1rem;
+  --ui-studio-resource-panel-max-height: clamp(10rem, 32dvh, 18rem);
+}
+@media (max-width: 50rem), (pointer: coarse) {
+  :where(
+    .ui-studio-shell,
+    .ui-studio-workbench,
+    .ui-studio-navigation-dialog,
+    .ui-studio-standalone-nav
+  ) {
+    --ui-studio-control-height: 2.5rem;
+  }
+}

@@ -1,1 +1,3 @@
-export * from './data/index.js';
+'use client';
+
+export {};
