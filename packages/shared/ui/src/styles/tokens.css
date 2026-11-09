@@ -1,0 +1,9 @@
+:where(:root) {
+  --ui-layout-space-content: 1rem;
+  --ui-layout-space-section: 3rem;
+  --ui-layout-content-width: 68rem;
+  --ui-layout-reading-width: 44rem;
+  --ui-layout-gutter: 1rem;
+  --ui-layout-layer-overlay: 1;
+  --ui-layout-control-height: 2.75rem;
+}
