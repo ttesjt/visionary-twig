@@ -59,6 +59,9 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "yaml": "catalog:",
+    "@frontend/text-catalog": "workspace:*",
+    "@frontend/prepared-data": "workspace:*",
+    "@frontend/app-config": "workspace:*",
     "zod": "catalog:"
   }
 }
