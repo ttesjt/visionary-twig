@@ -1,7 +1,13 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { copySource, inside, rewritePackageNames, targetFiles } from './files.mjs';
+import {
+  copySource,
+  inside,
+  rewritePackageNames,
+  replacePackageNames,
+  targetFiles,
+} from './files.mjs';
 
 /** Only new package/app directories enter here; reused packages are not rewritten. */
 export async function materializePackages(
@@ -53,5 +59,5 @@ export async function materializePackages(
     );
     rewritePackageNames(targetDirectory, names);
   }
-  return contributions;
+  return JSON.parse(replacePackageNames(JSON.stringify(contributions), names));
 }

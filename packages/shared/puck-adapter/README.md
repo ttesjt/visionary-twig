@@ -19,8 +19,8 @@ No network/file/environment I/O occurs during resolve or render.
 
 The host explicitly loads layout-styles/default.css, styles/default.css and the two
 content-blocks.css entries as needed. Public component hooks remain owned by those
-packages. Editor CSS is separate from public rendering. See the [Studio template](../../templates/studio) for local editing and isolated RSC previews.
-[Host integration](../../../docs/content-runtime.md) describes runtime boundaries.
+packages. Editor CSS is separate from public rendering. Hosts can provide local editing and isolated RSC previews through the integration described below.
+[Host integration](../../../docs/common/content-runtime.md) describes runtime boundaries.
 
 ## Editor entry
 

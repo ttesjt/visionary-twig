@@ -11,20 +11,15 @@ pnpm install --frozen-lockfile
 pnpm bootstrap --include-templates --source default
 pnpm dev --app template-plain-next
 pnpm dev --app template-studio
-pnpm template:clone --output ../my-project --name @example/frontend
+pnpm repo:clone --output ../my-project --name @example/frontend
 ```
 
-`template:clone` copies selected template sources and their shared dependency
-closure into a new independent project. One initial install reconciles the output
-lockfile, default inputs are explicitly prepared, and validation runs before
-success is reported. `--no-install` produces sources only; `--no-verify` skips
-validation; `--offline` uses the existing package store; `--browser` adds browser
-and fixed-theme acceptance. The output directory must not exist.
-
-The source repository does not create apps in itself. Adding a template to an
-existing external monorepo and optionally selecting site/adapters are not yet
-implemented. See [template usage](using-template.md) for the current supported
-independent-project workflow.
+`repo:clone` creates an independent framework baseline and, by default, one plain-next
+app named web. --bare omits apps. `template:clone --target <repo> --name <app>` adds
+one named app to an existing generated monorepo; --template defaults to plain-next.
+Both operations validate installation and preserve existing source. Every app task
+has its own commit. See [the generation contract](generation.md) for flags, conflicts,
+optional package delivery, history and failure behavior.
 
 ## Generic host selection
 

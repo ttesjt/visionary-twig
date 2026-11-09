@@ -16,5 +16,5 @@ export const targetSelection = (options) => ({
   includeTemplates: !!options['--include-templates'],
 });
 export function emptyAppsMessage() {
-  return 'No application targets. Use template:clone to create an independent project, or explicitly include source templates with --include-templates.';
+  return 'No application targets. Add an app with template:clone from the source repository, or explicitly include source templates with --include-templates.';
 }

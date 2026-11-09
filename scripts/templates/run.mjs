@@ -3,7 +3,10 @@ import { pnpmCommand, runProcesses } from '../lib/processes.mjs';
 import { createTemplateProject } from './generate.mjs';
 
 export async function cloneProject(root, options) {
-  const plan = await createTemplateProject(root, options.destination, options);
+  const plan = await createTemplateProject(root, options.destination, {
+    ...options,
+    allShared: true,
+  });
   console.log('Created:', options.destination);
   console.log('Templates:', plan.templates.map((entry) => entry.id).join(', '));
   console.log('Shared dependencies:', plan.packages.map((entry) => entry.manifest.name).join(', '));

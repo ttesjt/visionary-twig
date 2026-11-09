@@ -28,7 +28,7 @@ Configure the switch and source mappings in `src/site/metadata.ts`. The default 
 uses the existing prepared Text/AppConfig and optional `SITE_URL`. Infrastructure
 accepts resolved values; it reserves no namespace or key. Root Layout supplies common
 metadata, while the homepage explicitly declares its path for canonical/language links.
-See [Metadata](../../../docs/metadata.md) for fields, validation, disabling, deployment
+See [Metadata](../../../docs/common/metadata.md) for fields, validation, disabling, deployment
 and page overrides, or the generated-app [takeover guide](template/README.md#metadata).
 
 Retained capabilities:
@@ -164,7 +164,7 @@ Supported language variants of ordinary pages/index prerender through
 generateStaticParams. SSR/CSR scenario pages use connection() for request rendering. Set UI_THEME_POLICY consistently for build and
 start. Resource loading does not require a blanket force-dynamic setting.
 
-See [resource initialization](../../../docs/resource-initialization.md) and the
+See [resource initialization](../../../docs/common/resource-initialization.md) and the
 [text package](../../shared/text-catalog/README.md) for contracts, errors and limits.
 
 ## Text example placement
@@ -249,7 +249,7 @@ installer when the data arrives. It accepts a registered kind, namespace and
 value, plus the selected locale for Text. Reinstalling the same artifact is safe.
 Conflicting content for an installed namespace is rejected.
 
-See [the resource model](../../../docs/resource-model.md) for shared design principles,
+See [the resource model](../../../docs/common/resource-model.md) for shared design principles,
 namespace/scope ownership, performance and how to replace the host integration.
 
 ## Explicit resource scope requirements

@@ -1,5 +1,6 @@
-import { cpSync, lstatSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { cpSync, lstatSync, realpathSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 export const isTextSource = (name) => /\.(?:json|[cm]?[jt]sx?|md|ya?ml|css)$/u.test(name);
 
@@ -32,7 +33,39 @@ export function inside(directory, relative) {
     throw new Error('Expected a bounded relative path: ' + relative);
   return path.join(directory, relative);
 }
+function ignoredSourcePaths(source) {
+  const parent = lstatSync(source).isDirectory() ? source : path.dirname(source);
+  const gitRoot = spawnSync('git', ['-C', parent, 'rev-parse', '--show-toplevel'], {
+    encoding: 'utf8',
+  });
+  if (gitRoot.status !== 0) return [];
+  const root = gitRoot.stdout.trim();
+  const canonicalSource = realpathSync(source);
+  const ignored = spawnSync(
+    'git',
+    [
+      '--literal-pathspecs',
+      '-C',
+      root,
+      'ls-files',
+      '--others',
+      '--ignored',
+      '--exclude-standard',
+      '--directory',
+      '-z',
+      '--',
+      path.relative(root, canonicalSource) || '.',
+    ],
+    { encoding: 'utf8' }
+  );
+  if (ignored.status !== 0) throw new Error('Cannot inspect ignored source paths: ' + source);
+  return ignored.stdout
+    .split('\0')
+    .filter(Boolean)
+    .map((file) => path.resolve(source, path.relative(canonicalSource, path.resolve(root, file))));
+}
 export function copySource(source, destination, excluded = []) {
+  const ignored = ignoredSourcePaths(source);
   cpSync(source, destination, {
     recursive: true,
     force: false,
@@ -41,6 +74,7 @@ export function copySource(source, destination, excluded = []) {
       const name = path.basename(file);
       const relative = path.relative(source, file).split(path.sep).join('/');
       if (
+        ignored.some((entry) => file === entry || file.startsWith(entry + path.sep)) ||
         GENERATED.has(name) ||
         name.endsWith('.tsbuildinfo') ||
         name.endsWith('.log') ||
@@ -76,26 +110,23 @@ export function targetFiles(directory, projectRoot) {
     },
   });
 }
-export function rewritePackageNames(directory, names) {
-  if (!names.length) return;
+export function replacePackageNames(source, names) {
+  if (!names.length) return source;
   const replacements = new Map(names);
   const alternatives = [...replacements.keys()]
     .sort((a, b) => b.length - a.length)
     .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const pattern = new RegExp('(?:' + alternatives.join('|') + ')(?=$|[^a-zA-Z0-9_-])', 'gu');
+  return source.replace(pattern, (name) => replacements.get(name));
+}
+export function rewritePackageNames(directory, names) {
+  if (!names.length) return;
   function visit(folder) {
     for (const entry of readdirSync(folder, { withFileTypes: true })) {
       const file = path.join(folder, entry.name);
-      if (entry.isDirectory()) {
-        visit(file);
-        continue;
-      }
-      if (!isTextSource(entry.name)) continue;
-      const source = readFileSync(file, 'utf8');
-      writeFileSync(
-        file,
-        source.replace(pattern, (name) => replacements.get(name))
-      );
+      if (entry.isDirectory()) visit(file);
+      else if (isTextSource(entry.name))
+        writeFileSync(file, replacePackageNames(readFileSync(file, 'utf8'), names));
     }
   }
   visit(directory);

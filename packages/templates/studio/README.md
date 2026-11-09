@@ -22,7 +22,7 @@ Tracking starts disabled. The server preview endpoint can send `preview_snapshot
 
 ## Data reading
 
-SWR is a default dependency; use a domain hook only where data is actually read. See [data fetching](../../../docs/data-fetching.md). The Web template provides `/examples/remote-settings`; no global flags request runs in this app's layout.
+SWR is a default dependency; use a domain hook only where data is actually read. See [data fetching](../../../docs/common/data-fetching.md). The Web template provides `/examples/remote-settings`; no global flags request runs in this app's layout.
 
 ## Portable project editing
 

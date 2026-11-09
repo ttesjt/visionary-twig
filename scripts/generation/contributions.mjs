@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { parse, stringify } from 'yaml';
+import { parse, parseDocument } from 'yaml';
 import { DEPENDENCY_GROUPS } from '../lib/workspace-layers.mjs';
 import { readJson, writeJson } from '../templates/files.mjs';
 import { mergeRequirements } from '../templates/delivery.mjs';
@@ -9,7 +9,8 @@ import { mergeRequirements } from '../templates/delivery.mjs';
 export function mergeWorkspaceContributions(source, target, plan, contributions) {
   const manifest = readJson(path.join(target, 'package.json'));
   const workspacePath = path.join(target, 'pnpm-workspace.yaml');
-  const workspace = parse(readFileSync(workspacePath, 'utf8'));
+  const document = parseDocument(readFileSync(workspacePath, 'utf8'));
+  const workspace = document.toJSON();
   const input = parse(readFileSync(path.join(source, 'pnpm-workspace.yaml'), 'utf8'));
   const requirements = {
     scripts: (manifest.scripts ??= {}),
@@ -42,14 +43,29 @@ export function mergeWorkspaceContributions(source, target, plan, contributions)
     const primary = plan.templates.find((entry) => entry.type === 'app');
     if (primary) manifest.workspaceDefaultApp = primary.appId;
   }
-  // SDK build permissions enter only with adapters explicitly delivered by this task.
-  if (plan.packages.some((entry) => entry.layer === 'adapter'))
-    for (const [name, enabled] of Object.entries(input.allowBuilds ?? {})) {
-      if (!enabled) continue;
-      const current = (workspace.allowBuilds ??= {})[name];
-      if (current === false) throw new Error('Target explicitly disallows build: ' + name);
-      workspace.allowBuilds[name] = enabled;
-    }
   writeJson(path.join(target, 'package.json'), manifest);
-  writeFileSync(workspacePath, stringify(workspace));
+  for (const [name, version] of Object.entries(workspace.catalog ?? {}))
+    document.setIn(['catalog', name], version);
+  for (const [id, catalog] of Object.entries(workspace.catalogs ?? {}))
+    for (const [name, version] of Object.entries(catalog))
+      document.setIn(['catalogs', id, name], version);
+  writeFileSync(workspacePath, document.toString());
+}
+
+/** Copy SDK build permissions only when the selected resolution graph actually needs them. */
+export function mergeAdapterBuildPermissions(source, target, plan) {
+  if (!plan.packages.some((entry) => entry.layer === 'adapter')) return;
+  const input = parse(readFileSync(path.join(source, 'pnpm-workspace.yaml'), 'utf8'));
+  const file = path.join(target, 'pnpm-workspace.yaml');
+  const document = parseDocument(readFileSync(file, 'utf8'));
+  const workspace = document.toJSON();
+  const lock = parse(readFileSync(path.join(target, 'pnpm-lock.yaml'), 'utf8'));
+  for (const [name, enabled] of Object.entries(input.allowBuilds ?? {})) {
+    if (!enabled || !Object.keys(lock.packages ?? {}).some((key) => key.startsWith(name + '@')))
+      continue;
+    const current = (workspace.allowBuilds ??= {})[name];
+    if (current === false) throw new Error('Target explicitly disallows build: ' + name);
+    document.setIn(['allowBuilds', name], enabled);
+  }
+  writeFileSync(file, document.toString());
 }

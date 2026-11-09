@@ -40,7 +40,9 @@
     "bootstrap": "node scripts/bootstrap.mjs",
     "apps:list": "node scripts/list-apps.mjs",
     "content:prepare": "node scripts/prepare-app.mjs --kind content",
-    "content:check": "node scripts/prepare-app.mjs --kind content --check"
+    "content:check": "node scripts/prepare-app.mjs --kind content --check",
+    "repo:clone": "node scripts/clone-repository.mjs",
+    "library:clone": "node scripts/clone-library.mjs"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

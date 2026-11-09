@@ -30,20 +30,19 @@ checks their browser behavior and independently generated projects.
 ## Generate an independent project
 
 ```sh
-pnpm template:clone --output ../my-project --name @example/frontend
-pnpm template:clone --output ../my-web --templates plain-next --browser
-pnpm template:clone --output ../my-editor --templates studio --app studio=editor
+pnpm repo:clone --output ../my-project --name @example/frontend
+pnpm repo:clone --output ../bare --bare
+pnpm template:clone --target ../my-project --name editor --template studio
 ```
 
-The current generator expands the selected templates into the target project's
-`apps/` and copies their shared dependency closure, tools, applicable standards,
-documentation and lockfile. It installs, prepares default inputs and validates the
-result. Template sources, source-repository maintenance tools, Git history, local
-inputs and generated caches are excluded. Existing output directories are refused.
-
-Adding templates to an existing external monorepo and selecting optional site or
-adapter packages are future generator capabilities. This repository does not
-provide an in-place app creation command. Storybook is not installed.
+The generator creates an external pnpm monorepo with all neutral shared packages.
+Default mode adds plain-next in apps/web; --bare creates only the framework and
+empty app/site/adapter layers. Add more apps with template:clone. Selected optional
+packages follow their real dependency closure. Existing source is never overwritten;
+each app task is a separate commit after the framework baseline. Targets carry their
+own manifests, standards, guides, tools, CI and lockfile. Templates, source history,
+private inputs and source-maintenance tools stay here. See the
+[generation contract](docs/template-repository/generation.md).
 
 ## Ownership
 
@@ -64,8 +63,8 @@ are responsible for choosing and connecting concrete implementations.
 ## Maintained contracts
 
 - [Template contract and generation](packages/templates/README.md)
-- [Workspace commands](docs/commands.md) and [development ports](docs/development.md)
-- [Architecture](docs/architecture.md) and [package conventions](docs/package-conventions.md)
-- [Code standards](docs/code-standards.md), [monorepo standards](docs/monorepo-standards.md) and [repository conventions](docs/repository-conventions.md)
-- [Resource initialization](docs/resource-initialization.md), [resource model](docs/resource-model.md) and [Provider contracts](docs/providers.md)
-- [Text](docs/text-catalog.md), [AppConfig](docs/app-config.md) and [private local inputs](docs/content-profiles.md)
+- [Workspace commands](docs/template-repository/commands.md) and [development ports](docs/template-repository/development.md)
+- [Architecture](docs/template-repository/architecture.md) and [package conventions](docs/template-repository/package-conventions.md)
+- [Code standards](docs/common/code-standards.md), [monorepo standards](docs/common/monorepo-standards.md) and [repository conventions](docs/template-repository/repository-conventions.md)
+- [Resource initialization](docs/common/resource-initialization.md), [resource model](docs/common/resource-model.md) and [Provider contracts](docs/template-repository/providers.md)
+- [Text](docs/common/text-catalog.md), [AppConfig](docs/common/app-config.md) and [private local inputs](docs/common/content-profiles.md)

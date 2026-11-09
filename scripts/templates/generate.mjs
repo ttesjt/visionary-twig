@@ -5,6 +5,7 @@ import { seedLockfile } from './lockfile.mjs';
 import { formatProject } from './format.mjs';
 import { planProject } from './plan.mjs';
 import { writeWorkspaceConfiguration, copyWorkspaceFoundation } from './delivery.mjs';
+import { rewriteDeliveredDocumentation } from './documentation.mjs';
 import { materializePackages } from './materialize.mjs';
 
 /** Assemble source in a new directory; execution and Git transactions have a separate owner. */
@@ -21,6 +22,9 @@ export async function createTemplateProject(root, destination, options = {}) {
     const contributions = await materializePackages(destination, plan);
     writeWorkspaceConfiguration(root, destination, plan, contributions);
     rewritePackageNames(destination, Object.entries(plan.mapping.packages));
+    rewriteDeliveredDocumentation(root, destination, plan, [...plan.packages, ...plan.templates], {
+      foundation: true,
+    });
     seedLockfile(root, destination, plan);
     await formatProject(destination);
     return { ...plan, contributions };

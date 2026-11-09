@@ -129,9 +129,7 @@ then run checks. Bump schemaVersion when parsing semantics change; content revis
 are generated from effective data. A static export/CDN may need another delivery
 adapter; the example HTTP routes assume a Next server deployment.
 
-See [resource initialization](resource-initialization.md) for APIs and limits,
-[AppConfig](app-config.md) for legacy/namespace preparation, and the
-[plain-next guide](../packages/templates/plain-next/README.md) for the runnable example.
+See [resource initialization](resource-initialization.md) for APIs, limits and runnable resource-scope patterns, and [AppConfig](app-config.md) for preparation.
 
 ## Explicit scope gates
 

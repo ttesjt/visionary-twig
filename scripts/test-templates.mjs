@@ -1,6 +1,7 @@
 import { verifyPageErrorRecovery } from './templates/verify-errors.mjs';
 import { verifyNamespaceInputsFlow } from './templates/verify-resources.mjs';
-import { rmSync } from 'node:fs';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { verifyStudioInputsFlow } from './templates/verify-inputs.mjs';
 import { verifyConfiguredTracking, verifyTrackingIsolation } from './templates/verify-tracking.mjs';
 import { trackingTestEnvironment } from './lib/runner-options.mjs';
@@ -11,8 +12,10 @@ import { pnpmCommand, runProcesses } from './lib/processes.mjs';
 const TEMPLATE_BROWSER_PORT = '3160';
 const TEST_TRACKING_URL = 'https://events.example.test/capture';
 const root = path.resolve(import.meta.dirname, '..');
-const destination = path.join(root, '.cache/template-verification/project');
-const plainDestination = path.join(root, '.cache/template-verification/plain-next');
+const verificationRoot = mkdtempSync(path.join(tmpdir(), 'template-verification-'));
+console.log('Template verification artifacts:', verificationRoot);
+const destination = path.join(verificationRoot, 'project');
+const plainDestination = path.join(verificationRoot, 'plain-next');
 const env = trackingTestEnvironment({
   ...process.env,
   TEST_EVENT_TRACKING_URL: '',
@@ -37,20 +40,18 @@ for (const theme of ['light', 'dark'])
       args: ['test:e2e', '--app', app.id, '--grep', 'fixed theme policy'],
       env: { ...env, UI_THEME_POLICY: theme },
     });
-// Only these fixed ignored directories belong to template verification.
+// Both creation and app injection exercise the public commands, outside the source repo.
 if (!sourceOnly) {
-  for (const directory of [destination, plainDestination])
-    rmSync(directory, { recursive: true, force: true });
   commands.push(
     {
       args: [
-        'template:clone',
+        'repo:clone',
         '--output',
         destination,
         '--name',
         '@template-check/workspace',
-        '--app',
-        'studio=editor',
+        '--app-name',
+        'plain',
         '--offline',
         '--browser',
       ],
@@ -59,14 +60,26 @@ if (!sourceOnly) {
     {
       args: [
         'template:clone',
+        '--target',
+        destination,
+        '--name',
+        'editor',
+        '--template',
+        'studio',
+        '--offline',
+        '--browser',
+      ],
+      env,
+    },
+    {
+      args: [
+        'repo:clone',
         '--output',
         plainDestination,
         '--name',
         '@plain-check/workspace',
-        '--templates',
-        'plain-next',
-        '--app',
-        'plain-next=welcome',
+        '--app-name',
+        'welcome',
         '--offline',
         '--browser',
       ],

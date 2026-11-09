@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parse, stringify } from 'yaml';
 import { readJson } from './files.mjs';
+import { pruneLockfile } from './lockfile-graph.mjs';
 
 const DEPENDENCY_GROUPS = ['dependencies', 'devDependencies', 'optionalDependencies'];
 /** Reuse tested resolutions; the single initial install reconciles new hook requirements. */
@@ -62,10 +63,44 @@ export function seedLockfile(source, destination, plan) {
   delete lock.catalogs;
   writeFileSync(
     path.join(destination, 'pnpm-lock.yaml'),
+    stringify(
+      pruneLockfile({
+        ...lock,
+        ...(Object.keys(catalogs).length ? { catalogs } : {}),
+        importers,
+      })
+    )
+  );
+}
+
+/** Add tested resolutions for new workspaces without replacing existing target importers. */
+export function extendLockfile(source, target, plan, entries) {
+  const filename = path.join(target, 'pnpm-lock.yaml');
+  const previous = parse(readFileSync(filename, 'utf8'));
+  seedLockfile(source, target, plan);
+  const seed = parse(readFileSync(filename, 'utf8'));
+  const additions = Object.fromEntries(
+    entries.flatMap((entry) =>
+      seed.importers[entry.destination]
+        ? [[entry.destination, seed.importers[entry.destination]]]
+        : []
+    )
+  );
+  writeFileSync(
+    filename,
     stringify({
-      ...lock,
-      ...(Object.keys(catalogs).length ? { catalogs } : {}),
-      importers,
+      ...previous,
+      catalogs: Object.fromEntries(
+        [
+          ...new Set([
+            ...Object.keys(seed.catalogs ?? {}),
+            ...Object.keys(previous.catalogs ?? {}),
+          ]),
+        ].map((key) => [key, { ...seed.catalogs?.[key], ...previous.catalogs?.[key] }])
+      ),
+      importers: { ...previous.importers, ...additions },
+      packages: { ...seed.packages, ...previous.packages },
+      snapshots: { ...seed.snapshots, ...previous.snapshots },
     })
   );
 }

@@ -62,9 +62,9 @@ README documents readiness for theme-dependent controls, CSP and no-JS behavior.
 
 - [TextCatalog](text-catalog.md): keys, locales, interpolation, examples.
 - [AppConfig](app-config.md): schema, overrides, public boundary, combination checks.
-- [Providers](providers.md): composition, full source-workspace inventory, lifecycle and extension.
+- [Providers](../template-repository/providers.md): composition, full source-workspace inventory, lifecycle and extension.
 - [Profiles](content-profiles.md): private sources and safe legacy migration.
-- [Templates](using-template.md): official generator and independent output validation.
+- [Templates](../template-repository/using-template.md): official generator and independent output validation.
 
 These guides and package/app READMEs are the maintained contract. Build success
 alone is not runtime acceptance: starters are also installed in CI mode, prepared,

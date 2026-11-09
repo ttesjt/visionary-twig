@@ -1,21 +1,17 @@
 # Providers, scopes and composition
 
-Hosts using prepared text/config keep AppProviders as a short explicit composition in their
-src/providers/app-providers.tsx. It receives public serializable values from the
-root Server Layout and wraps AppConfigProvider → TextCatalogProvider → children.
-It does not fetch, select profiles, open SQL, register every component or own editor state.
-Both contexts are created once by app modules with the shared typed factories.
-Text/config contexts are composed by the app.
-
-For the namespace-based plain-next starter, see [resource Provider composition](#namespace-resources-in-plain-next).
+Plain Next and Studio compose prepared Text, AppConfig and Content through
+`ResourceLayout` and narrower feature scopes. The template supplies initial
+server snapshots and the resource runtime coordinates browser loading.
+See [resource Provider composition](#namespace-resources-in-plain-next).
 
 ## Getters, contexts and extension
 
 Use a getter for a Server Component, metadata, pure helper or immutable server
 instance. Use context only for values actually shared through a client subtree.
 A new global context needs a typed input, a clear owner/update policy, minimum
-scope, missing-provider error and tests. Instantiate its Context outside render,
-add it explicitly to AppProviders only if genuinely app-global, then pass a public
+scope, missing-provider error and tests. Instantiate its Context outside render.
+Add it to the root Layout only if the whole app needs it, then pass a public
 server projection. No auto-discovery or automatic Provider registration exists.
 
 A route-specific registration or editing session belongs around that feature,
@@ -31,18 +27,17 @@ shared dependencies; their app README is the authority for installed features.
 
 | Export / source                                                                                        | Value, dependencies and lifetime                                                        | Failure / independent use / extension tests                                                                                                                                                   |
 | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AppProviders; apps/* and templates/* src/providers                                                     | text/config parsed by root server; app lifetime, text changes with supplied locale      | Missing typed context throws; app-local factories prevent cross-app defaults; app/provider and clone tests                                                                                    |
-| AppConfigProvider/useAppConfig; each src/config/context.ts                                             | public app schema/projection; root AppProviders ancestor, no locale switch              | Required; extend config schema/default/check hook; app-config and app tests                                                                                                                   |
-| StudioTextCatalogProvider/useStudioTextCatalog; studio-ui src/text/context.tsx, public /session        | host workbench subset, editor subtree; no data transport                                | Standalone components retain DEFAULT_STUDIO_TEXT neutral English contract; real hosts explicitly inject their workbench subset. No site content fallback. Tests src/text and editor/workbench |
-| HeaderExtensionProvider; site-shell src/header-extension/provider.tsx                                  | Header registration owner keyed by route scope; children register/release contributions | Required registry ancestor for extensions; scope replacement disposes old registrations. Tests header-extension                                                                               |
+| Text, AppConfig and Content Providers in template resource layouts                                     | Prepared readers per application or page scope                                          | Resource plans and snapshots gate required input; see the [resource initialization guide](../common/resource-initialization.md).                                                              |
+| StudioTextCatalogProvider/useStudioTextCatalog; Studio src/ui/text/context.tsx, public /session        | host workbench subset, editor subtree; no data transport                                | Standalone components retain DEFAULT_STUDIO_TEXT neutral English contract; real hosts explicitly inject their workbench subset. No site content fallback. Tests src/text and editor/workbench |
+| HeaderExtensionProvider; ui src/web-shell/header-extension/provider.tsx                                | Header registration owner keyed by route scope; children register/release contributions | Required registry ancestor for extensions; scope replacement disposes old registrations. Tests header-extension                                                                               |
 | NavigationPresentationProvider; content-blocks src/content-navigation/presentation/parts.tsx           | code registry; optional neutral default registry supports standalone navigation         | Restrict to reading feature; component registrations are code. Presentation tests                                                                                                             |
 | ContentNavigationIntegrationProvider; content-blocks src/content-navigation/navigation-integration.tsx | neutral host Dock/Menu/geometry capability                                              | Optional independent navigation without host adapter; site/app supplies actual Header integration. Integration tests                                                                          |
 | NavigationSurfaceActivityProvider; content-blocks presentation/parts.tsx                               | current navigation surface entering/leaving state                                       | Local subtree; preserve activity/animation semantics, navigation-motion tests                                                                                                                 |
-| HeaderExtensionSurfaceContext; site-shell header-extension/surface-context.ts                          | Header surface state for one extension surface                                          | Internal Header subtree, not global; extension surface tests                                                                                                                                  |
+| HeaderExtensionSurfaceContext; ui src/web-shell/header-extension/surface-context.ts                    | Header surface state for one extension surface                                          | Internal Header subtree, not global; extension surface tests                                                                                                                                  |
 | DemoPageSession; template studio workspace/demo/pages/page-session.tsx                                 | one project/resource, history, dirty/revision/conflict and publication acknowledgement  | Required page boundary; route/resource replacement cleans session; page/session and editor tests                                                                                              |
 | DemoProvider; template studio workspace/demo/data/demo-provider.tsx                                    | explicit in-memory record/image adapters for demo workspace                             | Independent seed JSON, never UI locale; dispose with workspace. Demo reuse/tests                                                                                                              |
-| Studio theme context; studio-ui src/shell/theme-context.tsx                                            | shell appearance scope supplied by Studio host                                          | Shell feature scope; independent policy/default semantics documented in studio-ui README; theme tests                                                                                         |
-| StudioPageScope; studio-ui src/shell/page-outlet.tsx                                                   | active registered page and navigation props                                             | Page outlet only; registry validation/loading/error fallback; shell tests                                                                                                                     |
+| Studio theme context; Studio src/ui/shell/theme-context.tsx                                            | shell appearance scope supplied by Studio host                                          | Shell feature scope; independent policy/default semantics documented in Studio README; theme tests                                                                                            |
+| StudioPageScope; Studio src/ui/shell/page-outlet.tsx                                                   | active registered page and navigation props                                             | Page outlet only; registry validation/loading/error fallback; shell tests                                                                                                                     |
 | TabsContext; content-blocks src/tabs/tabs-context.ts                                                   | single tab group selection                                                              | Required tab ancestor, no app registration; tabs tests                                                                                                                                        |
 | ScrollBoundaryContext; content-blocks src/scroll-boundary/scroll-boundary.tsx                          | one sensor lifecycle and geometry observation                                           | Scoped sensor; standalone contract and scroll-boundary tests                                                                                                                                  |
 | ContentReadingContext; content-blocks src/content-navigation/reading-store.tsx                         | one reading document's position/navigation store                                        | Document-scoped reset/disposal; reading tests                                                                                                                                                 |
@@ -58,27 +53,7 @@ remain owned by Puck and are not reimplemented here.
 Theme uses HTML data-theme, CSS, validated cookie/preferences and existing controls.
 ET/remote settings use app module instances/hooks. Storage adapters are created at
 server integration boundaries and injected through neutral ports. Tabs, sensors,
-reading and editor sessions remain component/feature scopes. None is automatically
-lifted into AppProviders by the text/config migration.
-
-## Minimal app recipe
-
-```tsx
-// root Server Layout
-const text = getTextCatalog(locale);
-const publicConfig = toClientConfig(getAppConfig());
-return (
-  <AppProviders textCatalog={text} appConfig={publicConfig}>
-    {children}
-  </AppProviders>
-);
-```
-
-A client button uses the app's useTextCatalog; a public configuration consumer uses
-useAppConfig. A server paragraph reads getTextCatalog directly. A new document
-session wraps only its editor subtree, keyed to its resource. Test missing required
-contexts, locale updates, config stability and route/session cleanup before moving
-any wrapper. Build does not prove lifecycle correctness; use browser tests too.
+reading and editor sessions remain component or feature scopes.
 
 ## Provider reference recipes
 
@@ -90,13 +65,13 @@ by their public component and should not be manufactured by an app.
 ### StudioTextCatalogProvider
 
 `@frontend/studio/session` exports this provider and `useStudioTextCatalog`;
-implementation is `studio-ui/src/text/context.tsx`. Input is
+implementation is `studio/src/ui/text/context.tsx`. Input is
 `text: StudioTextCatalog`, validated by `studioTextCatalogSchema`; the hook returns
-that same UI-only workbench subset. This standalone UI prop is unrelated to stored
-content protocol fields. For example, a host wraps its editor:
+that same UI-only workbench subset. The Studio template adapts its namespace reader
+with `useStudioText()` and gives the editor the resulting labels.
 
 ```tsx
-<StudioTextCatalogProvider text={useTextCatalog().workbench}>
+<StudioTextCatalogProvider text={useStudioText().workbench}>
   <Editor />
 </StudioTextCatalogProvider>
 ```
@@ -115,7 +90,7 @@ host `scope: string`. It owns a single slot for contextual controls.
 `useHeaderExtension` registers a contribution and releases it on cleanup. A
 changed scope clears the previous registry. Arrange the provider around the
 header and the components that contribute to its slot. See the
-[Web Shell guide](../packages/shared/ui/README.md#optional-header-extension)
+[Web Shell guide](../../packages/shared/ui/README.md#optional-header-extension)
 for composition and ownership rules.
 
 Applications that dock content navigation supply their own Dock, Menu and
@@ -147,7 +122,7 @@ setPreference); `useStudioTheme()` returns it and throws outside the shell.
 Page scope contains the typed `StudioPageContext` (page, registry, navigate).
 `StudioPageOutlet` reads it, throws without the shell, and rejects a route-owned
 entry that has no host route content. Use the tested StudioShell example in the
-[package guide](../packages/shared/studio-ui/README.md#workspace-shell-and-code-owned-extensions)
+[package guide](../../packages/site/studio/README.md#workspace-shell-and-code-owned-extensions)
 with a registered component, or `<StudioPageOutlet />` in a shell child route.
 The shell owns appearance and page error/retry boundaries, not storage/auth.
 Theme follows host-controlled values or the shell's mount lifetime; page changes
@@ -186,5 +161,4 @@ includes the parent reader and its own local additions. In App Router a Server
 Page can also pass a page-specific SSR snapshot down to a page Provider so hooks
 can read it on first render. Other pages can inherit the Layout readers directly.
 
-This opt-in integration does not change the legacy context factories or existing
-apps. See the standalone [resource initialization guide](resource-initialization.md#resource-scope-composition) for scope publication and SSR handoff.
+See the standalone [resource initialization guide](../common/resource-initialization.md#resource-scope-composition) for scope publication and SSR handoff.

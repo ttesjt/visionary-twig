@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
+import { execFileSync } from 'node:child_process';
 import { parse } from 'yaml';
 import { copySource } from '../templates/files.mjs';
 import { readTemplateCatalog } from '../templates/catalog.mjs';
@@ -122,7 +123,7 @@ test('standalone clone ships portable standards and their linked files', async (
   for (const file of ['code-standards.md', 'monorepo-standards.md']) {
     const relative = 'docs/' + file;
     const contents = readFileSync(path.join(destination, relative), 'utf8');
-    assert.equal(contents, readFileSync(path.join(sourceRoot, relative), 'utf8'));
+    assert.equal(contents, readFileSync(path.join(sourceRoot, 'docs/common', file), 'utf8'));
     for (const entry of ['AGENTS.md', 'README.md'])
       assert.ok(readFileSync(path.join(destination, entry), 'utf8').includes(relative));
     for (const [, target] of contents.matchAll(/\]\(([^)]+)\)/g)) {
@@ -385,4 +386,22 @@ test('template copying keeps env examples and excludes private env files at ever
     for (const name of ['.env', '.env.local', '.env.production.local'])
       assert.equal(existsSync(path.join(destination, folder, name)), false);
   }
+});
+
+test('copying source excludes arbitrary Git-ignored local data without dropping tracked defaults', (context) => {
+  const root = temporary(context);
+  const source = path.join(root, 'source');
+  mkdirSync(source);
+  execFileSync('git', ['init', '--quiet', source]);
+  writeFileSync(path.join(source, '.gitignore'), 'private/\n*.private.json\n');
+  mkdirSync(path.join(source, 'private'));
+  writeFileSync(path.join(source, 'private/profile.json'), 'private fixture');
+  writeFileSync(path.join(source, 'notes.private.json'), 'private fixture');
+  writeFileSync(path.join(source, 'default.json'), '{}');
+  const destination = path.join(root, 'output');
+  copySource(source, destination);
+  assert.equal(existsSync(path.join(destination, 'private')), false);
+  assert.equal(existsSync(path.join(destination, 'notes.private.json')), false);
+  assert.equal(existsSync(path.join(destination, 'default.json')), true);
+  assert.equal(existsSync(path.join(destination, '.git')), false);
 });

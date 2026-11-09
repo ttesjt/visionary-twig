@@ -8,7 +8,7 @@ Root exports: createAppConfigReader. Pure APIs import no Node, Next or applicati
 
 The app owns strict schemas, defaults and explicit contract versions. Validation/freshness errors are fatal and do not choose a different source. Root shared dependencies remain independent of site/apps/adapters. Test with pnpm test from the root; package outputs must be built before consumer tests.
 
-See [infrastructure](../../../docs/infrastructure.md), [text](../../../docs/text-catalog.md), [configuration](../../../docs/app-config.md) and [Providers](../../../docs/providers.md) for complete contracts and executable recipes.
+See [infrastructure](../../../docs/common/infrastructure.md), [text](../../../docs/common/text-catalog.md), [configuration](../../../docs/common/app-config.md) and [Providers](../../../docs/template-repository/providers.md) for complete contracts and executable recipes.
 
 ## Standalone reader and preparation
 

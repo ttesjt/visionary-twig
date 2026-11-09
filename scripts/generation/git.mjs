@@ -28,7 +28,7 @@ export function sourceIdentity(root) {
 export function commitPaths(root, paths, message) {
   if (!paths.length) throw new Error('No generated changes to commit.');
   // Literal pathspecs and an explicit list prevent user files entering this task's commit.
-  git(root, ['add', '--', ...paths]);
+  gitPathspec(root, ['add'], paths);
   git(root, ['commit', '-m', message]);
   return git(root, ['rev-parse', 'HEAD']).trim();
 }
@@ -41,4 +41,11 @@ export function changedPaths(root) {
       ].filter(Boolean)
     ),
   ];
+}
+
+export function gitPathspec(root, args, paths) {
+  return git(root, [...args, '--pathspec-from-file=-', '--pathspec-file-nul'], {
+    input: paths.join('\0') + '\0',
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
 }

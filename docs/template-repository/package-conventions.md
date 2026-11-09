@@ -19,7 +19,7 @@ The starting-point matrix, creation routes and baseline-review coverage live in 
 
 Unit/component tests live beside source as .test.ts or .test.tsx; integration tests and fixtures live in test/. Build configs exclude both test and spec files. Source templates own test/e2e and thin Playwright configs with shared Node+DOM typechecking; generated applications retain these host-owned tests. scripts/test contains Node-based tooling regression tests.
 
-Dependency roles and cross-package APIs follow the [monorepo standards](monorepo-standards.md). This repository's selected workspace/catalog protocols and layer restrictions live in [repository conventions](repository-conventions.md). React libraries declare React peers and install development test versions.
+Dependency roles and cross-package APIs follow the [monorepo standards](../common/monorepo-standards.md). This repository's selected workspace/catalog protocols and layer restrictions live in [repository conventions](repository-conventions.md). React libraries declare React peers and install development test versions.
 
 ## Build lifecycle
 
@@ -54,8 +54,8 @@ test hook. `start --app <id>` runs that previously built application.
 The Next app templates are active workspaces with unique template-* names
 and ports. node-library remains an inactive scaffold. Template configs resolve
 at their real source location; clone initialization adapts destination configs.
-Templates can consume shared packages; runtime consumers cannot depend on a
-template. Root pnpm validate checks source templates. pnpm test:templates also
+Templates can consume shared and site packages. Runtime consumers cannot depend
+on a template. Root pnpm validate checks source templates. pnpm test:templates also
 runs in-place browser checks and the public generator's fresh-project verification.
 
 Concrete providers use the adapters layer while retaining their node-library format. Declare provider SDK names in workspaceAdapter.providerPackages so source/manifest checks and template generation recognize their ownership. SDKs, resource identities and lifecycle stay inside adapters; apps create providers. Core shared/site/template packages reject direct and transitive adapter dependencies across all dependency groups.
@@ -66,11 +66,11 @@ Packages may declare workspaceEntrypoints mapping public exports to pure/client/
 
 ## Code organization and enforcement
 
-The [portable code standards](code-standards.md) own general TS and frontend
+The [portable code standards](../common/code-standards.md) own general TS and frontend
 requirements, including recursive feature ownership and module APIs. The
-[monorepo standards](monorepo-standards.md) own package collaboration and pnpm integration.
+[monorepo standards](../common/monorepo-standards.md) own package collaboration and pnpm integration.
 The [repository conventions](repository-conventions.md) own workspaceFeatures declarations,
 check coverage, repository paths/configuration and validation requirements. This
 document owns package/build formats.
 
-See [feature boundaries](feature-boundaries.md) for the resource packages’ declarations and cross-package shared capabilities.
+See [feature boundaries](../common/feature-boundaries.md) for the resource packages’ declarations and cross-package shared capabilities.

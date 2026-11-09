@@ -1,8 +1,8 @@
 # Repository conventions
 
 This document owns this workspace's concrete choices and enforcement. The
-[code standards](code-standards.md) own portable TS/frontend requirements; the
-[monorepo standards](monorepo-standards.md) own package collaboration and pnpm
+[code standards](../common/code-standards.md) own portable TS/frontend requirements; the
+[monorepo standards](../common/monorepo-standards.md) own package collaboration and pnpm
 integration. General rules stay in those documents rather than being restated here.
 Architecture, package and command contracts describe their repository-specific details.
 
@@ -85,14 +85,14 @@ services/controllers/utils checklist.
 After installing the source repository, generate into a new external directory:
 
 ```sh
-pnpm template:clone --output ../new-project --templates plain-next --name @example/workspace
-pnpm template:clone --output ../new-library-workspace --templates node-library --name @example/workspace
+pnpm repo:clone --output ../new-project --name @example/workspace
+pnpm library:clone --output ../new-library-workspace --name @example/workspace
 ```
 
 The generator adapts the selected starters, copies their shared dependencies and
 performs the documented install/preparation/validation workflow. Templates and
-source maintenance tools remain here. There is no source-repository app creation
-command; appending to an existing external project is a future capability.
+source maintenance tools remain here. Use template:clone --target <existing-monorepo> --name <app-name> to append an app.
+There is no in-place source-repository app creation command.
 
 ### Existing checks and remaining review
 
@@ -100,7 +100,7 @@ command; appending to an existing external project is a future capability.
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Supported kind and minimum shape | Source policy checks workspaceKind, location, scoped/private/ESM identity and nonempty required scripts and existing required files. Package conventions maintains that required matrix.                                                                                                                                     |
 | Libraries                        | Source policy requires public exports, rejects undeclared production imports and enforces Node runtime import extensions; React libraries must declare a React peer. Built checks verify export targets exist. These checks do not compare a package byte-for-byte with a scaffold.                                          |
-| Styles                           | Source policy requires CSS side effects and formatting tasks, enforces stylesheet ownership and checks exports after builds. It does not invent JS tests for CSS-only workspaces.                                                                                                                                            |
+| Styles                           | Source policy checks stylesheet ownership, React CSS exports and packaging, CSS side effects and required formatting tasks. It does not invent JS tests for CSS-only workspaces.                                                                                                                                             |
 | Next apps                        | Source policy checks workspaceApp metadata and test configuration paths; enabled text/config contracts require their files, commands and preparation guards. validate runs the active hosts' real checks/builds.                                                                                                             |
 | App templates and generators     | The Next source templates are active workspaces. Generator regression tests cover selection/mapping and library-only generation. test:templates exercises app source templates and independently generated app workspaces.                                                                                                   |
 | Inactive Node scaffold           | Excluded by pnpm workspace configuration and skipped as a live template workspace by source policy. Metadata/library-only-generation tests do not mean validate directly builds/tests that inactive scaffold, or that app-template verification runs an installed Node-only clone. A new active library is checked normally. |
@@ -114,20 +114,20 @@ change does not retrofit or reshape existing package implementations.
 
 ## Styles and content ownership
 
-CSS belongs only in workspaces of kind styles. Structural defaults belong to
-component packages, neutral visuals/themes to packages/shared/styles,
-behavior must work without website CSS. Hosts explicitly select their structure and
-visual entries. Keep demo-only CSS in the separate example entry; do not move CSS
-into feature/component folders during code organization work.
+React packages can ship component defaults under `src/styles/` with explicit CSS
+exports and CSS side effects. Include that directory in the package's published
+files. Apps keep their own CSS in `src/styles/` and explicitly select the entries
+they need. The shared styles workspace provides optional visual tokens, themes
+and appearance. Keep demo-only CSS in a separate entry.
 
 Use stable ui-* classes/data attributes and bounded semantic variants. Do not add
-Tailwind, CSS modules, local component stylesheets or authored inline styles.
+Tailwind, CSS modules or authored inline styles.
 Tracked content and fixtures stay fictional and neutral; actual personal content
 belongs to ignored local profiles or external sources. Apps own actual content;
 packages own contracts and behavior. UI strings use the validated TextCatalog;
 code references keys. Prepare resource inputs explicitly before dev or build. Legacy
 hosts import fixed generated files; plain-next loads prepared Text, AppConfig and
-Content by scope. See [commands](commands.md) and [resource initialization](resource-initialization.md).
+Content by scope. See [commands](commands.md) and [resource initialization](../common/resource-initialization.md).
 
 ## Formatting and type configuration
 
@@ -183,7 +183,7 @@ standard. Create entries only for real APIs; do not generate empty categories.
 - A feature may consume a neutral capability from another workspace through a
   shared public entry. Each enclosing scope must expose that entry. The shared
   dependency graph, package exports and workspace layers still undergo their
-  respective checks. See [feature boundaries](feature-boundaries.md).
+  respective checks. See [feature boundaries](../common/feature-boundaries.md).
 
 This is opt-in automation, not an opt-in architectural requirement. Existing code
 has not been automatically registered or reorganized. When adding or organizing a

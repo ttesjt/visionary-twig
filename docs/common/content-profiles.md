@@ -21,10 +21,8 @@ Preparation never overwrites `.local`, imports business data, selects a storage
 provider or uploads media. Secrets remain server-owned and do not belong in public
 configuration or text dictionaries.
 
-Legacy catalog-format preparation remains available for hosts explicitly declaring
-that capability. Existing persisted document paths such as `context.copy`,
-`viewerCopy` and third-party props keep their domain semantics; renaming UI text
-APIs does not migrate documents or storage.
+Persisted document paths such as `context.copy` and `viewerCopy` follow their
+content schemas. Text dictionary preparation operates on UI strings.
 
 SQL/object storage is independently injected into its consumer. See
-[data source ownership](data-sources.md) and the selected adapter documentation.
+[data source ownership](../template-repository/data-sources.md) and the selected adapter documentation.

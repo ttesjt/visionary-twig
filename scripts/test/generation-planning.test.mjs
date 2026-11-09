@@ -5,6 +5,8 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
+  renameSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -46,7 +48,15 @@ const write = (file, data) => {
 test('bare planning delivers all neutral shared packages without templates, site or provider catalog requirements', () => {
   const record = readJson(path.join(base, '.workspace-template.json'));
   assert.equal(record.applications.length, 0);
-  assert.ok(Object.keys(record.packages).length > 10);
+  const actualShared = readdirSync(path.join(source, 'packages/shared'), { withFileTypes: true })
+    .filter(
+      (entry) =>
+        entry.isDirectory() &&
+        existsSync(path.join(source, 'packages/shared', entry.name, 'package.json'))
+    )
+    .map((entry) => readJson(path.join(source, 'packages/shared', entry.name, 'package.json')).name)
+    .sort();
+  assert.deepEqual(Object.keys(record.packages).sort(), actualShared);
   assert.equal(existsSync(path.join(base, 'packages/templates')), false);
   assert.equal(existsSync(path.join(base, 'packages/adapters/cloudflare')), false);
   const workspace = parse(readFileSync(path.join(base, 'pnpm-workspace.yaml'), 'utf8'));
@@ -62,6 +72,42 @@ test('adding an app reuses compatible package contracts and preserves user imple
   assert.equal(result.plan.templates[0].packageName, '@planning/web');
   assert.equal(result.plan.templates[0].config.app.devPort, 3000);
   assert.equal(readFileSync(file, 'utf8'), 'export const custom = true;\n');
+});
+test('adding Studio to a bare workspace delivers the site package and keeps its app id', async (context) => {
+  const folder = target(context);
+  const { newPackages, plan } = await planTemplateAddition(source, folder, {
+    template: 'studio',
+    appName: 'studio',
+  });
+  assert.deepEqual(
+    newPackages.map(({ destination }) => destination),
+    ['packages/site/studio']
+  );
+  assert.equal(plan.templates[0].destination, 'apps/studio');
+  assert.equal(plan.templates[0].packageName, '@planning/studio-app');
+});
+test('adding Studio reuses a compatible site package previously delivered under shared', async (context) => {
+  const folder = path.join(target(context), 'older-project');
+  const plan = await createTemplateProject(source, folder, {
+    templates: ['studio'],
+    name: '@planning/project',
+  });
+  const record = createWorkspaceRecord(source, folder, plan);
+  const previous = 'packages/shared/studio';
+  renameSync(path.join(folder, 'packages/site/studio'), path.join(folder, previous));
+  record.packages['@frontend/studio'].destination = previous;
+  write(path.join(folder, '.workspace-template.json'), record);
+
+  const addition = await planTemplateAddition(source, folder, {
+    template: 'studio',
+    appName: 'editor',
+  });
+  assert.deepEqual(addition.newPackages, []);
+  assert.equal(addition.plan.mapping.directories['packages/site/studio'], previous);
+  assert.equal(
+    addition.plan.packages.find((entry) => entry.manifest.name === '@frontend/studio').destination,
+    previous
+  );
 });
 test('existing directories, broken symlinks, ancestor symlinks and duplicate package names are refused', async (context) => {
   const folder = target(context);
@@ -160,6 +206,11 @@ test('root contributions preserve user fields and reject conflicting versions be
   const folder = target(context);
   const manifestPath = path.join(folder, 'package.json');
   const manifest = readJson(manifestPath);
+  const workspaceFile = path.join(folder, 'pnpm-workspace.yaml');
+  writeFileSync(
+    workspaceFile,
+    '# user-owned workspace note\n' + readFileSync(workspaceFile, 'utf8')
+  );
   manifest.customField = 'keep';
   manifest.workspaceDefaultApp = 'existing';
   write(manifestPath, manifest);
@@ -169,6 +220,7 @@ test('root contributions preserve user fields and reject conflicting versions be
     { scripts: { 'user:extra': 'node extra.mjs' } },
   ]);
   assert.equal(readJson(manifestPath).customField, 'keep');
+  assert.match(readFileSync(workspaceFile, 'utf8'), /user-owned workspace note/);
   assert.equal(readJson(manifestPath).workspaceDefaultApp, 'existing');
   const before = readFileSync(manifestPath);
   assert.throws(

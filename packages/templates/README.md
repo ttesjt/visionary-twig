@@ -19,31 +19,21 @@ Those runners build/watch shared libraries first.
 After the dependency build, pnpm build inside each template works normally.
 Root pnpm build --all --include-templates explicitly builds all source templates. pnpm validate always builds them when present.
 
-## Generate a new project
+## Generate a new project or add an app
 
 ```sh
-pnpm template:clone --output ../new-frontend --name @example/frontend
-pnpm template:clone --output ../web-only --templates plain-next
-pnpm template:clone --output ../tools --templates studio --app studio=editor
+pnpm repo:clone --output ../new-frontend --name @example/frontend
+pnpm repo:clone --output ../bare --bare
+pnpm repo:clone --output ../tools --template studio --app-name editor
+pnpm template:clone --target ../new-frontend --name editor --template studio
+pnpm library:clone --output ../library-workspace --name @example/tools
 ```
 
-Default selection includes both app templates. --templates chooses a combination;
---app maps a selected template ID to a different target app directory/package.
---name defines the root package and scope; internal package names/imports are
-mapped together. catalog.json records provenance, never a runtime Git dependency.
-
-The generator resolves required templates and the transitive shared dependency
-closure, copies source, runs ordered template initializers, merges root settings,
-formats the project, installs once, prepares declared app inputs and runs pnpm validate. --browser also runs
-production Chromium and fixed-theme checks. --offline uses the populated store;
---no-verify skips validation; --no-install skips installation and validation.
-Existing target directories are refused. --list and --help describe choices.
-
-Generated projects contain their own tools, shared sources, app sources, CI and
-lockfile. A filtered seed preserves tested dependency resolutions; pnpm reconciles
-it against final manifests. No current site app/package, Git data, local env,
-node_modules, dist, template initializer or generator implementation is copied.
-The selected app set determines available root commands and the default host.
+Default creation supplies one plain-next app in apps/web. Bare mode supplies the
+shared framework and empty app/site/adapter layers. App injection requires a name
+and creates one complete commit with required additions. Existing package source,
+README and custom inputs are preserved; conflicting contracts or paths fail.
+See [the generation protocol](../../docs/template-repository/generation.md).
 
 ## Template contract
 
@@ -51,7 +41,8 @@ Each app declares template.config.mjs:
 
 - type: app or library, independent of framework workspaceKind.
 - destination: apps/<id> or packages/shared/<id>.
-- requires: other template IDs, initialized first; cycles are rejected.
+- requires: initializer prerequisites, resolved and cycle-checked; public app injection selects exactly one app.
+- packages: optional extra shared/site/adapter delivery roots; normal runtime dependencies remain in manifests and obey layer policy.
 - initialize: optional own script exporting initialize(context).
 - files: optional target-relative file to template-relative source mapping.
 - root: optional scripts, devDependencies and catalog contributions.
@@ -74,7 +65,7 @@ and a standalone plain-next clone. Checks use renamed scopes and app IDs,
 production Chromium, fixed themes and frozen offline reinstalls. Event delivery
 tests explicitly enable tracking in a disposable clone and intercept its endpoint.
 Use `--source-only` or `--clone-only` to select one phase. Generated verification
-projects live under `.cache/template-verification/`.
+projects live in a printed task-owned temporary directory outside this source repo.
 
 ## Prepared resources
 
@@ -112,6 +103,6 @@ cannot rely on another host to supply preparation packages. See
 [plain-next](plain-next/README.md) for retained capabilities and source ports.
 
 The plain-next Text examples validate SSR snapshots, true client-only loading and
-atomic language changes. See [resource initialization](../../docs/resource-initialization.md).
+atomic language changes. See [resource initialization](../../docs/common/resource-initialization.md).
 
 For lazy sections, reuse the nearest Provider. See the [starter guide](plain-next/README.md#adding-a-namespace-on-demand) for an example.

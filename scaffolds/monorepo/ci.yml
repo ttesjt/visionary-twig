@@ -15,6 +15,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm app:prepare --all --source default
       - run: pnpm validate
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:e2e --all
-      - run: pnpm test:e2e:theme-policy
+      - if: hashFiles('apps/*/package.json') != ''
+        run: pnpm exec playwright install --with-deps chromium
+      - if: hashFiles('apps/*/package.json') != ''
+        run: pnpm test:e2e --all
+      - if: hashFiles('apps/*/package.json') != ''
+        run: pnpm test:e2e:theme-policy

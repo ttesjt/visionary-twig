@@ -7,12 +7,13 @@ application templates and generation tools. There are no consuming apps here.
 The two Next.js starters are live source workspaces with their own identities and
 ports; node-library is an inactive scaffold. Templates are not runtime dependencies.
 
-The current generator creates a new independent monorepo from selected templates
-and their shared dependency closure. It maps names/paths, runs template hooks,
-merges root contributions, installs once, prepares inputs and validates. Template
-sources, generation tools, source Git history and private/generated data are not
-delivered. Optional site/adapter selection and adding to an existing external
-monorepo remain future generation capabilities. See [template usage](using-template.md).
+The generator creates an external monorepo with all neutral shared capabilities.
+Bare mode has no app, site or adapter implementation. Default mode adds one plain-next
+app named web; template:clone later injects one app with its necessary optional
+package closure. Each task has its own independently installable commit. Hooks
+contribute root requirements while the generator owns conflict checks, installation,
+qualification and Git publication. Source templates/maintenance tools, private data
+and source Git history are excluded. See [generation](generation.md).
 
 ## Dependency layers
 
@@ -25,11 +26,12 @@ monorepo remain future generation capabilities. See [template usage](using-templ
 - Generated apps are composition roots: they choose providers, supply actual
   content, configure runtime environments and inject ports.
 
-Shared and template packages cannot depend on site/adapters; site cannot depend
-on adapters. These rules cover direct/transitive dependencies, tests and every
-manifest group. Templates remain development inputs rather than dependencies of
-other workspaces. The policy checker derives provider SDK ownership from adapter
-metadata and checks public package imports and environment boundaries.
+Templates may declare shared and site dependencies. Shared packages cannot depend
+on site packages. Shared, site and template packages cannot depend on adapters
+or their provider SDKs. These rules apply to tests and every manifest group.
+Templates remain development inputs for the generator. The policy checker derives
+provider SDK ownership from adapter metadata and checks direct and transitive
+adapter dependencies, public package imports and environment boundaries.
 
 ## Layout and styling
 
@@ -37,12 +39,19 @@ React components own structure, accessibility, semantics and interaction. Stable
 `ui-*` classes and bounded variants expose their styling contract. Consumers
 explicitly select styles; reusable components do not import global CSS.
 
-`ui` owns structural tokens, Row/Column, layout and responsive behavior.
+`@frontend/ui/default.css` provides foundational layout tokens and component
+geometry, including Row, Column, and responsive behavior. Feature packages export
+their own default structure. Hosts can override the published tokens and hooks
+from their own CSS.
 `styles` owns neutral visual tokens, light/dark/system themes and component
 appearance. The shared cascade order is `ui-layout-tokens`, `ui-theme-tokens`,
 `ui-base`, `ui-layout`, `ui-components`, `ui-example`.
 
-Consumer theme preferences and runtime policy stay outside reusable CSS. Demo composition is opt-in through the separate example stylesheet.
+`@frontend/ui/web-shell` supplies the frame, navigation and footer. The
+interactive header is available at `@frontend/ui/web-shell/header`. The host can
+import `@frontend/ui/web-shell.css` for structure and
+`@frontend/styles/web-shell.css` for optional appearance. Theme preferences and runtime policy belong to
+the host. Demo composition is opt-in through the separate example stylesheet.
 
 ## Resources and lifecycle
 
@@ -58,16 +67,17 @@ are passed down before dependent content renders. CSR Guardians block only the
 relevant visual subtree. Appending a namespace uses the nearest Provider; an
 additional Provider is optional for independent scope/lifetime or a page SSR
 snapshot. Locale switching prepares active scopes before publishing consistently.
-See [resource initialization](resource-initialization.md),
-[resource model](resource-model.md) and [Providers](providers.md).
+See [resource initialization](../common/resource-initialization.md),
+[resource model](../common/resource-model.md) and [Providers](providers.md).
 
 ## Content and editing
 
 `ui-document` owns document protocols, validation, bindings and variable resolution.
 `puck-adapter` owns schema-backed editor and server rendering integration.
-`content-blocks` supplies neutral blocks and media behavior. `studio/data` owns
-portable project/file/publication contracts; `studio` supplies sessions and
-editor/workspace components without choosing a transport or provider.
+`content-blocks` supplies neutral blocks and media behavior. The Studio site
+package builds on those capabilities. Its `/data` entry provides portable
+editing files and publication contracts. Its UI entries provide editing
+sessions and workspaces. The host supplies the transport or provider.
 
 The Studio template demonstrates in-memory records, upload adapters, project
 files, editing and isolated RSC preview on the prepared resource foundation.
@@ -77,17 +87,14 @@ Consumers supply authenticated storage/publication capabilities explicitly.
 ## Optional storage and services
 
 `storage` owns neutral SQL/object ports, key/size rules and connection lifecycle
-caching. Its `/content` entry implements a registry-injected ContentStore using
-those ports for domain queries, mappings, migrations, publication and media rules.
+caching. Applications and their domain packages consume those ports for queries,
+mappings, migrations, publication and media rules.
 
 The Node adapter implements SQLite/files. The Cloudflare adapter implements
 D1/R2 and optional email/verification ports, with separate native and Node
 Wrangler development entries. Neither chooses a host's resources, credentials
 or dataset.
 See [data source ownership](data-sources.md) and each adapter README.
-
-subscriptions and controlled UI. Hosts inject transport, labels and policy.
-Shared capabilities never implicitly instantiate a cloud service.
 
 ## Verification and ownership
 

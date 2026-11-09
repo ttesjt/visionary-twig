@@ -17,6 +17,8 @@ export function copyWorkspaceFoundation(root, destination) {
   const definition = readDelivery(root);
   for (const file of [...definition.files, ...definition.directories])
     copySource(inside(root, file), inside(destination, file));
+  for (const [source, target] of Object.entries(definition.configurations ?? {}))
+    copySource(inside(root, source), inside(destination, target));
   for (const [source, target] of Object.entries(definition.documents))
     copySource(inside(root, source), inside(destination, target));
   const scaffold = path.join(root, 'scaffolds/monorepo');
