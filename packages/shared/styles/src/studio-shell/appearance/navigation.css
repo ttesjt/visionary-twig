@@ -1,0 +1,10 @@
+.ui-studio-navigation-dialog {
+  border: 0;
+  border-inline-end: 1px solid var(--ui-studio-line);
+  background: var(--ui-studio-surface);
+  box-shadow: 0 0 32px rgb(0 0 0 / 16%);
+}
+.ui-studio-standalone-nav {
+  border-block-end: 1px solid var(--ui-studio-line);
+  font-size: 0.75rem;
+}

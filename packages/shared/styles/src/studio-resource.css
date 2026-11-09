@@ -1,0 +1,65 @@
+.ui-studio-resource-manager {
+  border: 1px solid var(--ui-studio-line);
+  border-radius: var(--ui-studio-radius);
+  background: var(--ui-studio-surface);
+}
+.ui-studio-resource-toolbar {
+  border-block-end: 1px solid var(--ui-studio-line);
+}
+.ui-studio-resource-name input {
+  background: transparent;
+  border-color: transparent;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.ui-studio-resource-name input:hover {
+  background: var(--ui-studio-field-surface);
+  border-color: var(--ui-studio-line);
+}
+.ui-studio-resource-status,
+.ui-studio-resource-overview,
+.ui-studio-inline-help {
+  color: var(--ui-studio-muted);
+  font-size: 0.75rem;
+}
+.ui-studio-resource-status .ui-studio-status {
+  border: 0;
+}
+.ui-studio-resource-tabs > .ui-content-tablist {
+  border-block-end: 1px solid var(--ui-studio-line);
+}
+.ui-studio-resource-tabs .ui-content-tab {
+  border: 0;
+  border-block-end: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ui-studio-muted);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.ui-studio-resource-tabs .ui-content-tab:hover {
+  color: var(--ui-studio-ink);
+  background: var(--ui-studio-hover);
+}
+.ui-studio-resource-tabs .ui-content-tab[aria-selected='true'] {
+  color: var(--ui-studio-ink);
+  border-block-end-color: var(--ui-studio-focus);
+  font-weight: 550;
+}
+.ui-studio-inline-help summary {
+  cursor: pointer;
+}
+.ui-studio-resource-panel .ui-studio-identity {
+  font:
+    0.6875rem/1.5 ui-monospace,
+    monospace;
+}
+.ui-studio-resource-overview > p:nth-child(2) {
+  color: var(--ui-studio-ink);
+}
+@media (forced-colors: active) {
+  .ui-studio-resource-tabs .ui-content-tab[aria-selected='true'] {
+    border-block-end-color: Highlight;
+  }
+}

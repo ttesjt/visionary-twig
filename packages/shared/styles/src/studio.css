@@ -1,0 +1,100 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+@import './studio-tokens.css' layer(ui-theme-tokens);
+@import './studio-controls.css' layer(ui-components);
+@import './studio-focus.css' layer(ui-components);
+@import './studio-resource.css' layer(ui-components);
+@layer ui-components {
+  .ui-studio-workbench {
+    color: var(--ui-studio-ink);
+    background: var(--ui-studio-canvas);
+  }
+  .ui-studio-header {
+    color: var(--ui-studio-ink);
+  }
+  .ui-studio-header :is(h1, h2),
+  .ui-studio-catalog > h2,
+  .ui-studio-dependencies > h2 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .ui-studio-header > div:first-child > p,
+  .ui-studio-identity {
+    color: var(--ui-studio-muted);
+    font-size: 0.75rem;
+  }
+  .ui-studio-panel {
+    border: 1px solid var(--ui-studio-line);
+    border-radius: var(--ui-studio-radius);
+    background: var(--ui-studio-surface);
+  }
+  .ui-studio-panel h2 {
+    margin: 0;
+    font-size: 0.8125rem;
+  }
+  .ui-studio-json {
+    font:
+      0.75rem/1.6 ui-monospace,
+      monospace;
+    border: 1px solid var(--ui-studio-line);
+    border-radius: var(--ui-studio-radius);
+    background: var(--ui-studio-field-surface);
+    color: var(--ui-studio-ink);
+  }
+  .ui-studio-json summary {
+    cursor: pointer;
+    font-weight: 550;
+  }
+  .ui-studio-json-panel textarea {
+    font-family: ui-monospace, monospace;
+    tab-size: 2;
+  }
+  .ui-studio-status {
+    padding-inline-start: 0.625rem;
+    border-inline-start: 2px solid var(--ui-studio-line-strong);
+    color: var(--ui-studio-muted);
+    font-size: 0.75rem;
+  }
+  .ui-studio-issues {
+    padding: 0.75rem;
+    border: 1px solid var(--ui-studio-line-strong);
+    border-radius: var(--ui-studio-radius);
+    background: var(--ui-studio-surface);
+  }
+  .ui-studio-preview-empty {
+    border: 1px dashed var(--ui-studio-line);
+    border-radius: var(--ui-studio-radius);
+    color: var(--ui-studio-muted);
+    font-size: 0.8125rem;
+  }
+  .ui-studio-preview-frame {
+    border: 0;
+    outline: 1px solid var(--ui-studio-line);
+    background: var(--ui-studio-surface);
+  }
+  .ui-studio-catalog,
+  .ui-studio-publication,
+  .ui-studio-dependencies {
+    border-block-end: 1px solid var(--ui-studio-line);
+  }
+  .ui-studio-key-list {
+    list-style: none;
+  }
+  .ui-studio-key-list button {
+    background: transparent;
+    color: inherit;
+    border-color: transparent;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  .ui-studio-key-list button[aria-current='true'] {
+    background: var(--ui-studio-selection);
+    color: var(--ui-studio-ink);
+  }
+  .ui-studio-key-editor p,
+  .ui-studio-binding-field p {
+    color: var(--ui-studio-muted);
+    font-size: 0.75rem;
+  }
+}

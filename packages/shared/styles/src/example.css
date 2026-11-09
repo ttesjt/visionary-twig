@@ -1,0 +1,192 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+
+@layer ui-example {
+  :where(.example-page) {
+    inline-size: min(100%, var(--ui-layout-content-width, 68rem));
+    margin-inline: auto;
+    padding: var(--ui-layout-space-section, 3rem) var(--ui-layout-space-content, 1rem);
+  }
+  :where(.example-flow, .example-sections) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ui-layout-space-content, 1rem);
+  }
+  :where(.example-sections) {
+    gap: var(--ui-layout-space-section, 3rem);
+  }
+  :where(.example-controls) {
+    display: flex;
+    align-items: center;
+    gap: var(--ui-layout-space-content, 1rem);
+    flex-wrap: wrap;
+  }
+  @media (max-width: 40rem) {
+    :where(.example-controls) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+  :where(.example-layout-preview) {
+    padding: clamp(1rem, 4vw, 2rem);
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+  }
+  :where(.example-layout-preview h2, .example-layout-source) {
+    margin: 0;
+  }
+  :where(.example-layout-preview a) {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-surface);
+  }
+  :where(.example-layout-source pre) {
+    padding: var(--ui-layout-space-content, 1rem);
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-surface);
+  }
+  :where(.example-code) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  :where(.example-settings-panel) {
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    padding: var(--ui-layout-space-section, 3rem);
+  }
+  :where(.example-settings-panel[data-density='compact']) {
+    padding: var(--ui-layout-space-content, 1rem);
+  }
+  :where(.example-header) {
+    justify-content: space-between;
+  }
+  :where(.example-title) {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+  }
+  :where(.example-description) {
+    max-inline-size: 42rem;
+    color: var(--ui-color-muted);
+    font-size: 1.25rem;
+  }
+  :where(.example-theme-picker) {
+    display: flex;
+    align-items: center;
+    gap: var(--ui-layout-space-content, 1rem);
+  }
+  :where(.example-theme-picker select) {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-surface);
+    color: var(--ui-color-ink);
+  }
+}
+
+@layer ui-example {
+  :where(.example-boundary-stage) {
+    --example-boundary-panel-height: 65svh;
+    position: relative;
+  }
+  :where(.example-boundary-spacer) {
+    min-block-size: 65svh;
+    display: grid;
+    place-content: center;
+    color: var(--ui-color-muted);
+    text-align: center;
+    padding: var(--ui-layout-space-section, 3rem) var(--ui-layout-space-content, 1rem);
+  }
+  :where(.example-boundary-readout) {
+    position: sticky;
+    inset-block-start: var(--ui-layout-space-content, 1rem);
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ui-layout-space-content, 1rem);
+    min-block-size: var(--ui-layout-control-height, 2.75rem);
+    padding: var(--ui-layout-space-content, 1rem);
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-surface);
+    color: var(--ui-color-ink);
+  }
+  :where(.example-boundary-panel, .example-boundary-json > .ui-scroll-boundary) {
+    min-block-size: var(--example-boundary-panel-height);
+    border: 2px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-surface);
+  }
+  :where(.example-boundary-panel label) {
+    display: grid;
+    gap: 0.5rem;
+  }
+  :where(.example-boundary-stage .ui-scroll-boundary)[data-scroll-boundary-state='active']
+    > .example-boundary-panel,
+  :where(.example-boundary-json > .ui-scroll-boundary)[data-scroll-boundary-state='active'] {
+    border-color: var(--ui-color-ink);
+    box-shadow: 0 0 0 2px var(--ui-color-line);
+  }
+  :where(.example-boundary-json [data-state-label]) {
+    display: none;
+  }
+  :where(.example-boundary-json):has(> .ui-scroll-boundary[data-scroll-boundary-state='pending'])
+    [data-state-label='pending'] {
+    display: inline;
+  }
+  :where(.example-boundary-json):has(> .ui-scroll-boundary[data-scroll-boundary-state='before'])
+    [data-state-label='before'] {
+    display: inline;
+  }
+  :where(.example-boundary-json):has(> .ui-scroll-boundary[data-scroll-boundary-state='active'])
+    [data-state-label='active'] {
+    display: inline;
+  }
+  :where(.example-boundary-json):has(> .ui-scroll-boundary[data-scroll-boundary-state='after'])
+    [data-state-label='after'] {
+    display: inline;
+  }
+  :where(.example-boundary-json):has(> .ui-scroll-boundary[data-scroll-boundary-state='disabled'])
+    [data-state-label='disabled'] {
+    display: inline;
+  }
+}
+
+@layer ui-example {
+  :where(.example-boundary-spacer)[data-edge='after'] {
+    min-block-size: 110svh;
+  }
+  :where(.example-boundary-scrollport) {
+    block-size: min(36rem, 70svh);
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+  }
+}
+
+@layer ui-example {
+  :where(.ui-reading-study-document) {
+    inline-size: min(100%, 76rem);
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 3rem);
+    box-sizing: border-box;
+  }
+  :where(.ui-reading-study .ui-content-hero) {
+    padding-block: clamp(3rem, 7vw, 7rem);
+  }
+  :where(.ui-reading-study .ui-content-hero-media) {
+    max-block-size: 26rem;
+  }
+  :where(.ui-reading-study .ui-content-navigation-body > .ui-anchor) {
+    min-block-size: 75svh;
+    padding-block: clamp(2.5rem, 5vw, 5rem);
+    border-block-end: 1px solid var(--ui-color-line);
+  }
+  :where(.ui-reading-study .ui-content-hero-image) {
+    max-block-size: 26rem;
+    object-fit: contain;
+  }
+}

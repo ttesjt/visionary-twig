@@ -1,0 +1,107 @@
+/* Common controls are scoped to Studio; actual content and vendor widgets own their styles. */
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog) .ui-button,
+.ui-studio-button,
+.ui-studio-icon-button {
+  border: 1px solid var(--ui-studio-line-strong);
+  border-radius: var(--ui-studio-radius);
+  background: var(--ui-studio-surface);
+  color: var(--ui-studio-ink);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 550;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  /* Change the palette together; interpolating only the surface can hide its label. */
+  transition: border-color var(--ui-studio-motion);
+}
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog)
+  .ui-button:hover:not(:disabled),
+.ui-studio-button:hover:not(:disabled),
+.ui-studio-icon-button:hover:not(:disabled) {
+  background: var(--ui-studio-hover);
+  border-color: var(--ui-studio-line-strong);
+}
+.ui-studio-button[data-variant='primary'] {
+  background: var(--ui-studio-primary);
+  color: var(--ui-studio-on-primary);
+  border-color: var(--ui-studio-primary);
+}
+.ui-studio-button[data-variant='primary']:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ui-studio-primary) 90%, var(--ui-studio-surface));
+}
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog) .ui-button:disabled,
+.ui-studio-button:disabled {
+  background: var(--ui-studio-field-surface);
+  color: var(--ui-studio-muted);
+  border-color: var(--ui-studio-line);
+  cursor: not-allowed;
+}
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog) :focus-visible {
+  outline: 2px solid var(--ui-studio-focus);
+  outline-offset: 2px;
+}
+:where(
+    .ui-studio-field,
+    .ui-studio-header,
+    .ui-studio-catalog,
+    .ui-studio-json-panel,
+    .ui-studio-preview,
+    .ui-studio-publication
+  )
+  :is(input, select, textarea) {
+  border: 1px solid var(--ui-studio-line);
+  border-radius: var(--ui-studio-radius);
+  background: var(--ui-studio-field-surface);
+  color: var(--ui-studio-ink);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  transition: border-color var(--ui-studio-motion);
+}
+:where(
+    .ui-studio-field,
+    .ui-studio-header,
+    .ui-studio-catalog,
+    .ui-studio-json-panel,
+    .ui-studio-preview,
+    .ui-studio-publication
+  )
+  :is(input, select, textarea):hover:not(:disabled) {
+  border-color: var(--ui-studio-line-strong);
+}
+:where(
+    .ui-studio-field,
+    .ui-studio-header,
+    .ui-studio-catalog,
+    .ui-studio-json-panel,
+    .ui-studio-preview,
+    .ui-studio-publication
+  )
+  :is(input, select, textarea):focus-visible {
+  border-color: var(--ui-studio-focus);
+}
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog)
+  input::file-selector-button {
+  border: 1px solid var(--ui-studio-line-strong);
+  border-radius: var(--ui-studio-radius);
+  background: var(--ui-studio-surface);
+  color: var(--ui-studio-ink);
+  cursor: pointer;
+}
+:where(.ui-studio-shell, .ui-studio-workbench) .ui-dialog:not(.ui-studio-navigation-dialog) {
+  background: var(--ui-studio-surface);
+  border-color: var(--ui-studio-line-strong);
+  border-radius: var(--ui-studio-radius);
+  color: var(--ui-studio-ink);
+  font-size: 0.8125rem;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 16%);
+}
+:where(.ui-studio-shell, .ui-studio-workbench) .ui-dialog-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+:where(.ui-studio-shell, .ui-studio-workbench) .ui-dialog-description {
+  color: var(--ui-studio-muted);
+}

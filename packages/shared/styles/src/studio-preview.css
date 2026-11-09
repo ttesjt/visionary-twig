@@ -1,0 +1,7 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+@layer ui-components {
+  .ui-studio-preview-page {
+    color: var(--ui-color-ink);
+    background: var(--ui-color-canvas);
+  }
+}

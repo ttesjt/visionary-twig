@@ -1,0 +1,60 @@
+/* Scoped tool palette. Public pages keep the base theme roles. */
+:where(
+  .ui-studio-shell,
+  .ui-studio-workbench,
+  .ui-studio-navigation-dialog,
+  .ui-studio-standalone-nav
+) {
+  --ui-studio-radius: 0.3125rem;
+  --ui-studio-motion: 120ms;
+  --ui-studio-canvas: light-dark(#f7f7f8, #16171a);
+  --ui-studio-surface: light-dark(#ffffff, #1e2024);
+  --ui-studio-field-surface: light-dark(#fafafb, #24262b);
+  --ui-studio-soft: light-dark(#f2f2f4, #292c32);
+  --ui-studio-hover: light-dark(#f5f5f6, #2c3037);
+  /* Keep the host's public foreground role; tool surfaces have their own palette. */
+  --ui-studio-ink: var(--ui-color-ink);
+  --ui-studio-muted: light-dark(#686c76, #a1a7b2);
+  --ui-studio-line: light-dark(#e1e3e8, #363a43);
+  --ui-studio-line-strong: light-dark(#c8cbd3, #505763);
+  --ui-studio-focus: light-dark(#5968b5, #a7b5ff);
+  --ui-studio-selection: light-dark(#eef0fb, #30364c);
+  --ui-studio-primary: light-dark(#292b31, #e3e6ed);
+  --ui-studio-on-primary: light-dark(#ffffff, #202228);
+  color: var(--ui-studio-ink);
+  font-family: var(--ui-font-body);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    .ui-studio-shell,
+    .ui-studio-workbench,
+    .ui-studio-navigation-dialog,
+    .ui-studio-standalone-nav
+  ) {
+    --ui-studio-motion: 0ms;
+  }
+}
+@media (forced-colors: active) {
+  :where(
+    .ui-studio-shell,
+    .ui-studio-workbench,
+    .ui-studio-navigation-dialog,
+    .ui-studio-standalone-nav
+  ) {
+    --ui-studio-canvas: Canvas;
+    --ui-studio-surface: Canvas;
+    --ui-studio-field-surface: Field;
+    --ui-studio-soft: Canvas;
+    --ui-studio-hover: Canvas;
+    --ui-studio-ink: CanvasText;
+    --ui-studio-muted: CanvasText;
+    --ui-studio-line: ButtonBorder;
+    --ui-studio-line-strong: ButtonBorder;
+    --ui-studio-focus: Highlight;
+    --ui-studio-selection: Canvas;
+    --ui-studio-primary: ButtonFace;
+    --ui-studio-on-primary: ButtonText;
+  }
+}

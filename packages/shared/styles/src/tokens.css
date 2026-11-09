@@ -1,0 +1,55 @@
+:where(:root) {
+  --ui-font-body: ui-sans-serif, system-ui, sans-serif;
+  --ui-radius-control: 0.5rem;
+  --ui-motion-fast: 120ms;
+}
+:where(:root, [data-theme='light'], [data-theme='system']) {
+  color-scheme: light;
+  --ui-color-canvas: #fafafa;
+  --ui-color-surface: #ffffff;
+  --ui-color-surface-raised: #ffffff;
+  --ui-color-backdrop: rgb(0 0 0 / 55%);
+  --ui-color-ink: #171717;
+  --ui-color-muted: #666666;
+  --ui-color-line: #d4d4d4;
+  --ui-color-accent: #171717;
+  --ui-color-accent-hover: #333333;
+  --ui-color-accent-active: #4a4a4a;
+  --ui-color-on-accent: #ffffff;
+  --ui-color-focus: #737373;
+  --ui-color-selection: #e5e5e5;
+}
+:where([data-theme='dark']) {
+  color-scheme: dark;
+  --ui-color-canvas: #111111;
+  --ui-color-surface: #1a1a1a;
+  --ui-color-surface-raised: #222222;
+  --ui-color-backdrop: rgb(0 0 0 / 70%);
+  --ui-color-ink: #f5f5f5;
+  --ui-color-muted: #aaaaaa;
+  --ui-color-line: #404040;
+  --ui-color-accent: #f5f5f5;
+  --ui-color-accent-hover: #dddddd;
+  --ui-color-accent-active: #cccccc;
+  --ui-color-on-accent: #171717;
+  --ui-color-focus: #aaaaaa;
+  --ui-color-selection: #404040;
+}
+@media (prefers-color-scheme: dark) {
+  :where(:root:not([data-theme]), [data-theme='system']) {
+    color-scheme: dark;
+    --ui-color-canvas: #111111;
+    --ui-color-surface: #1a1a1a;
+    --ui-color-surface-raised: #222222;
+    --ui-color-backdrop: rgb(0 0 0 / 70%);
+    --ui-color-ink: #f5f5f5;
+    --ui-color-muted: #aaaaaa;
+    --ui-color-line: #404040;
+    --ui-color-accent: #f5f5f5;
+    --ui-color-accent-hover: #dddddd;
+    --ui-color-accent-active: #cccccc;
+    --ui-color-on-accent: #171717;
+    --ui-color-focus: #aaaaaa;
+    --ui-color-selection: #404040;
+  }
+}

@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: var(--ui-font-body);
+  line-height: 1.6;
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-ink);
+}
+button,
+select {
+  font: inherit;
+}
+h1,
+p {
+  margin: 0;
+}
+a {
+  color: var(--ui-color-accent);
+  text-underline-offset: 0.2em;
+}
+:focus-visible {
+  outline: 2px solid var(--ui-color-focus);
+  outline-offset: 3px;
+}
+::selection {
+  background: var(--ui-color-selection);
+  color: var(--ui-color-ink);
+}

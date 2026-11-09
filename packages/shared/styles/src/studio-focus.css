@@ -1,0 +1,31 @@
+.ui-studio-focus-toolbar {
+  border-block-end: 1px solid var(--ui-studio-line);
+  background: var(--ui-studio-surface);
+}
+.ui-studio-focus-toolbar h1 {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 550;
+}
+.ui-studio-json-source-input {
+  font:
+    0.8125rem/1.65 ui-monospace,
+    monospace;
+  border: 1px solid var(--ui-studio-line);
+  border-radius: var(--ui-studio-radius);
+  background: var(--ui-studio-field-surface);
+  color: var(--ui-studio-ink);
+}
+.ui-studio-json-source > p {
+  font-size: 0.75rem;
+  color: var(--ui-studio-muted);
+}
+.ui-studio-viewer-actions > a:last-child {
+  margin-inline-start: auto;
+  color: var(--ui-studio-muted);
+  font-size: 0.75rem;
+}
+.ui-studio-viewer .ui-studio-preview h2 {
+  margin: 0;
+  font-size: 0.8125rem;
+}

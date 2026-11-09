@@ -1,0 +1,35 @@
+{
+  "name": "@frontend/styles",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Optional global visual tokens, themes and semantic component styles",
+  "exports": {
+    "./default.css": "./src/default.css",
+    "./tokens.css": "./src/tokens.css",
+    "./base.css": "./src/base.css",
+    "./components.css": "./src/components.css",
+    "./example.css": "./src/example.css",
+    "./content-blocks.css": "./src/content-blocks.css",
+    "./puck-editor.css": "./src/puck-editor.css",
+    "./studio.css": "./src/studio.css",
+    "./studio-preview.css": "./src/studio-preview.css",
+    "./studio-shell.css": "./src/studio-shell.css",
+    "./content-discovery.css": "./src/content-discovery.css",
+    "./navigation-parts.css": "./src/navigation-parts.css"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "workspaceKind": "styles"
+}

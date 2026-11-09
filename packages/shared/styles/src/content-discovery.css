@@ -1,0 +1,72 @@
+@import './navigation-parts.css';
+@layer ui-components {
+  :where(.ui-content-navigation-origin) {
+    border-color: var(--ui-color-line);
+  }
+  :where(.ui-content-navigation-links) {
+    color: var(--ui-color-ink);
+    font-size: 0.75rem;
+  }
+  :where(.ui-content-navigation-identity) {
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  :where(.ui-content-navigation-links[data-presentation='inline'] .ui-content-navigation-identity) {
+    color: var(--ui-color-muted);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  :where(.ui-content-navigation-links a) {
+    color: var(--ui-color-muted);
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition:
+      color 160ms ease,
+      background-color 160ms ease;
+  }
+  :where(.ui-content-navigation-links a:hover) {
+    color: var(--ui-color-ink);
+    background: var(--ui-color-surface-raised);
+  }
+  :where(.ui-content-navigation-links a[aria-current='location']) {
+    color: var(--ui-color-ink);
+  }
+  :where(.ui-content-navigation-links a[aria-current='location'])::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0.625rem;
+    inset-block-end: 0.125rem;
+    block-size: 1px;
+    background: currentColor;
+  }
+  :where(.ui-content-navigation-index, .ui-content-navigation-count) {
+    color: var(--ui-color-muted);
+    font-size: 0.625rem;
+    font-variant-numeric: tabular-nums;
+  }
+  :where(.ui-content-navigation-links a:focus-visible) {
+    outline: 2px solid var(--ui-color-focus);
+    outline-offset: -2px;
+  }
+  :where(.ui-content-reading-progress),
+  :where(.ui-content-reading-progress)::-webkit-progress-bar {
+    background: var(--ui-color-line);
+  }
+  :where(.ui-content-reading-progress) {
+    color: var(--ui-color-ink);
+  }
+  :where(.ui-content-reading-progress)::-webkit-progress-value {
+    background: var(--ui-color-ink);
+    transition: width 100ms linear;
+  }
+  :where(.ui-content-reading-progress)::-moz-progress-bar {
+    background: var(--ui-color-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(.ui-content-reading-progress)::-webkit-progress-value,
+    :where(.ui-content-navigation-links a) {
+      transition: none;
+    }
+  }
+}

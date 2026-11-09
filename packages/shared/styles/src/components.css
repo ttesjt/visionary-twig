@@ -1,0 +1,136 @@
+:where(.ui-button) {
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-control);
+  background: var(--ui-color-accent);
+  color: var(--ui-color-on-accent);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--ui-motion-fast);
+}
+@media (hover: hover) {
+  :where(.ui-button:not(:disabled):hover) {
+    background: var(--ui-color-accent-hover);
+  }
+}
+:where(.ui-button:disabled) {
+  color: var(--ui-color-muted);
+  background: var(--ui-color-surface);
+  border-color: var(--ui-color-line);
+  cursor: not-allowed;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui-button) {
+    transition: none;
+  }
+}
+
+:where(.ui-button:not(:disabled):active) {
+  background: var(--ui-color-accent-active);
+}
+:where(.ui-button)[data-pending='true'] {
+  cursor: progress;
+}
+:where(.ui-dialog) {
+  color: var(--ui-color-ink);
+  background: var(--ui-color-surface-raised);
+  border: 1px solid var(--ui-color-line);
+  border-radius: var(--ui-radius-control);
+}
+:where(.ui-dialog)::backdrop {
+  background: var(--ui-color-backdrop);
+}
+:where(.ui-dialog-description) {
+  color: var(--ui-color-muted);
+}
+
+:where(.ui-icon-button) {
+  color: var(--ui-color-ink);
+  background: var(--ui-color-surface);
+  border: 1px solid var(--ui-color-line);
+  border-radius: var(--ui-radius-control);
+  cursor: pointer;
+}
+:where(.ui-icon-button:focus-visible) {
+  outline: 2px solid var(--ui-color-focus);
+  outline-offset: -2px;
+}
+
+:where(.ui-theme-switcher) {
+  --ui-theme-switcher-duration: 240ms;
+  --ui-theme-switcher-easing: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --ui-theme-switcher-shift: -0.5rem;
+}
+:where(.ui-theme-switcher-button) {
+  border: 1px solid var(--ui-color-line);
+  border-radius: 50%;
+  color: var(--ui-color-ink);
+  background: var(--ui-color-surface-raised);
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 5%);
+  /* Palette colors change together; interpolating only the surface can hide the icon. */
+  transition: border-color var(--ui-theme-switcher-duration);
+}
+:where(.ui-theme-switcher-button:hover, .ui-theme-switcher-button:focus-visible) {
+  background: var(--ui-color-surface);
+  border-color: var(--ui-color-muted);
+}
+:where(.ui-theme-switcher-button:disabled) {
+  cursor: default;
+}
+:where(.ui-theme-switcher-options) {
+  opacity: 0;
+  transform: translateY(var(--ui-theme-switcher-shift)) scale(0.94);
+  transform-origin: top center;
+  transition:
+    opacity var(--ui-theme-switcher-duration) var(--ui-theme-switcher-easing),
+    transform var(--ui-theme-switcher-duration) var(--ui-theme-switcher-easing),
+    visibility 0s linear var(--ui-theme-switcher-duration);
+}
+:where(.ui-theme-switcher[data-direction='up'] .ui-theme-switcher-options) {
+  transform: translateY(calc(-1 * var(--ui-theme-switcher-shift))) scale(0.94);
+  transform-origin: bottom center;
+}
+:where(.ui-theme-switcher[data-direction='left'] .ui-theme-switcher-options) {
+  transform: translateX(calc(-1 * var(--ui-theme-switcher-shift))) scale(0.94);
+  transform-origin: right center;
+}
+:where(.ui-theme-switcher[data-direction='right'] .ui-theme-switcher-options) {
+  transform: translateX(var(--ui-theme-switcher-shift)) scale(0.94);
+  transform-origin: left center;
+}
+:where(.ui-theme-switcher[data-open='true'] .ui-theme-switcher-options) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0s;
+  visibility: visible;
+}
+:where(.ui-theme-switcher-symbol) {
+  animation: ui-theme-symbol-enter var(--ui-theme-switcher-duration) var(--ui-theme-switcher-easing);
+}
+@keyframes ui-theme-symbol-enter {
+  from {
+    opacity: 0;
+    transform: rotate(-25deg) scale(0.75);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui-theme-switcher) {
+    --ui-theme-switcher-duration: 0ms;
+  }
+}
+
+:where(.ui-page-status h1) {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+:where(.ui-page-status-description, .ui-page-status-reference) {
+  color: var(--ui-color-muted);
+}
+:where(.ui-page-status-reference) {
+  font-size: 0.875rem;
+}

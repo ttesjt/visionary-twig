@@ -1,0 +1,27 @@
+.ui-studio-note-preview {
+  background: var(--ui-studio-field-surface);
+}
+.ui-studio-note-preview h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.ui-studio-note-preview p {
+  white-space: pre-wrap;
+}
+.ui-studio-guide-list strong {
+  font-weight: 600;
+}
+.ui-studio-guide-list p {
+  color: var(--ui-studio-muted);
+}
+.ui-studio-code {
+  border-radius: var(--ui-studio-radius);
+  border: 1px solid var(--ui-studio-line);
+  background: var(--ui-studio-field-surface);
+  font:
+    0.75rem/1.6 ui-monospace,
+    monospace;
+}

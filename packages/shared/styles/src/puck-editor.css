@@ -1,0 +1,72 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+
+@layer ui-components {
+  :where(.ui-content-editor) {
+    /* Puck supplies its own light palette by default, even inside a dark host. */
+    --puck-color-surface: var(--ui-studio-surface, var(--ui-color-surface));
+    --puck-color-surface-muted: var(--ui-studio-soft, var(--ui-color-canvas));
+    --puck-color-surface-subtle: var(--ui-studio-canvas, var(--ui-color-surface-raised));
+    --puck-color-surface-inverse: var(--ui-color-ink);
+    --puck-color-border: var(--ui-studio-line, var(--ui-color-line));
+    --puck-color-border-muted: var(--puck-color-border);
+    --puck-color-border-hover: var(--ui-studio-line-strong, var(--ui-color-muted));
+    --puck-color-border-inverse: var(--puck-color-border-hover);
+    --puck-color-text: var(--ui-color-ink);
+    --puck-color-text-secondary: var(--ui-studio-muted, var(--ui-color-muted));
+    --puck-color-text-muted: var(--puck-color-text-secondary);
+    --puck-color-text-subtle: var(--puck-color-text-secondary);
+    --puck-color-text-inverse: var(--ui-color-surface);
+    --puck-color-bg-disabled: var(--puck-color-surface-muted);
+    --puck-color-text-disabled: var(--puck-color-text-muted);
+    --puck-color-interactive: light-dark(var(--puck-color-azure-04), var(--puck-color-azure-08));
+    --puck-color-interactive-hover: light-dark(
+      var(--puck-color-azure-03),
+      var(--puck-color-azure-09)
+    );
+    --puck-color-interactive-active: light-dark(
+      var(--puck-color-azure-02),
+      var(--puck-color-azure-10)
+    );
+    --puck-color-interactive-subtle: color-mix(
+      in srgb,
+      var(--puck-color-interactive) 14%,
+      var(--puck-color-surface)
+    );
+    --puck-color-interactive-soft: color-mix(
+      in srgb,
+      var(--puck-color-interactive) 8%,
+      var(--puck-color-surface)
+    );
+    --puck-color-interactive-soft-hover: var(--puck-color-interactive-subtle);
+    --puck-color-interactive-neutral-hover: var(--ui-studio-hover, var(--ui-color-selection));
+    --puck-color-interactive-inverse-hover: light-dark(
+      var(--puck-color-azure-08),
+      var(--puck-color-azure-03)
+    );
+    --puck-color-interactive-inverse-active: light-dark(
+      var(--puck-color-azure-09),
+      var(--puck-color-azure-02)
+    );
+    --puck-color-focus-ring: var(--ui-studio-focus, var(--ui-color-focus));
+    --puck-color-selection-border: var(--puck-color-focus-ring);
+    --puck-color-selection-bg: color-mix(in srgb, var(--puck-color-focus-ring) 14%, transparent);
+    --puck-button-primary-color-text: light-dark(
+      var(--puck-color-white),
+      var(--puck-color-azure-01)
+    );
+
+    /* The editable page uses the document surface, including behind plain blocks. */
+    --puck-canvas-preview-color-bg: var(--ui-color-surface);
+
+    /* Puck 0.23 falls back to an undefined text-primary token in its outline. */
+    --puck-outline-color-text: var(--puck-color-text);
+  }
+  :where(.ui-puck-field input, .ui-puck-field textarea, .ui-puck-field select) {
+    color: var(--ui-color-ink);
+    background: var(--ui-color-surface);
+    border: 1px solid var(--ui-color-line);
+  }
+  :where(.ui-puck-field textarea) {
+    font-family: monospace;
+  }
+}

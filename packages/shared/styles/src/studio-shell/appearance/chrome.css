@@ -1,0 +1,117 @@
+/* Optional, neutral tool chrome. Hosts can replace these public hooks. */
+.ui-studio-shell {
+  background: var(--ui-studio-canvas);
+}
+.ui-studio-sidebar {
+  background: var(--ui-studio-surface);
+  border-inline-end: 1px solid var(--ui-studio-line);
+}
+.ui-studio-brand {
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+.ui-studio-brand-mark {
+  border-radius: var(--ui-studio-radius);
+  color: var(--ui-studio-ink);
+  background: var(--ui-studio-soft);
+}
+.ui-studio-brand-mark .ui-studio-symbol {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+}
+.ui-studio-workspace-identity {
+  border: 1px solid var(--ui-studio-line);
+  border-radius: var(--ui-studio-radius);
+  font-size: 0.75rem;
+  font-weight: 550;
+  background: var(--ui-studio-surface);
+}
+.ui-studio-workspace-avatar {
+  border-radius: 0.1875rem;
+  background: var(--ui-studio-soft);
+  color: var(--ui-studio-muted);
+  font-size: 0.6875rem;
+}
+.ui-studio-eyebrow {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ui-studio-muted);
+}
+.ui-studio-navigation-group a {
+  text-decoration: none;
+  color: var(--ui-studio-muted);
+  font-size: 0.75rem;
+  border-radius: var(--ui-studio-radius);
+  transition: border-color var(--ui-studio-motion);
+}
+.ui-studio-navigation-group a:hover {
+  color: var(--ui-studio-ink);
+  background: var(--ui-studio-hover);
+}
+.ui-studio-navigation-group a[aria-current='page'] {
+  background: var(--ui-studio-soft);
+  color: var(--ui-studio-ink);
+  font-weight: 600;
+}
+.ui-studio-active-mark {
+  border-radius: 50%;
+  background: currentColor;
+}
+.ui-studio-sidebar-footer {
+  color: var(--ui-studio-muted);
+  font-size: 0.6875rem;
+  border-block-start: 1px solid var(--ui-studio-line);
+}
+.ui-studio-environment {
+  font-size: 0.6875rem;
+}
+.ui-studio-environment > span {
+  border-radius: 50%;
+  background: currentColor;
+}
+.ui-studio-topbar {
+  border-block-end: 1px solid var(--ui-studio-line);
+  background: var(--ui-studio-surface);
+}
+.ui-studio-breadcrumb {
+  font-size: 0.75rem;
+  color: var(--ui-studio-muted);
+}
+.ui-studio-breadcrumb > span:last-child {
+  color: var(--ui-studio-ink);
+  font-weight: 550;
+}
+.ui-studio-appearance-switcher .ui-theme-switcher-button {
+  border: 1px solid var(--ui-studio-line);
+  border-radius: var(--ui-studio-radius);
+  background: var(--ui-studio-surface);
+  color: var(--ui-studio-ink);
+  box-shadow: none;
+}
+.ui-studio-appearance-switcher .ui-theme-switcher-trigger {
+  border-color: transparent;
+}
+.ui-studio-appearance-switcher .ui-theme-switcher-button:hover {
+  background: var(--ui-studio-hover);
+}
+.ui-studio-page-heading h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+.ui-studio-page-heading > p:last-child:not(.ui-studio-eyebrow) {
+  color: var(--ui-studio-muted);
+  font-size: 0.75rem;
+}
+.ui-studio-main:focus {
+  outline: none;
+}
+.ui-studio-skip {
+  background: var(--ui-studio-primary);
+  color: var(--ui-studio-on-primary);
+  border-radius: var(--ui-studio-radius);
+}

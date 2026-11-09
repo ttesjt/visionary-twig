@@ -1,0 +1,311 @@
+@layer ui-components {
+  :where(.ui-navigation-part-appearance) {
+    --ui-navigation-color: inherit;
+    --ui-navigation-background: transparent;
+    --ui-navigation-border-color: var(--ui-color-line, currentColor);
+    border: 0 solid var(--ui-navigation-border-color);
+    color: var(--ui-navigation-color);
+    background: var(--ui-navigation-background);
+    font: inherit;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    transition:
+      color 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+  :where(.ui-navigation-part-appearance[data-border-width='thin']) {
+    border-width: 1px;
+  }
+  :where(.ui-navigation-part-appearance[data-border-width='thick']) {
+    border-width: 2px;
+  }
+  :where(.ui-navigation-part-appearance[data-radius='soft']) {
+    border-radius: var(--ui-navigation-radius, 0.625rem);
+  }
+  :where(.ui-navigation-part-appearance[data-radius='pill']) {
+    border-radius: 999px;
+  }
+  :where(.ui-navigation-part-appearance[data-underline='true']) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.4em;
+  }
+  :where(.ui-navigation-part-appearance[data-font='mono']) {
+    font-family: var(--ui-navigation-font-mono, ui-monospace, SFMono-Regular, Consolas, monospace);
+    letter-spacing: -0.025em;
+  }
+  :where(.ui-navigation-part-appearance[data-font='serif']) {
+    font-family: var(--ui-navigation-font-serif, Georgia, serif);
+  }
+  :where(.ui-navigation-part-appearance[data-weight='regular']) {
+    font-weight: 400;
+  }
+  :where(.ui-navigation-part-appearance[data-weight='semibold']) {
+    font-weight: 650;
+  }
+  :where(.ui-navigation-part-index) {
+    opacity: 0.6;
+    font-size: 0.8em;
+    font-variant-numeric: tabular-nums;
+  }
+  :where(.ui-navigation-part-progress) {
+    --ui-navigation-color: var(--ui-color-ink, currentColor);
+    --ui-navigation-track: var(--ui-color-line, currentColor);
+    color: var(--ui-navigation-color);
+  }
+  :where(.ui-navigation-progress-track) {
+    fill: var(--ui-navigation-track);
+  }
+  :where(.ui-navigation-progress-fill) {
+    fill: var(--ui-navigation-color);
+  }
+  :where(.ui-navigation-progress-tick) {
+    stroke: var(--ui-color-surface, Canvas);
+    stroke-width: 1px;
+  }
+  :where(.ui-navigation-progress-checkpoint) {
+    fill: var(--ui-color-surface, Canvas);
+    stroke: var(--ui-navigation-track);
+  }
+  :where(.ui-navigation-progress-checkpoint[data-current='true']) {
+    fill: var(--ui-navigation-color);
+    stroke: var(--ui-navigation-color);
+  }
+  :where(.ui-content-navigation-links) a:has(.ui-navigation-part-item) {
+    background: transparent;
+  }
+  :where(.ui-content-navigation-links) a:has(.ui-navigation-part-item)::after {
+    content: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(.ui-navigation-part-appearance) {
+      transition: none;
+    }
+  }
+}
+@layer ui-components {
+  :where(
+    .ui-navigation-part-appearance[data-color='inherit'],
+    .ui-navigation-part-progress[data-color='inherit']
+  ) {
+    --ui-navigation-color: inherit;
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='ink'],
+    .ui-navigation-part-progress[data-color='ink']
+  ) {
+    --ui-navigation-color: var(--ui-color-ink, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='muted'],
+    .ui-navigation-part-progress[data-color='muted']
+  ) {
+    --ui-navigation-color: var(--ui-color-muted, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='surface'],
+    .ui-navigation-part-progress[data-color='surface']
+  ) {
+    --ui-navigation-color: var(--ui-color-surface, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='raised'],
+    .ui-navigation-part-progress[data-color='raised']
+  ) {
+    --ui-navigation-color: var(--ui-color-surface-raised, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='line'],
+    .ui-navigation-part-progress[data-color='line']
+  ) {
+    --ui-navigation-color: var(--ui-color-line, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='accent'],
+    .ui-navigation-part-progress[data-color='accent']
+  ) {
+    --ui-navigation-color: var(--ui-navigation-accent, var(--ui-color-ink, currentColor));
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='accent-soft'],
+    .ui-navigation-part-progress[data-color='accent-soft']
+  ) {
+    --ui-navigation-color: var(--ui-navigation-accent-soft, var(--ui-color-surface-raised, Canvas));
+  }
+  :where(
+    .ui-navigation-part-appearance[data-color='transparent'],
+    .ui-navigation-part-progress[data-color='transparent']
+  ) {
+    --ui-navigation-color: transparent;
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='inherit'],
+    .ui-navigation-part-progress[data-background='inherit']
+  ) {
+    --ui-navigation-background: inherit;
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='ink'],
+    .ui-navigation-part-progress[data-background='ink']
+  ) {
+    --ui-navigation-background: var(--ui-color-ink, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='muted'],
+    .ui-navigation-part-progress[data-background='muted']
+  ) {
+    --ui-navigation-background: var(--ui-color-muted, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='surface'],
+    .ui-navigation-part-progress[data-background='surface']
+  ) {
+    --ui-navigation-background: var(--ui-color-surface, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='raised'],
+    .ui-navigation-part-progress[data-background='raised']
+  ) {
+    --ui-navigation-background: var(--ui-color-surface-raised, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='line'],
+    .ui-navigation-part-progress[data-background='line']
+  ) {
+    --ui-navigation-background: var(--ui-color-line, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='accent'],
+    .ui-navigation-part-progress[data-background='accent']
+  ) {
+    --ui-navigation-background: var(--ui-navigation-accent, var(--ui-color-ink, currentColor));
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='accent-soft'],
+    .ui-navigation-part-progress[data-background='accent-soft']
+  ) {
+    --ui-navigation-background: var(
+      --ui-navigation-accent-soft,
+      var(--ui-color-surface-raised, Canvas)
+    );
+  }
+  :where(
+    .ui-navigation-part-appearance[data-background='transparent'],
+    .ui-navigation-part-progress[data-background='transparent']
+  ) {
+    --ui-navigation-background: transparent;
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='inherit'],
+    .ui-navigation-part-progress[data-border-color='inherit']
+  ) {
+    --ui-navigation-border-color: inherit;
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='ink'],
+    .ui-navigation-part-progress[data-border-color='ink']
+  ) {
+    --ui-navigation-border-color: var(--ui-color-ink, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='muted'],
+    .ui-navigation-part-progress[data-border-color='muted']
+  ) {
+    --ui-navigation-border-color: var(--ui-color-muted, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='surface'],
+    .ui-navigation-part-progress[data-border-color='surface']
+  ) {
+    --ui-navigation-border-color: var(--ui-color-surface, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='raised'],
+    .ui-navigation-part-progress[data-border-color='raised']
+  ) {
+    --ui-navigation-border-color: var(--ui-color-surface-raised, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='line'],
+    .ui-navigation-part-progress[data-border-color='line']
+  ) {
+    --ui-navigation-border-color: var(--ui-color-line, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='accent'],
+    .ui-navigation-part-progress[data-border-color='accent']
+  ) {
+    --ui-navigation-border-color: var(--ui-navigation-accent, var(--ui-color-ink, currentColor));
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='accent-soft'],
+    .ui-navigation-part-progress[data-border-color='accent-soft']
+  ) {
+    --ui-navigation-border-color: var(
+      --ui-navigation-accent-soft,
+      var(--ui-color-surface-raised, Canvas)
+    );
+  }
+  :where(
+    .ui-navigation-part-appearance[data-border-color='transparent'],
+    .ui-navigation-part-progress[data-border-color='transparent']
+  ) {
+    --ui-navigation-border-color: transparent;
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='inherit'],
+    .ui-navigation-part-progress[data-track='inherit']
+  ) {
+    --ui-navigation-track: inherit;
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='ink'],
+    .ui-navigation-part-progress[data-track='ink']
+  ) {
+    --ui-navigation-track: var(--ui-color-ink, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='muted'],
+    .ui-navigation-part-progress[data-track='muted']
+  ) {
+    --ui-navigation-track: var(--ui-color-muted, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='surface'],
+    .ui-navigation-part-progress[data-track='surface']
+  ) {
+    --ui-navigation-track: var(--ui-color-surface, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='raised'],
+    .ui-navigation-part-progress[data-track='raised']
+  ) {
+    --ui-navigation-track: var(--ui-color-surface-raised, Canvas);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='line'],
+    .ui-navigation-part-progress[data-track='line']
+  ) {
+    --ui-navigation-track: var(--ui-color-line, currentColor);
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='accent'],
+    .ui-navigation-part-progress[data-track='accent']
+  ) {
+    --ui-navigation-track: var(--ui-navigation-accent, var(--ui-color-ink, currentColor));
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='accent-soft'],
+    .ui-navigation-part-progress[data-track='accent-soft']
+  ) {
+    --ui-navigation-track: var(--ui-navigation-accent-soft, var(--ui-color-surface-raised, Canvas));
+  }
+  :where(
+    .ui-navigation-part-appearance[data-track='transparent'],
+    .ui-navigation-part-progress[data-track='transparent']
+  ) {
+    --ui-navigation-track: transparent;
+  }
+}
