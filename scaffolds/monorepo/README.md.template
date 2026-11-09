@@ -27,7 +27,7 @@ preserve existing apps/packages and create one separate commit per added app.
 
 ## Own the project
 
-- Edit pages in apps/<name>/src/app and starter declarations in src/site.
+- Edit pages in `apps/<name>`/src/app and starter declarations in src/site.
 - Edit tracked resource defaults or use the app's ignored .local overrides; then
   prepare explicitly with pnpm app:prepare --app <name>.
 - Starter mechanisms live in src/infra. You may replace them when needed.
@@ -35,6 +35,7 @@ preserve existing apps/packages and create one separate commit per added app.
   packages/adapters contain optional domain and service/runtime implementations.
 - Each app README explains its examples and which example routes can be removed.
 
+Start with the [task-based documentation index](docs/README.md).
 See [commands](docs/commands.md), [development](docs/development.md),
 [architecture](docs/architecture.md), [package conventions](docs/package-conventions.md),
 [code standards](docs/code-standards.md), [monorepo standards](docs/monorepo-standards.md)

@@ -5,6 +5,9 @@ apps own runnable hosts, actual content and external integrations. Shared packag
 own neutral capabilities; site packages own domain behavior; adapters implement
 neutral interfaces. Shared/site packages must not depend on concrete adapters.
 
+Use docs/README.md to find the task owner. Follow docs/documentation-standards.md
+when writing or moving guides.
+
 Read docs/code-standards.md for portable TypeScript/frontend requirements,
 docs/monorepo-standards.md for package collaboration and pnpm integration,
 docs/repository-conventions.md for paths, supported workspace kinds and check

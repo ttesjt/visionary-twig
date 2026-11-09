@@ -84,7 +84,9 @@
     "docs/common/content-runtime.md": "docs/content-runtime.md",
     "scaffolds/monorepo/docs/development.md": "docs/development.md",
     "scaffolds/monorepo/docs/architecture.md": "docs/architecture.md",
-    "scaffolds/monorepo/docs/data-sources.md": "docs/data-sources.md"
+    "scaffolds/monorepo/docs/data-sources.md": "docs/data-sources.md",
+    "docs/common/documentation-standards.md": "docs/documentation-standards.md",
+    "scaffolds/monorepo/docs/README.md": "docs/README.md"
   },
   "configurations": {
     "scaffolds/monorepo/eslint.config.js": "eslint.config.js"

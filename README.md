@@ -62,6 +62,11 @@ are responsible for choosing and connecting concrete implementations.
 
 ## Maintained contracts
 
+Start with the [task-based documentation index](docs/README.md). Contributors follow
+[the source workflow](docs/template-repository/contributing.md),
+[verification guidance](docs/template-repository/verification.md) and
+[documentation standards](docs/common/documentation-standards.md).
+
 - [Template contract and generation](packages/templates/README.md)
 - [Workspace commands](docs/template-repository/commands.md) and [development ports](docs/template-repository/development.md)
 - [Architecture](docs/template-repository/architecture.md) and [package conventions](docs/template-repository/package-conventions.md)

@@ -22,12 +22,13 @@ test('bare delivery has complete target guides, preserves common standards and c
     readFileSync(path.join(target, 'LICENSE'), 'utf8'),
     readFileSync(path.join(source, 'LICENSE'), 'utf8')
   );
-  for (const file of ['code-standards.md', 'monorepo-standards.md'])
+  for (const file of ['code-standards.md', 'monorepo-standards.md', 'documentation-standards.md'])
     assert.equal(
       readFileSync(path.join(target, 'docs', file), 'utf8'),
       readFileSync(path.join(source, 'docs/common', file), 'utf8')
     );
   for (const file of [
+    'README.md',
     'commands.md',
     'development.md',
     'architecture.md',
