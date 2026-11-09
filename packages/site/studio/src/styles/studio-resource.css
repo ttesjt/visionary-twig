@@ -1,0 +1,98 @@
+/* Resource management remains compact; hidden tab panels stay mounted to preserve drafts. */
+.ui-studio-resource-context {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ui-studio-space-control);
+  min-inline-size: 0;
+}
+.ui-studio-resource-context .ui-studio-subnavigation {
+  flex: 1;
+}
+.ui-studio-resource-context .ui-studio-inline-help {
+  padding-block: 0.5rem;
+  max-inline-size: 30rem;
+}
+.ui-studio-resource-manager {
+  min-inline-size: 0;
+}
+.ui-studio-resource-toolbar {
+  display: grid;
+  grid-template-columns: auto minmax(8rem, 1fr) auto;
+  align-items: center;
+  gap: var(--ui-studio-space-control);
+  padding: var(--ui-studio-space-control);
+  min-inline-size: 0;
+}
+.ui-studio-resource-name {
+  min-inline-size: 0;
+}
+.ui-studio-resource-actions {
+  flex-wrap: nowrap;
+}
+.ui-studio-resource-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem var(--ui-studio-space-content);
+  padding: 0.375rem var(--ui-studio-space-content);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.ui-studio-resource-status .ui-studio-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem var(--ui-studio-space-content);
+  padding: 0;
+}
+.ui-studio-resource-status p {
+  margin: 0;
+}
+.ui-studio-resource-tabs > .ui-content-tablist:not([hidden]) {
+  gap: var(--ui-studio-space-control);
+  padding-inline: var(--ui-studio-space-control);
+}
+.ui-studio-resource-tabs .ui-content-tab {
+  min-block-size: var(--ui-studio-control-height);
+  padding: 0.375rem 0.5rem;
+}
+.ui-studio-resource-panel:not([hidden]) {
+  display: block;
+  padding: var(--ui-studio-space-content);
+  max-block-size: var(--ui-studio-resource-panel-max-height);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.ui-studio-resource-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--ui-studio-space-tight) var(--ui-studio-space-content);
+}
+.ui-studio-resource-overview > p:last-child {
+  grid-column: 1 / -1;
+}
+.ui-studio-resource-panel .ui-studio-catalog {
+  padding: 0;
+  border: 0;
+}
+.ui-studio-binding {
+  gap: var(--ui-studio-space-control);
+}
+.ui-studio-inline-help > p {
+  margin-block-start: var(--ui-studio-space-control);
+}
+@media (max-width: 50rem) {
+  .ui-studio-resource-toolbar {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .ui-studio-resource-actions {
+    grid-column: 1 / -1;
+    justify-content: end;
+  }
+  .ui-studio-resource-overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

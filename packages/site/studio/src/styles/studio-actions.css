@@ -1,0 +1,6 @@
+.ui-studio-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--ui-studio-space-control, 0.5rem);
+}

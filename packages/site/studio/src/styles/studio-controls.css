@@ -1,0 +1,76 @@
+/* Host controls only. Vendor editor controls and rendered content retain their own geometry. */
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog) .ui-button,
+.ui-studio-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: start;
+  gap: var(--ui-studio-space-tight);
+  min-block-size: var(--ui-studio-control-height);
+  padding: 0.25rem 0.625rem;
+  max-inline-size: 100%;
+}
+.ui-studio-field,
+:where(
+    .ui-studio-header,
+    .ui-studio-catalog,
+    .ui-studio-key-editor,
+    .ui-studio-preview,
+    .ui-studio-publication
+  )
+  label {
+  display: grid;
+  gap: var(--ui-studio-space-tight);
+  min-inline-size: 0;
+}
+:where(
+    .ui-studio-field,
+    .ui-studio-header,
+    .ui-studio-catalog,
+    .ui-studio-json-panel,
+    .ui-studio-preview,
+    .ui-studio-publication
+  )
+  :is(input, select, textarea) {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  min-block-size: var(--ui-studio-control-height);
+  padding: 0.25rem 0.5rem;
+  font: inherit;
+}
+:where(.ui-studio-field, .ui-studio-key-editor, .ui-studio-json-panel)
+  :is(input, select, textarea) {
+  inline-size: 100%;
+}
+:where(.ui-studio-field, .ui-studio-key-editor, .ui-studio-json-panel) textarea {
+  padding: 0.5rem;
+  resize: vertical;
+}
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog) input[type='file'] {
+  inline-size: 100%;
+}
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog)
+  input::file-selector-button {
+  min-block-size: calc(var(--ui-studio-control-height) - 0.5rem);
+  padding: 0.125rem 0.5rem;
+  margin-inline-end: 0.5rem;
+  font: inherit;
+}
+:where(.ui-studio-shell, .ui-studio-workbench) .ui-dialog:not(.ui-studio-navigation-dialog) {
+  padding: var(--ui-studio-panel-inset);
+}
+:where(.ui-studio-shell, .ui-studio-workbench) .ui-dialog-header {
+  gap: var(--ui-studio-space-content);
+}
+:where(.ui-studio-shell, .ui-studio-workbench) .ui-dialog-description,
+:where(.ui-studio-shell, .ui-studio-workbench) .ui-dialog-body {
+  margin-block-start: var(--ui-studio-space-content);
+}
+
+:where(.ui-studio-shell, .ui-studio-workbench, .ui-studio-navigation-dialog)
+  .ui-dialog-close.ui-icon-button {
+  inline-size: var(--ui-studio-control-height);
+  block-size: var(--ui-studio-control-height);
+  padding: 0;
+}

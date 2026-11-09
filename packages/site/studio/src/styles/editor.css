@@ -1,0 +1,162 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+@import './studio-tokens.css' layer(ui-layout-tokens);
+@import './studio-controls.css' layer(ui-layout);
+@import './studio-focus.css' layer(ui-layout);
+@import './studio-resource.css' layer(ui-layout);
+@import './studio-actions.css' layer(ui-layout);
+@layer ui-layout {
+  .ui-studio-workbench {
+    min-inline-size: 0;
+    padding: var(--ui-studio-space-section);
+  }
+  .ui-studio-shell .ui-studio-workbench {
+    padding: 0;
+  }
+  .ui-studio-header {
+    display: grid;
+    gap: var(--ui-studio-space-content);
+    margin-block-end: var(--ui-studio-space-section);
+  }
+}
+@layer ui-layout {
+  .ui-studio-panels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ui-studio-space-content);
+    margin-block-end: var(--ui-studio-space-section);
+  }
+  .ui-studio-panel {
+    display: grid;
+    align-content: start;
+    gap: var(--ui-studio-space-content);
+    min-inline-size: 0;
+    padding: var(--ui-studio-space-content);
+  }
+  .ui-studio-json {
+    inline-size: 100%;
+    min-inline-size: 0;
+    resize: vertical;
+  }
+  .ui-studio-editor-session {
+    display: grid;
+    gap: var(--ui-studio-space-content);
+    min-inline-size: 0;
+  }
+  .ui-studio-editor {
+    min-inline-size: 0;
+    overflow-x: auto;
+  }
+  .ui-studio-identity,
+  .ui-studio-issues {
+    overflow-wrap: anywhere;
+  }
+  .ui-studio-file {
+    display: grid;
+    gap: 0.25rem;
+    min-inline-size: 0;
+  }
+  .ui-studio-file input {
+    max-inline-size: 100%;
+  }
+  @media (max-width: 60rem) {
+    .ui-studio-panels {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+@layer ui-layout {
+  .ui-studio-preview {
+    display: grid;
+    gap: var(--ui-studio-space-content);
+    min-inline-size: 0;
+    margin-block: var(--ui-studio-space-section);
+  }
+  .ui-studio-preview-empty {
+    margin: 0;
+    padding: var(--ui-studio-space-content);
+  }
+  .ui-studio-preview-viewport {
+    overflow: auto;
+    max-inline-size: 100%;
+  }
+  .ui-studio-preview-frame {
+    box-sizing: content-box;
+    display: block;
+    max-inline-size: none;
+  }
+}
+
+@layer ui-layout {
+  .ui-studio-catalog,
+  .ui-studio-publication,
+  .ui-studio-dependencies {
+    padding: var(--ui-studio-space-content) 0;
+    min-width: 0;
+  }
+  .ui-studio-catalog > h2 {
+    margin-block-end: var(--ui-studio-space-content);
+  }
+  .ui-studio-catalog > .ui-studio-actions {
+    margin-block-end: var(--ui-studio-space-content);
+  }
+  .ui-studio-catalog-grid {
+    display: grid;
+    grid-template-columns: minmax(10rem, 1fr) minmax(0, 3fr);
+    gap: var(--ui-studio-space-content);
+  }
+  .ui-studio-key-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    max-height: 24rem;
+    overflow: auto;
+  }
+  .ui-studio-key-list > li {
+    display: grid;
+    min-inline-size: 0;
+  }
+  .ui-studio-key-list button {
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+  .ui-studio-key-editor,
+  .ui-studio-binding-field,
+  .ui-studio-bound-value {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-studio-space-content);
+    min-width: 0;
+  }
+  .ui-studio-key-editor input,
+  .ui-studio-key-editor textarea,
+  .ui-studio-binding-field input,
+  .ui-studio-binding-field textarea,
+  .ui-studio-json-panel textarea {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .ui-studio-json {
+    padding: var(--ui-studio-space-content);
+    min-width: 0;
+  }
+  .ui-studio-json-panel {
+    margin-block: var(--ui-studio-space-content);
+  }
+  .ui-studio-json-panel label {
+    display: flex;
+    flex-direction: column;
+  }
+  .ui-studio-publication fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ui-studio-space-content);
+  }
+  @media (max-width: 40rem) {
+    .ui-studio-catalog-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

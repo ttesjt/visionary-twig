@@ -1,7 +1,8 @@
 # Studio UI
 
-The package provides a reusable workspace shell. Hosts select routes, page components,
-validated text, appearance preferences and CSS.
+The package provides a workspace shell, project sessions, source editing,
+read-only viewing and optional file/publication controls. Hosts select their
+routes, data implementations and CSS. The legacy combined editor remains available.
 
 ## Workspace shell and code-owned extensions
 
@@ -60,6 +61,12 @@ shell never chooses a persistence mechanism.
 `StudioShell` ancestor. Resource tools inherit the shell's CSS theme rather than
 initializing a second UI theme. Fixed policies also govern requests through this hook.
 
+An isolated iframe cannot inherit CSS: pass the shell preference to `StudioViewer.theme`
+by default. Hosts may keep a separate preview override and resolve it through the
+same policy; this value affects rendered content only. `StudioViewer.toolbarActions`
+accepts host controls for such overrides without coupling the Viewer to a shell or
+an application-specific preference model.
+
 Pages receive `page`, `registry` and `navigate`. They own their UI, data, validation,
 actions and persistence. The shell does not automatically save or publish a page,
 interpret its fields, or supply credentials. `headerActions`/`footer` are host slots.
@@ -67,6 +74,11 @@ A client-render failure inside a page is isolated from navigation; retry remount
 that page. Lazy pages use a loading fallback. Hosts using nested routes may put
 `StudioPageOutlet` in each route inside the shell; without children, the shell
 renders the registered component itself.
+
+The workbench `studioTextCatalogSchema` validates `resolvedValue` as a template
+that allows `{label}` interpolation, for example `Resolved {label}`. Binding outputs
+use this template for their accessible name; translations can reorder or omit the
+field label. Unknown interpolation names are rejected during text preparation.
 
 Hosts explicitly import these independently replaceable global entries:
 
@@ -88,6 +100,131 @@ and `--ui-studio-page-inset`. No component stylesheets or authored inline styles
 are required. The appearance supports foundation themes, narrow viewports,
 reduced motion and forced colors.
 
+## Page-project editor
+
+Reusable, local-first Studio project editor. Hosts supply the component registry through the existing Puck adapter, optional page-preview and publication capabilities, and optional file adapters. This package has no SQL, Cloudflare, app or website-style dependency.
+
+## Project files
+
+The workbench opens complete `studio-project` v1 files, existing ContentDocument files and supported native Puck Data. Unknown versions and invalid declared project files are rejected without format guessing. Existing bindings and embedded variables remain intact. Legacy external copy is normalized into the explicitly selected language catalog by the import/data layer.
+
+A complete working file contains metadata, the original document, every loaded language catalog, non-copy context and optional neutral source/target associations. `context.copy` is constructed only for the selected preview language. Media bodies, file handles and credentials are not embedded.
+
+## Local Save and Save As
+
+Save writes a complete project to the current writable file location. Save As selects a location, writes the captured snapshot and remembers that location. A remotely opened project has no local writable location, so its first Save uses Save As. Save As retains publication associations and does not create a remote resource.
+
+The default browser adapter uses file-system picker handles where available. A plain file input grants no writable handle. Environments without native save support use an explicit download fallback, which reports **download started**, retains no invented location, and does not mark the original file saved. Hosts may inject `StudioFileAdapter` for another environment; `StudioFileLocation.write` resolves only after the exact snapshot is durably written according to that host's file contract. The legacy `exportFile` prop remains a download-adapter convenience; resolving it is not a durable-save acknowledgement.
+
+Structure-valid projects with missing variables or translations remain saveable. Unapplied/malformed visible JSON drafts block Save to avoid silently exporting an earlier value. Local saved and published baselines are independent. Edits during either operation remain dirty relative to the submitted snapshot; obsolete loads inspect the latest session before requesting replacement.
+
+## Catalogs, bindings and history
+
+The catalog panel imports, creates and edits language dictionaries, switches editing language, declares a default language, displays missing values and references, and renames/deletes keys. Renaming updates every loaded language and referencing binding in one operation; deleting referenced keys is blocked. Shared-key edits affect every referencing field. Values may be text or structured JSON; the user explicitly chooses keys rather than deriving them from prose.
+
+Puck fields support direct values and explicit variable paths. Existing bound fields edit their actual source (catalog, embedded variables or other context); switching to direct freezes the current value and warns that it no longer follows languages. Registered schemas validate binding targets and structured values. Missing dependencies report language, namespace, node and field. No translation or fallback is silently fabricated.
+
+Layout, bindings, catalogs and context share project undo/redo and keyboard shortcuts. Puck retains native insertion, nesting, drag, duplication and deletion. Selection survives binding/history updates; embedded source edits update without remounting the focused input. File locations and publication acknowledgements remain outside content history.
+
+## Explicit publication
+
+Pass optional `publishing: StudioPublishing`. The host supplies target descriptors and list/load/publish functions. Without this prop the workbench operates independently as a local file editor, including in the neutral Studio template.
+
+Publish requires an explicit target/key and selected languages including the declared default. A confirmation names the target. The adapter receives an owned, validated snapshot with raw bindings, selected catalogs and media URLs declared by actual renderers. Save does not call it. Source versions never substitute for another target's expected version. Successful Publish updates only its own baseline and target revision; it does not mark the local file saved.
+
+The host owns provider selection, authentication, storage, business association and atomic publication. No cloud drafts, version-history UI, rollback or offline media archive is implied.
+
+## Preview and host configuration
+
+`previewAdapter` receives raw document plus current-language context and theme, and returns an isolated page URL or issues. Legacy refresh requests are explicit; StudioViewer also refreshes automatically.
+Requests are cancellable and bound to the current session and snapshot. Stale frames are labelled; width presets use the actual iframe viewport. Server preview and its access/TTL policy remain host-owned.
+
+`text` supplies validated interface labels, using `studioTextCatalogSchema` from `./text-catalog`. App dictionary preparation is separate from per-project catalogs. `themePolicy` uses the public fixed/selectable foundation policy. CSS is selected by the host: foundation layout/default appearance or an explicit website skin. The generic package imports neither.
+
+Public hooks include `ui-studio-workbench`, `ui-studio-actions`, `ui-studio-catalog`, `ui-studio-catalog-grid`, `ui-studio-key-list`, `ui-studio-key-editor`, `ui-studio-binding-field`, `ui-studio-publication`, `ui-studio-dependencies`, `ui-studio-json-panel` and the existing preview/identity/status hooks.
+
+Use as publication target reads/links the selected target revision without replacing the current project. This supports publishing a local file over an existing target after explicit selection. It does not publish or claim the local content matches the target; later concurrent changes still produce a conflict.
+
+## Composable editing
+
+Use the independent public entries when a resource page owns its workflow:
+
+| Entry          | Responsibility                                                                   |
+| -------------- | -------------------------------------------------------------------------------- |
+| `./shell`      | Registration, navigation and page containers                                     |
+| `./session`    | `useProjectSession`, `StudioTextCatalogProvider`, `StudioReplacementDialog`      |
+| `./editor`     | Legacy `StudioEditor` composition and experimental `StudioPuckEditor`            |
+| `./catalog`    | Standalone `StudioCatalogPanel`, without importing the interactive canvas        |
+| `./viewer`     | Automatically refreshed, isolated Viewer of the applied project                  |
+| `./files`      | Optional local file controller, browser adapter, file toolbar and catalog import |
+| `./publishing` | Optional injected publication controller and controls                            |
+
+`StudioEditor` accepts a caller-owned `session`. It creates no file picker,
+record list, database connection, load/save request or publisher. A resource page
+can render its own controls around it. Optional `catalogActions` lets a host add
+file import; without that slot, catalog editing is entirely in-memory.
+`StudioTextCatalogProvider` supplies the same validated text to these components. The
+host owns theme selection and CSS, and passes its theme to previews.
+
+`useProjectSession(initialProject?)` owns one portable project's history,
+raw layout/bindings, language catalogs, context, current locale, validation,
+unapplied drafts and replacement confirmation. It performs no persistence I/O
+and holds no file handles. The initial project is read once; use `open` or
+`requestReplace` for later selections, and render `StudioReplacementDialog`.
+`open` parses/normalizes supplied data; `requestReplace` accepts an already
+validated project. Both inspect the latest dirty state. `open` returns a reserved
+session generation, or `false` on invalid input. A reserved generation is not
+necessarily active until replacement is confirmed; cancelled generations are
+never reused. `filename` is a suggested export label, not a file path or handle.
+
+Resource pages own asynchronous reads, cancellation and identity checks before
+passing results to the session. For saves, capture `session.latest.current` and
+persist that exact project's snapshot. Only after success call
+`acknowledgeSave(snapshot, generation)`; newer edits retain `flags.needsSave` and a completion
+for an old session is ignored. `acknowledgePublication(snapshot, generation,
+target)` independently acknowledges publication and its optimistic target version.
+A resource does not have to implement publication. `saved: true` on opening a
+complete project establishes an existing save baseline, regardless of storage
+provider. Opening a raw layout alone never claims its complete project is saved.
+
+`useProjectFiles` owns writable handles and binds them to the reserved session
+identity; cancelling a replacement cannot attach its handle to a later project.
+`useBrowserProjectFiles` supplies the browser adapter with SSR-safe capability
+detection. Download fallback is still distinct from confirmed durable saving.
+Remote list/load/publish orchestration remains in the optional `./publishing`
+entry and never runs just because an editor is mounted.
+
+The original `StudioWorkbench` remains a compatibility composition of these same
+parts, including optional injected publishing.
+
+A resource-owned save can be as small as:
+
+```tsx
+const session = useProjectSession(initialProject);
+async function saveResource() {
+  const { project, state } = session.latest.current;
+  await resource.save(project); // The page supplies this implementation and handles errors.
+  session.acknowledgeSave(project, state.generation);
+}
+// <StudioTextCatalogProvider text={preparedText}>
+//   <YourResourceActions onSave={saveResource} />
+//   <StudioEditor session={session} />
+//   <StudioReplacementDialog session={session} />
+// </StudioTextCatalogProvider>
+```
+
+Replacement confirmation and browser `beforeunload` protect the active session.
+The host remains responsible for guarding its own in-app navigation and for
+ignoring late read results from a previous resource selection. Saving a resource
+draft and publishing a public snapshot are separate operations and baselines.
+
+Resource-page composition may use the optional shell style hooks
+`ui-studio-record-browser`, `ui-studio-table-scroll`, `ui-studio-record-table`,
+`ui-studio-record-link`, `ui-studio-record-card`, `ui-studio-record-image`,
+`ui-studio-record-content` and `ui-studio-notice`. Table selection uses
+`data-selected`. These are neutral layout/appearance hooks, not a database UI
+contract; page code owns the table columns, form schema and preview component.
+
 ## Host-owned nested routes
 
 A registry entry may use `rendering: 'route'` instead of a `component`. It still
@@ -102,6 +239,67 @@ healthy nested layouts and their state. The key is router-neutral; the shared
 package imports no Next APIs. Clicking an active sidebar entry still invokes the
 host navigation callback, allowing a child page to return to its module root.
 
+## Host-owned project identity and publication actions
+
+`useProjectSession(initialProject, { associations: 'host', published: true })`
+lets a resource retain its neutral source/target metadata when opening files,
+applying complete project JSON or replacing content. Default `associations: 'file'`
+keeps portable-file behavior for existing consumers. The host policy is also
+reapplied when a pending replacement is confirmed, using the latest target revision.
+A remapped file is not acknowledged as saved because its serialized metadata differs.
+The `published` option establishes only the initial publication baseline; it does
+not acknowledge a local file save. Actual resource IDs and associations remain
+host-owned and must never be trusted from an imported file.
+
+`StudioPublishAction` from `./publishing` supplies controlled confirmation,
+disabled/busy handling, target summary and status rendering. The host supplies
+`onPublish`; this component performs no validation, storage or binding operation.
+`StudioPublishingControls` reuses it for the existing injected-target workflow.
+`StudioFileControls` remains the reusable Open/Save/Save As composition and accepts
+an optional `heading` slot for embedding in a resource page.
+
+## Compact resource composition
+
+`studio-ui/files` exports `StudioSaveActions`, `StudioOpenActions`,
+`StudioFileStatus`, `StudioFileIdentity` and `StudioThemeControl`. They consume the
+same caller-owned session/file controller and translated Studio text. A host can
+keep local Save/Save As in a toolbar and place imports, file identity and theme
+preferences elsewhere. `StudioFileControls` retains its existing combined layout
+as a compatibility composition of these same parts. No duplicated persistence
+logic or additional session is created.
+
+`studio-ui/editor` also exports `StudioCatalogPanel`. Set
+`<StudioEditor catalogPanel={null} ... />` when placing that panel in host tabs;
+undefined retains the default built-in panel. Keep tab contents mounted when
+hiding them, so unapplied field drafts continue blocking save/publication and
+catalog editing keeps its working state. The standalone catalog retains shared
+keyboard undo/redo through the same session history as the editor.
+
+`StudioPublishAction` renders its optional status only when supplied. Hosts that
+render their own operation status can omit it; the trigger still exposes pending
+state and disabled behavior. The resource continues owning snapshot validation,
+confirmation summary and publication I/O.
+
 `StudioShell.pageHeading` is an optional React node: undefined shows registered
 metadata, null omits the repeated heading, and a node supplies host-specific
 content. Navigation, error boundaries and route content lifetime stay unchanged.
+
+## Empty page Viewer
+
+Viewer resolves the applied working document before inspecting renderer content
+semantics. Empty documents and recursively empty structural layouts show the
+translated `previewEmpty` / `previewEmptyHelp` state instead of requesting a tall,
+blank iframe. Unapplied JSON stays separate. Invalid content retains validation
+feedback; actual visual content, including section surfaces, uses the real preview
+adapter as before. Preview requests are cancelled when a document becomes empty.
+
+## Catalog draft and import protection
+
+Unfinished catalog JSON keeps language, key, value-mode and import transitions
+disabled until the value is repaired. Catalog keys retain real button semantics
+inside a semantic list. A catalog file import captures its destination language
+and catalog baseline, ignores older selections and replaced sessions, and rejects
+an overwrite if the destination or pending editor input changed during the read.
+The current working copy is preserved on conflict; choosing the file again retries
+against the new baseline. StudioPuckEditor supplies the session language as the
+native field draft scope.

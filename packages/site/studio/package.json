@@ -13,6 +13,18 @@
       "types": "./dist/data/records.d.ts",
       "import": "./dist/data/records.js"
     },
+    "./preview-options": {
+      "types": "./dist/ui/preview/preview-options.d.ts",
+      "import": "./dist/ui/preview/preview-options.js"
+    },
+    "./issues": {
+      "types": "./dist/ui/issues.d.ts",
+      "import": "./dist/ui/issues.js"
+    },
+    "./text-catalog": {
+      "types": "./dist/ui/text-catalog.d.ts",
+      "import": "./dist/ui/text-catalog.js"
+    },
     "./shell": {
       "types": "./dist/ui/shell.d.ts",
       "import": "./dist/ui/shell.js"
@@ -25,11 +37,36 @@
       "types": "./dist/ui/shell/registry.d.ts",
       "import": "./dist/ui/shell/registry.js"
     },
+    "./session": {
+      "types": "./dist/ui/session.d.ts",
+      "import": "./dist/ui/session.js"
+    },
+    "./editor": {
+      "types": "./dist/ui/editor.d.ts",
+      "import": "./dist/ui/editor.js"
+    },
+    "./files": {
+      "types": "./dist/ui/files.d.ts",
+      "import": "./dist/ui/files.js"
+    },
+    "./publishing": {
+      "types": "./dist/ui/publishing.d.ts",
+      "import": "./dist/ui/publishing.js"
+    },
+    "./viewer": {
+      "types": "./dist/ui/viewer.d.ts",
+      "import": "./dist/ui/viewer.js"
+    },
+    "./catalog": {
+      "types": "./dist/ui/catalog.d.ts",
+      "import": "./dist/ui/catalog.js"
+    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./shell.css": "./src/styles/shell.css"
+    "./shell.css": "./src/styles/shell.css",
+    "./editor.css": "./src/styles/editor.css"
   },
   "files": [
     "dist",
