@@ -21,3 +21,12 @@ deadlines, response size and cancellation. Public error objects expose only safe
 codes/status; applications own logging and must not serialize exception causes.
 These entries import no Wrangler or Node bridge. Apps own credentials, identity,
 fixed recipients, public widget integration and rate/abuse policy.
+
+## Project-pinned CLI
+
+The adapter also exposes a `wrangler` executable to consuming workspaces. It
+forwards arguments and standard streams to the pinned Wrangler dependency, using
+Wrangler's publicly exported package manifest to resolve the executable. This
+keeps supplier tooling owned by the adapter while letting app deployment tools
+invoke the standard CLI after a clean pnpm install. No CLI or credential discovery
+runs when importing the native D1/R2 entry.
