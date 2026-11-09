@@ -1,0 +1,49 @@
+@import '@puckeditor/core/puck.css';
+
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+
+@layer ui-layout {
+  :where(.ui-content-editor) {
+    --ui-puck-canvas-action-space: 2.5rem;
+  }
+  /* Native action bars sit above their node. Reserve that space inside the
+     scrolling editor root instead of clipping the first toolbar. */
+  :where(.ui-puck-canvas-content) {
+    box-sizing: border-box;
+    block-size: 100%;
+    min-inline-size: 0;
+    padding-block-start: var(--ui-puck-canvas-action-space);
+  }
+}
+
+@layer ui-components {
+  :where(.ui-content-editor) {
+    min-inline-size: 0;
+  }
+  :where(.ui-content-editor [data-puck-dropzone]:empty) {
+    min-block-size: 8rem;
+  }
+  :where(.ui-puck-field) {
+    display: grid;
+    gap: 0.5rem;
+    margin-block: 0.5rem;
+  }
+  :where(.ui-puck-field input, .ui-puck-field textarea, .ui-puck-field select) {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding: 0.5rem;
+  }
+  :where(.ui-puck-field textarea) {
+    resize: vertical;
+  }
+  :where(.ui-puck-bound-field) {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  :where(.ui-puck-bound-field output) {
+    display: block;
+    max-block-size: 12rem;
+    overflow: auto;
+  }
+}
