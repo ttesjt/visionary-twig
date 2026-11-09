@@ -1,15 +1,21 @@
 # Application and library starting points
 
 The app templates are live pnpm workspaces: their source, configs and dependencies
-resolve in this directory. Their unique package names and ports separate them
-from the consuming apps. The node-library directory remains an inactive scaffold.
+resolve in this directory. Their unique package names and ports separate maintenance
+servers from independently generated user projects. The node-library directory
+remains an inactive scaffold.
 Templates are starting points, never runtime dependencies of other workspaces.
 
-| Source       | Package                       | Dev / browser ports | Generated destination           |
-| ------------ | ----------------------------- | ------------------- | ------------------------------- |
-| studio       | @frontend/template-studio     | 3201 / 3221         | apps/studio                     |
-| plain-next   | @frontend/template-plain-next | 3203 / 3223         | apps/plain                      |
-| node-library | inactive                      | none                | packages/shared/example-library |
+| Source       | Source selection ID | Public output                                              |
+| ------------ | ------------------- | ---------------------------------------------------------- |
+| studio       | template-studio     | `apps/<required-name>`, or --app-name when creating a repo |
+| plain-next   | template-plain-next | apps/web by default; an explicit app name overrides it     |
+| node-library | inactive scaffold   | packages/shared/example-library in a library workspace     |
+
+Source maintenance ports live in each template's package.json workspaceApp.
+Generation assigns unused app ports in the target workspace; its manifest and
+startup output are authoritative. A recipe's destination is renamed by the public
+app CLI and does not fix the generated app's identity.
 
 From the root run pnpm install --frozen-lockfile. For the prepared starters,
 run pnpm bootstrap --include-templates --source default to build dependencies
@@ -94,7 +100,7 @@ exercise theme selection, SWR, explicit event delivery and localized content.
 
 ```sh
 pnpm dev --app template-plain-next
-pnpm template:clone --output ../plain-project --templates plain-next
+pnpm repo:clone --output ../plain-project --template plain-next
 ```
 
 Its initializer only adds prepared-input commands when a template declares those

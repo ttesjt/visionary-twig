@@ -2,13 +2,29 @@
 
 Local Next host for `@frontend/studio`. Uses neutral content only.
 
-Run `pnpm dev --app {{appId}}` from the repository root. The shared runner builds packages,
-then watches their outputs alongside the loopback Studio host on port 3001.
-`pnpm test:e2e --app {{appId}}` builds packages and Studio, then runs production Chromium on
-port 3121. `PLAYWRIGHT_PORT` overrides both server startup and browser baseURL.
-`pnpm test:e2e --all` and CI discover Studio alongside web and Gallery from workspaceApp.
-The thin Playwright config and dedicated JSX/Node/DOM E2E typecheck reuse root tooling.
-No website example switches or fixture credentials are needed.
+## Take over this app
+
+| I want to...                   | Start here                                                                                                      |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Change workspace navigation    | src/workspace/registry.tsx and page-ids.ts                                                                      |
+| Change labels                  | content/default/text/en/main.json, then prepare the app                                                         |
+| Change initial demo content    | content/default/data/base.json                                                                                  |
+| Replace temporary demo storage | src/site/demo-adapters.ts and the owning workspace/demo resource; supply your own persistence and authorization |
+
+From your monorepo root:
+
+```sh
+pnpm bootstrap --app {{appId}}
+pnpm dev --app {{appId}}
+pnpm test:e2e --app {{appId}}
+```
+
+The shared development runner builds and watches this app's dependencies. Inspect
+apps/{{appId}}/package.json workspaceApp and the startup output for actual ports;
+generation assigns unused values. PLAYWRIGHT_PORT overrides the production browser
+server and browser baseURL together. All-app runners and CI discover only the apps
+present in your workspace. See the root docs/README.md and docs/commands.md for the
+shared workflow. No website fixture credentials or cloud account are needed.
 
 The host explicitly selects foundation/content/studio CSS. Puck editor CSS is
 scoped to the workbench route group. Preview pages use only render CSS.
@@ -143,15 +159,14 @@ All data is module-scoped memory and resets on refresh or leaving Demo. No SQL,
 cloud upload or durable backend is present. Replace the adapter and resource code
 for a real host, including transaction/version checks, authorization and persistence.
 
-Preparation defaults to auto: each optional `.local/content/text/<locale>/<namespace>.json`, `.local/config/<namespace>.json` and `.local/content/data/<namespace>.json` independently overrides its matching default. Missing override files are allowed; malformed existing files fail. Run `pnpm app:prepare --source default` to ignore overrides. Root `pnpm bootstrap --include-templates` includes source templates; ordinary bootstrap targets apps only.
+Preparation defaults to auto: each optional `.local/content/text/<locale>/<namespace>.json`, `.local/config/<namespace>.json` and `.local/content/data/<namespace>.json` independently overrides its matching default. Missing override files are allowed; malformed existing files fail. Run `pnpm app:prepare --source default` to ignore overrides. Use root `pnpm bootstrap --app {{appId}}` to prepare this app or ordinary root bootstrap to prepare your workspace apps. The source templates and their maintenance commands are not delivered here.
 
 ## Plain Next.js foundation and Studio extensions
 
-The initial foundation commit copies the complete plain-next starter at
-`3dd6a47a94176c2d650fa628a10b1fbf8ab1560c`, then adapts the host name and ports.
-The following Studio commits add the editor, its resources and its permissions.
-The resource runtime, scoped readers, Content text-reference support, metadata
-builder, environment validation, HTTP helpers and error views live in `src/infra/`.
+Studio uses the same prepared-resource foundation as plain-next, with editor,
+workspace, upload and preview extensions. The resource runtime, scoped readers,
+Content text-reference support, metadata builder, environment validation, HTTP
+helpers and error views live in `src/infra/`.
 Studio declares its own inputs and policies in `src/site/`.
 
 Studio uses the metadata builder with prepared text and optional metadata config.

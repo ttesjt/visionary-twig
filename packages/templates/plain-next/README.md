@@ -59,12 +59,15 @@ request remote sample settings or send events. Examples are separate routes.
 Generate an independent workspace through:
 
 ```sh
-pnpm template:clone --output ../plain-project --templates plain-next
+pnpm repo:clone --output ../plain-project --template plain-next
+pnpm template:clone --target ../plain-project --name another-web --template plain-next
 ```
 
-The initializer adapts the destination's paths and app metadata. Generated apps
-start at apps/plain with development/test ports 3003/3103. Names and locations
-can be overridden through the root generator. See ../README.md for that contract.
+The default app is apps/web. Use repo:clone --app-name <name> to rename it;
+template:clone always requires --name and appends `apps/<name>` to an existing
+generated workspace. Generation assigns unused ports; inspect the app's
+package.json workspaceApp and startup output for its actual ports. See the
+[template contract](../README.md) and [generation protocol](../../../docs/template-repository/generation.md).
 
 The BFF dependency example has a two-second deadline and bounded JSON responses.
 Its production browser tests start isolated servers and inspect both build-time

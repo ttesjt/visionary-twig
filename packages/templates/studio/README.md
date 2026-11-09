@@ -6,15 +6,27 @@ shared capabilities and has its own installed workspace dependencies.
 Use pnpm dev --app template-studio from the root for dependency build/watch and the
 configured template port. Run pnpm build:packages once before building directly
 in this directory; pnpm build then runs Next normally. Root validation covers
-this source alongside the consuming apps.
+this source alongside plain-next and the framework packages; no consuming apps
+are required.
 
-Generate a customized copy through pnpm template:clone --output ../new-project
---templates studio. template.config.mjs and template/initialize.mjs own this
-starter's output configuration; template/README.md becomes the generated host's
-README. The generator supplies names/paths and handles dependencies, copying,
-root settings, installation and validation. See ../README.md for the contract.
+Create a Studio workspace or add Studio to an existing generated workspace from
+the source repository root:
 
-Historical provenance is recorded in ../catalog.json. The generator delivers the Studio site package with this template. Framework source imports remain internal or public package imports.
+```sh
+pnpm repo:clone --output ../new-project --template studio --app-name editor
+pnpm template:clone --target ../existing-project --name editor --template studio
+```
+
+The app lives at apps/editor; the generator assigns unused target ports.
+template.config.mjs and template/initialize.mjs own this starter's output recipe;
+template/README.md becomes the generated app README. The generator supplies paths,
+dependencies, root settings, installation and validation. See the
+[template contract](../README.md) and [generation protocol](../../../docs/template-repository/generation.md).
+
+Historical provenance is recorded in ../catalog.json. The generator delivers
+the Studio site package with this template. Framework source imports remain
+internal or public package imports. The initializer adjusts configuration for the
+destination.
 
 ## Event tracking
 
@@ -26,17 +38,17 @@ SWR is a default dependency; use a domain hook only where data is actually read.
 
 ## Portable project editing
 
-This starter uses the Studio site package for complete project JSON, language catalogs, explicit variable binding, unified undo/redo, native Save/Save As and honest download fallback. It runs without a database or provider package. Its app-owned flat dictionary is prepared into versioned namespace resources.
+This starter uses the Studio site package for project JSON, language catalogs, explicit variable binding, unified undo/redo, native Save/Save As and download fallback. It runs without a database or provider package. Its app-owned flat main dictionary is prepared into versioned namespace resources and loaded through the shared resource plan; dictionary payloads are not statically imported into client bundles.
 
-SQL/project associations, media upload and publication endpoints are not included. A consuming app can inject StudioPublishing; source credentials and browser file handles never belong in the project JSON. See the Studio package contracts.
+Durable SQL/project associations, cloud media storage and a production publication service are not included. The memory workflows and temporary preview endpoint demonstrate the host integration. A consuming app injects its own publication/storage capabilities; credentials and browser file handles never belong in project JSON. See the Studio package contracts.
 
 ## Workspace routes and extensions
 
 `/` opens the new general Studio workspace. Page registration and host routing live
 in `src/workspace/registry.tsx`, `page-ids.ts` and `workspace-host.tsx`. Each
 registered page is custom React code; the shared shell knows no business fields,
-database tables, storage destination or publication rules. Labels come from the
-prepared `workspace` dictionary. The persistent route layout supplies navigation
+database tables, storage destination or publication rules. Labels come from `workspace.*` keys in the
+prepared main dictionary. The persistent route layout supplies navigation
 and keeps appearance while moving between registered pages.
 
 `/demo/pages/new` and `/demo/pages/[pageId]/edit` compose session, editor, file controls and memory-backed publication inside the persistent workspace. `/preview/[id]`, file operations and existing API
@@ -53,12 +65,12 @@ route group; individual pages use the global `ui-studio-*` hooks.
 
 `/demo` is a custom record page: an in-memory table, selected-row fields and a
 live card preview. It is not a SQL client or a durable database. Data lives in the resource layout and survives child navigation; refreshing resets it. `/example` and `/notebook` redirect to `/demo`.
-The starter imports neutral shared packages and the Studio site package.
+The starter imports the Studio site package and neutral shared libraries.
 
 The reusable editor has no automatic resource loading or publication. A custom
-page supplies its own session and operations through the public studio-ui
+page supplies its own session and operations through the public Studio
 entries. SQL queries, resource identity, media upload and publication belong to
-the page's code and injected adapters. See studio-ui's composable editing contract.
+the page's code and injected adapters. See Studio's composable editing contract.
 
 ## Demo creation and subroutes
 
@@ -196,8 +208,8 @@ policies hide this control and govern both Studio and the server-rendered previe
 
 ## Reusing the resource example
 
-The Demo record browser consumes `studio-ui/records`, `studio-ui/navigation` and
-`studio-ui/workspace` public components. Its schema, field inputs, image resolution,
+The Demo record browser consumes `studio/records`, `studio/navigation` and
+`studio/workspace` public components. Its schema, field inputs, image resolution,
 card renderer, one-to-one page association and publication sequencing remain
 code-owned examples. `workspace/demo/records` owns list/detail/preview and record
 upload; page-document management is grouped under `workspace/demo/pages/management`.
@@ -247,35 +259,14 @@ Text uses flat keys such as `workspace.brand`. Set `workspace.showIntroduction` 
 
 Preparation merges optional overrides and writes versioned resources under `.generated/`. Run `pnpm app:check` to check freshness or `pnpm app:prepare --source default` to prepare the tracked inputs explicitly. Keep local overrides out of Git.
 
-### Migrating an existing local text override
-
-Move your old `.local/content/text.en.json` overrides into
-`.local/content/text/en/main.json`, flattening nested keys with dots. For example:
-
-```json
-{ "metadata": { "title": "My Studio" }, "workspace": { "brand": "My workspace" } }
-```
-
-becomes:
-
-```json
-{ "metadata.title": "My Studio", "workspace.brand": "My workspace" }
-```
-
-If the new file already exists, merge the individual overrides into it.
-Run `pnpm text:prepare` from the Studio directory, then `pnpm app:check`.
-Auto preparation reads the new path only. Keep the old file as a backup until
-you see your custom title and brand in Studio.
-
 The localized Server Layout prepares the layout scope and passes its snapshot to `ResourceLayout` before rendering the workbench. Metadata and iframe preview read the same prepared Text on the server. A client reader projects flat labels into the structured props used by Studio components. Resource declarations live in `src/site/` and the reusable runtime lives in `src/infra/`.
 
 ## Plain Next.js foundation and Studio extensions
 
-The initial foundation commit copies the complete plain-next starter at
-`3dd6a47a94176c2d650fa628a10b1fbf8ab1560c`, then adapts the host name and ports.
-The following Studio commits add the editor, its resources and its permissions.
-The resource runtime, scoped readers, Content text-reference support, metadata
-builder, environment validation, HTTP helpers and error views live in `src/infra/`.
+Studio uses the same prepared-resource foundation as plain-next, with editor,
+workspace, upload and preview extensions. The resource runtime, scoped readers,
+Content text-reference support, metadata builder, environment validation, HTTP
+helpers and error views live in `src/infra/`.
 Studio declares its own inputs and policies in `src/site/`.
 
 Studio uses the metadata builder with prepared text and optional metadata config.
