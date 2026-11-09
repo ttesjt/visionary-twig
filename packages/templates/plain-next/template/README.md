@@ -17,7 +17,7 @@ pnpm dev --app {{appId}}
 After editing resource inputs, run `pnpm app:prepare --app {{appId}}`.
 Build with `pnpm build --app {{appId}}`. A stale or missing prepared input causes a check failure before dev or build.
 
-The homepage uses native HTML for layout.
+The homepage and ordinary examples use native HTML for layout. Visit `/examples/layout` to try the optional `Row` and `Column` components and see their JSX.
 
 ## Translating a page
 
@@ -183,7 +183,7 @@ Page components use the public `@/infra/resources/client` hooks. Server preparat
 
 ## Removing the starter examples
 
-Remove the homepage links and `src/app/[locale]/examples/text/` and `src/app/[locale]/examples/content/`, the event-tracking/remote-settings routes and `public/samples/remote-settings/`.
+Remove the homepage links and `src/app/[locale]/examples/text/` and `src/app/[locale]/examples/content/`, the event-tracking/remote-settings routes and `public/samples/remote-settings/`, and the layout route.
 Remove the corresponding `test/e2e/examples/` acceptance tests. Resource mechanism
 tests under `test/examples/` can remain while this infrastructure is in use.
 The core theme and page-status tests remain outside the route examples.

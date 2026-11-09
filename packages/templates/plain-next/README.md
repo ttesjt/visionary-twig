@@ -33,7 +33,7 @@ and page overrides, or the generated-app [takeover guide](template/README.md#met
 
 Retained capabilities:
 
-- Native HTML on the homepage and ordinary examples.
+- Native HTML on the homepage and ordinary examples. In /examples/layout, Row and Column demonstrate spacing and wrapping with the shared layout styles.
 - Persistent theme selection through a host-owned next-themes adapter. Preferences
   survive reloads, follow the system and synchronize across tabs. The early script
   restores the root attribute before hydration. UI_THEME_POLICY still accepts

@@ -30,6 +30,7 @@ test('homepage example links follow their displayed order with the keyboard', as
     '/examples/remote-settings',
     '/examples/text',
     '/examples/content',
+    '/examples/layout',
   ];
   await expect(links).toHaveCount(destinations.length);
   await links.first().focus();
