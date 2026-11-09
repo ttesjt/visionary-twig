@@ -45,6 +45,11 @@ test('CLI separates repository identity, required app name and default template'
   const options = generationOptions(['--output', '/tmp/new'], 'repository');
   assert.equal(options.appName, 'web');
   assert.equal(options.template, 'plain-next');
+  assert.equal(generationOptions(['--output', '/tmp/library'], 'library').template, 'node-library');
+  assert.throws(
+    () => generationOptions(['--output', '/tmp/library', '--app-name', 'ignored'], 'library'),
+    /Unknown option/
+  );
   assert.throws(
     () => generationOptions(['--target', '/tmp/new'], 'template'),
     /no default app name/
@@ -202,5 +207,22 @@ test('pre-commit hooks remain active; rejection restores tracked files and index
   await assert.rejects(appendTemplate(source, folder, { appName: 'web' }, { run: noCommands }));
   assert.equal(head(folder), before);
   assert.equal(existsSync(path.join(folder, 'apps/web')), false);
+  clean(folder);
+});
+
+test('library-only creation uses the same baseline and remains a valid target for later apps', async (context) => {
+  const folder = path.join(root, 'library-project');
+  context.after(() => rmSync(folder, { recursive: true, force: true }));
+  await cloneRepository(
+    source,
+    folder,
+    { name: '@library/project', kind: 'library', template: 'node-library' },
+    { run: noCommands }
+  );
+  assert.equal(git(folder, ['rev-list', '--count', 'HEAD']).trim(), '2');
+  assert.ok(existsSync(path.join(folder, 'packages/shared/example-library/package.json')));
+  assert.equal(existsSync(path.join(folder, 'apps/web')), false);
+  await appendTemplate(source, folder, { appName: 'web' }, { run: noCommands });
+  assert.equal(git(folder, ['rev-list', '--count', 'HEAD']).trim(), '3');
   clean(folder);
 });

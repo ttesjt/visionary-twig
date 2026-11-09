@@ -3,6 +3,7 @@ import path from 'node:path';
 import { parse, parseDocument } from 'yaml';
 import { DEPENDENCY_GROUPS } from '../lib/workspace-layers.mjs';
 import { readJson, writeJson } from '../templates/files.mjs';
+import { pruneLockfile } from '../templates/lockfile-graph.mjs';
 import { mergeRequirements } from '../templates/delivery.mjs';
 
 /** Extend only declared root requirements; never replace the target's manifest or catalog. */
@@ -59,7 +60,18 @@ export function mergeAdapterBuildPermissions(source, target, plan) {
   const file = path.join(target, 'pnpm-workspace.yaml');
   const document = parseDocument(readFileSync(file, 'utf8'));
   const workspace = document.toJSON();
-  const lock = parse(readFileSync(path.join(target, 'pnpm-lock.yaml'), 'utf8'));
+  const sourceLock = parse(readFileSync(path.join(source, 'pnpm-lock.yaml'), 'utf8'));
+  const adapterImporters = plan.packages
+    .filter((entry) => entry.layer === 'adapter')
+    .map((entry) => path.relative(source, entry.source).split(path.sep).join('/'));
+  const lock = pruneLockfile({
+    ...sourceLock,
+    importers: Object.fromEntries(
+      adapterImporters.flatMap((name) =>
+        sourceLock.importers[name] ? [[name, sourceLock.importers[name]]] : []
+      )
+    ),
+  });
   for (const [name, enabled] of Object.entries(input.allowBuilds ?? {})) {
     if (!enabled || !Object.keys(lock.packages ?? {}).some((key) => key.startsWith(name + '@')))
       continue;

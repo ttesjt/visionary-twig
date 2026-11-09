@@ -11,7 +11,7 @@ import { planProject } from '../templates/plan.mjs';
 import { createTemplateProject } from '../templates/generate.mjs';
 import { targetFiles, rewritePackageNames } from '../templates/files.mjs';
 import { mergeRequirements } from '../templates/root-project.mjs';
-import { cloneOptions } from '../templates/options.mjs';
+import { generationOptions } from '../generation/options.mjs';
 import { checkWorkspace } from '../lib/workspace-policy.mjs';
 import {
   discoverApps,
@@ -72,11 +72,11 @@ test('catalog and CLI reject malformed paths, names and conflicting selections',
   );
   await assert.rejects(planProject(sourceRoot, { appNames: { studio: 'plain' } }), /Colliding/);
   assert.throws(
-    () => cloneOptions(['--output', '/tmp/x', '--app', 'studio=a', '--app', 'studio=b']),
-    /distinct/
+    () => generationOptions(['--output', '/tmp/x', '--name', 'a', '--name', 'b'], 'repository'),
+    /Repeated/
   );
   assert.throws(
-    () => cloneOptions(['--output', '/tmp/x', '--no-install', '--browser']),
+    () => generationOptions(['--output', '/tmp/x', '--no-verify', '--browser'], 'repository'),
     /verification/
   );
 });

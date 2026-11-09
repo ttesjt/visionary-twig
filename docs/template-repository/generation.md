@@ -18,7 +18,8 @@ framework. --template selects one app; --app-name renames its destination.
 --name in repo:clone defines the root package identity/scope. In template:clone,
 --name is a required app directory ID with no default; its root scope is inherited.
 Library templates use library:clone --output <new-directory> with optional
---name @scope/project. They are never expanded into apps/.
+--name @scope/project. They use the same framework baseline and a separate library
+commit, remain valid targets for later app addition, and never expand into apps/.
 
 Both app commands accept --offline (populated store), --no-verify (skip aggregate
 validate, still reconcile and verify installation/prepare), and --browser (also

@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parse, stringify } from 'yaml';
+import { DEPENDENCY_GROUPS } from '../lib/workspace-layers.mjs';
 import { copySource, inside, readJson, writeJson } from './files.mjs';
 
 export const WORKSPACE_CONTRACT_VERSION = 1;
@@ -44,12 +45,7 @@ export function mergeRequirements(target, contribution = {}) {
 function usedCatalogs(destination, manifest) {
   const needed = new Set();
   function collect(value) {
-    for (const group of [
-      'dependencies',
-      'devDependencies',
-      'peerDependencies',
-      'optionalDependencies',
-    ])
+    for (const group of DEPENDENCY_GROUPS)
       for (const [name, version] of Object.entries(value[group] ?? {}))
         if (version === 'catalog:') needed.add(name);
   }

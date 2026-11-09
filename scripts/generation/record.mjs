@@ -70,6 +70,12 @@ export function appendWorkspaceRecord(source, destination, record, plan) {
       destination: entry.destination,
       version: entry.manifest.version,
     };
+  for (const entry of plan.templates.filter((entry) => entry.type === 'library'))
+    record.packages[entry.manifest.name] = {
+      name: entry.packageName,
+      destination: entry.destination,
+      version: entry.manifest.version,
+    };
   for (const entry of plan.templates.filter((entry) => entry.type === 'app'))
     record.applications.push({
       id: entry.appId,

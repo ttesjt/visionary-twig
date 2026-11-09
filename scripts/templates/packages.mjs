@@ -85,14 +85,7 @@ export function checkReusablePackage(target, entry, expectedManifest) {
     if (!isDeepStrictEqual(current[key], expectedManifest[key]))
       throw new Error('Incompatible existing package ' + entry.destination + ': ' + key);
   // API and dependency declarations are the reusable contract. User implementations stay owned by the target.
-  for (const key of [
-    'exports',
-    'dependencies',
-    'devDependencies',
-    'peerDependencies',
-    'optionalDependencies',
-    'workspaceEntrypoints',
-  ])
+  for (const key of ['exports', ...DEPENDENCY_GROUPS, 'workspaceEntrypoints'])
     if (!isDeepStrictEqual(current[key] ?? {}, expectedManifest[key] ?? {}))
       throw new Error('Incompatible existing package ' + entry.destination + ': ' + key);
 }

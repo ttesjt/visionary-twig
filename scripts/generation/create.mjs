@@ -28,9 +28,9 @@ export async function cloneRepository(
     const check = await planProject(source, {
       name: options.name,
       templates: [template],
-      appNames: { [template]: appName },
+      ...(options.kind === 'library' ? {} : { appNames: { [template]: appName } }),
     });
-    if (check.templates.length !== 1 || check.templates[0].type !== 'app')
+    if (check.templates.length !== 1 || check.templates[0].type !== (options.kind ?? 'app'))
       throw new Error('Choose one app template; library templates use library:clone.');
   }
   assertExternalTarget(source, destination);

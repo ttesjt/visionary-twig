@@ -1,6 +1,7 @@
 import { existsSync, lstatSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { discoverApps, MAX_TCP_PORT } from '../../tooling/workspace-apps.ts';
+import { DEPENDENCY_GROUPS } from '../lib/workspace-layers.mjs';
 import { planProject } from '../templates/plan.mjs';
 import { readJson } from '../templates/files.mjs';
 import { assertAppName, DEFAULT_APP_TEMPLATE } from '../templates/identities.mjs';
@@ -21,12 +22,7 @@ function allocatePort(first, used) {
 function mappedManifest(manifest, mapping) {
   const output = globalThis.structuredClone(manifest);
   output.name = mapping[manifest.name] ?? manifest.name;
-  for (const group of [
-    'dependencies',
-    'devDependencies',
-    'peerDependencies',
-    'optionalDependencies',
-  ])
+  for (const group of DEPENDENCY_GROUPS)
     if (output[group])
       output[group] = Object.fromEntries(
         Object.entries(output[group]).map(([key, value]) => [mapping[key] ?? key, value])
@@ -34,20 +30,24 @@ function mappedManifest(manifest, mapping) {
   return output;
 }
 export async function planTemplateAddition(source, target, options) {
-  assertAppName(options.appName);
+  const kind = options.kind ?? 'app';
+  if (!['app', 'library'].includes(kind)) throw new Error('Unsupported template task kind.');
+  if (kind === 'app') assertAppName(options.appName);
   const record = readWorkspaceRecord(target);
   safeTargetPath(target, 'pnpm-workspace.yaml');
   const plan = await planProject(source, {
     name: record.projectName,
     templates: [options.template ?? DEFAULT_APP_TEMPLATE],
-    appNames: { [options.template ?? DEFAULT_APP_TEMPLATE]: options.appName },
+    ...(kind === 'app'
+      ? { appNames: { [options.template ?? DEFAULT_APP_TEMPLATE]: options.appName } }
+      : {}),
   });
-  if (plan.templates.length !== 1 || plan.templates[0].type !== 'app')
+  if (plan.templates.length !== 1 || plan.templates[0].type !== kind)
     throw new Error('Choose one app template; library templates use library:clone.');
-  const app = plan.templates[0];
-  const location = safeTargetPath(target, app.destination);
+  const selection = plan.templates[0];
+  const location = safeTargetPath(target, selection.destination);
   if (lstatSync(location, { throwIfNoEntry: false }))
-    throw new Error('App destination already exists: ' + app.destination);
+    throw new Error('App destination already exists: ' + selection.destination);
   const names = new Set([readJson(path.join(target, 'package.json')).name]);
   for (const parent of ['apps', 'packages/shared', 'packages/site', 'packages/adapters']) {
     const folder = safeTargetPath(target, parent);
@@ -60,8 +60,8 @@ export async function planTemplateAddition(source, target, options) {
       if (existsSync(file)) names.add(readJson(file).name);
     }
   }
-  if (names.has(app.packageName))
-    throw new Error('Package name already exists: ' + app.packageName);
+  if (names.has(selection.packageName))
+    throw new Error('Package name already exists: ' + selection.packageName);
   const newPackages = [];
   const directories = { ...plan.mapping.directories };
   for (const entry of plan.packages) {
@@ -92,14 +92,16 @@ export async function planTemplateAddition(source, target, options) {
     }
   }
   plan.mapping = Object.freeze({ ...plan.mapping, directories: Object.freeze(directories) });
-  const used = new Set(discoverApps(target).flatMap((entry) => [entry.devPort, entry.testPort]));
-  app.config = {
-    ...app.config,
-    app: {
-      ...app.config.app,
-      devPort: allocatePort(FIRST_DEV_PORT, used),
-      testPort: allocatePort(FIRST_TEST_PORT, used),
-    },
-  };
+  if (kind === 'app') {
+    const used = new Set(discoverApps(target).flatMap((entry) => [entry.devPort, entry.testPort]));
+    selection.config = {
+      ...selection.config,
+      app: {
+        ...selection.config.app,
+        devPort: allocatePort(FIRST_DEV_PORT, used),
+        testPort: allocatePort(FIRST_TEST_PORT, used),
+      },
+    };
+  }
   return { plan, newPackages, record };
 }

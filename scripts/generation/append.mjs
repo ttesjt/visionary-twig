@@ -25,8 +25,8 @@ export async function appendTemplate(source, target, options, { run = runTargetC
   const head = requireCleanRepository(target);
   const unlock = lockTarget(target);
   let scratch;
-  let appDirectory;
-  let startedTargetBootstrap = false;
+  let newDirectory;
+  let startedTargetInitialization = false;
   try {
     const { plan, newPackages, record } = await planTemplateAddition(source, target, options);
     scratch = mkdtempSync(path.join(tmpdir(), 'template-add-'));
@@ -63,27 +63,29 @@ export async function appendTemplate(source, target, options, { run = runTargetC
         !incoming.some((entry) => file.startsWith(entry.destination + '/'))
       )
         throw new Error('Qualification changed preexisting source; refusing publication: ' + file);
-    const app = plan.templates[0];
-    appDirectory = path.join(target, app.destination);
-    assertNewDestination(appDirectory);
+    const selection = plan.templates[0];
+    newDirectory = path.join(target, selection.destination);
+    assertNewDestination(newDirectory);
     const commit = await publishCandidate(
       target,
       candidate,
       head,
       paths,
-      'feat(' + app.appId + '): initialize from ' + app.id,
+      'feat(' + selection.appId + '): initialize from ' + selection.id,
       async () => {
-        startedTargetBootstrap = true;
+        startedTargetInitialization = true;
         await run(
           target,
-          [
-            'bootstrap',
-            '--app',
-            app.appId,
-            '--source',
-            'default',
-            ...(options.offline ? ['--offline'] : []),
-          ],
+          selection.type === 'app'
+            ? [
+                'bootstrap',
+                '--app',
+                selection.appId,
+                '--source',
+                'default',
+                ...(options.offline ? ['--offline'] : []),
+              ]
+            : ['install', '--frozen-lockfile', ...(options.offline ? ['--offline'] : [])],
           options
         );
       }
@@ -92,15 +94,15 @@ export async function appendTemplate(source, target, options, { run = runTargetC
   } catch (error) {
     // Only disposable outputs under the new app belong to this failed task. User .local is never removed.
     if (
-      startedTargetBootstrap &&
+      startedTargetInitialization &&
       git(target, ['rev-parse', 'HEAD']).trim() === head &&
-      appDirectory &&
-      lstatSync(appDirectory, { throwIfNoEntry: false })?.isDirectory()
+      newDirectory &&
+      lstatSync(newDirectory, { throwIfNoEntry: false })?.isDirectory()
     ) {
       for (const name of ['node_modules', '.generated', '.next'])
-        rmSync(path.join(appDirectory, name), { recursive: true, force: true });
+        rmSync(path.join(newDirectory, name), { recursive: true, force: true });
       try {
-        rmdirSync(appDirectory);
+        rmdirSync(newDirectory);
       } catch {
         /* A concurrently created user file remains owned by the user. */
       }

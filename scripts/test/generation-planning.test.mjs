@@ -20,7 +20,10 @@ import { planProject } from '../templates/plan.mjs';
 import { assertNewDestination, readJson } from '../templates/files.mjs';
 import { createWorkspaceRecord } from '../generation/record.mjs';
 import { planTemplateAddition } from '../generation/planning.mjs';
-import { mergeWorkspaceContributions } from '../generation/contributions.mjs';
+import {
+  mergeWorkspaceContributions,
+  mergeAdapterBuildPermissions,
+} from '../generation/contributions.mjs';
 
 const source = path.resolve(import.meta.dirname, '../..');
 const root = mkdtempSync(path.join(tmpdir(), 'generation-planning-'));
@@ -231,4 +234,17 @@ test('root contributions preserve user fields and reject conflicting versions be
     /Conflicting root contribution/
   );
   assert.deepEqual(readFileSync(manifestPath), before);
+});
+
+test('adding a provider-free adapter does not alter unrelated existing SDK build permission', (context) => {
+  const folder = target(context);
+  const workspaceFile = path.join(folder, 'pnpm-workspace.yaml');
+  const text = readFileSync(workspaceFile, 'utf8');
+  writeFileSync(workspaceFile, text.replace('allowBuilds:', 'allowBuilds:\n  workerd: false'));
+  const before = readFileSync(workspaceFile, 'utf8');
+  mergeAdapterBuildPermissions(source, folder, {
+    packages: [{ layer: 'adapter', source: path.join(source, 'packages/adapters/node-storage') }],
+  });
+  assert.equal(parse(readFileSync(workspaceFile, 'utf8')).allowBuilds.workerd, false);
+  assert.equal(readFileSync(workspaceFile, 'utf8'), before);
 });

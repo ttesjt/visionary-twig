@@ -1,23 +1,28 @@
 import path from 'node:path';
-import { cloneOptions } from './templates/options.mjs';
-import { cloneProject } from './templates/run.mjs';
+import { generationOptions } from './generation/options.mjs';
+import { cloneRepository } from './generation/create.mjs';
+import { readTemplateCatalog } from './templates/catalog.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 try {
-  const options = cloneOptions(process.argv.slice(2));
+  const options = generationOptions(process.argv.slice(2), 'library');
   if (options.help)
     console.log(
-      'pnpm library:clone --output <new-directory> [--name @scope/project] [--offline] [--no-install | --no-verify]\nCreates an independent workspace from node-library; it is not an app template.'
+      'pnpm library:clone --output <new-directory> [--name @scope/project] [--template node-library] [--offline] [--no-verify]\nCreates the same independent framework baseline, then one separate library-template commit.'
     );
-  else {
-    if (
-      options.templates ||
-      Object.keys(options.appNames).length ||
-      options.browser ||
-      options.list
-    )
-      throw new Error('library:clone accepts one Node library; use --output and optional --name.');
-    process.exitCode = await cloneProject(root, { ...options, templates: ['node-library'] });
+  else if (options.list) {
+    for (const entry of await readTemplateCatalog(root))
+      if (entry.type === 'library') console.log(entry.id);
+  } else {
+    const result = await cloneRepository(root, options.destination, options);
+    console.log(
+      'Created library workspace:',
+      options.destination,
+      '\nBaseline:',
+      result.baseCommit,
+      '\nLibrary:',
+      result.commit
+    );
   }
 } catch (error) {
   console.error(error.stack ?? error.message);

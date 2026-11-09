@@ -1,19 +1,27 @@
 import path from 'node:path';
 import { parseOptions } from '../workspace/options.mjs';
-import { assertAppName, DEFAULT_APP_NAME, DEFAULT_APP_TEMPLATE } from '../templates/identities.mjs';
+import {
+  assertAppName,
+  DEFAULT_APP_NAME,
+  DEFAULT_APP_TEMPLATE,
+  DEFAULT_LIBRARY_TEMPLATE,
+} from '../templates/identities.mjs';
 
 export function generationOptions(args, kind) {
-  const repository = kind === 'repository';
-  const values = repository
-    ? ['--output', '--name', '--template', '--app-name']
-    : ['--target', '--name', '--template'];
+  const library = kind === 'library';
+  const repository = kind === 'repository' || library;
+  const values = library
+    ? ['--output', '--name', '--template']
+    : repository
+      ? ['--output', '--name', '--template', '--app-name']
+      : ['--target', '--name', '--template'];
   const flags = [
     '--help',
     '--list',
     '--offline',
     '--no-verify',
-    '--browser',
-    ...(repository ? ['--bare'] : []),
+    ...(!library ? ['--browser'] : []),
+    ...(repository && !library ? ['--bare'] : []),
   ];
   const raw = parseOptions(args, { values, flags });
   if (raw['--help'] || raw['--list']) return { help: !!raw['--help'], list: !!raw['--list'] };
@@ -32,12 +40,13 @@ export function generationOptions(args, kind) {
     throw new Error('--bare cannot be combined with --template, --app-name or --browser.');
   if (raw['--browser'] && raw['--no-verify']) throw new Error('--browser requires verification.');
   const appName = repository ? (raw['--app-name'] ?? DEFAULT_APP_NAME) : raw['--name'];
-  assertAppName(appName);
+  if (!library) assertAppName(appName);
   return {
     destination: path.resolve(destination),
     ...(repository && raw['--name'] ? { name: raw['--name'] } : {}),
-    appName,
-    template: raw['--template'] ?? DEFAULT_APP_TEMPLATE,
+    ...(!library ? { appName } : {}),
+    template: raw['--template'] ?? (library ? DEFAULT_LIBRARY_TEMPLATE : DEFAULT_APP_TEMPLATE),
+    ...(library ? { kind: 'library' } : {}),
     bare: !!raw['--bare'],
     offline: !!raw['--offline'],
     verify: !raw['--no-verify'],
