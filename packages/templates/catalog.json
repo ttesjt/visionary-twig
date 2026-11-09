@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "node-library",
+      "kind": "node-library",
+      "destination": "packages/shared/example-library",
+      "origin": {
+        "commit": "60f483a380d88cc67fb21d90fa82adf4e274b79f",
+        "path": "packages/templates/node-library"
+      }
+    }
+  ]
+}
