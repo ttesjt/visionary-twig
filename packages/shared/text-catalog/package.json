@@ -1,0 +1,84 @@
+{
+  "name": "@frontend/text-catalog",
+  "version": "0.1.0",
+  "description": "Typed UI text catalogs with explicit preparation",
+  "private": true,
+  "type": "module",
+  "workspaceKind": "react-library",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./resource": {
+      "types": "./dist/resource/index.d.ts",
+      "import": "./dist/resource/index.js"
+    },
+    "./resource/react": {
+      "types": "./dist/resource/react.d.ts",
+      "import": "./dist/resource/react.js"
+    },
+    "./resource/node": {
+      "types": "./dist/resource/node.d.ts",
+      "import": "./dist/resource/node.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rm -rf dist coverage *.tsbuildinfo",
+    "dev": "tsc --build tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "react": "catalog:",
+    "@types/react": "catalog:",
+    "@testing-library/react": "catalog:"
+  },
+  "dependencies": {
+    "zod": "catalog:",
+    "@frontend/prepared-data": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "workspaceEntrypoints": {
+    ".": "pure",
+    "./resource": "pure",
+    "./resource/react": "client",
+    "./resource/node": "node"
+  },
+  "workspaceFeatures": {
+    "src": {
+      "public": [
+        "index.ts",
+        "resource/index.ts",
+        "resource/node.ts",
+        "resource/react.tsx"
+      ],
+      "shared": [
+        "index.ts",
+        "resource/index.ts",
+        "resource/node.ts",
+        "resource/react.tsx"
+      ]
+    }
+  }
+}
