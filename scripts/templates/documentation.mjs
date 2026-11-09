@@ -1,31 +1,10 @@
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { readDelivery } from './delivery.mjs';
+import { markdownFiles, checkDocumentationLinks } from '../lib/documentation-links.mjs';
 
-const NON_DOCUMENTS = new Set([
-  '.git',
-  'node_modules',
-  '.next',
-  'dist',
-  '.generated',
-  '.local',
-  '.cache',
-  'test-results',
-  'playwright-report',
-]);
-export function markdownFiles(root) {
-  const files = [];
-  function visit(folder) {
-    for (const entry of readdirSync(folder, { withFileTypes: true })) {
-      if (NON_DOCUMENTS.has(entry.name)) continue;
-      const file = path.join(folder, entry.name);
-      if (entry.isDirectory()) visit(file);
-      else if (entry.isFile() && entry.name.endsWith('.md')) files.push(file);
-    }
-  }
-  visit(root);
-  return files;
-}
+export { markdownFiles } from '../lib/documentation-links.mjs';
+
 /** Translate source-relative document links through the same delivery/package mappings. */
 export function rewriteDeliveredDocumentation(
   source,
@@ -85,13 +64,12 @@ export function rewriteDeliveredDocumentation(
   }
 }
 export function checkDeliveredDocumentation(target, files = markdownFiles(target)) {
-  const errors = [];
-  for (const file of files)
-    for (const [, link] of readFileSync(file, 'utf8').matchAll(/\]\(([^)]+)\)/gu)) {
-      if (/^[a-z][a-z0-9+.-]*:/iu.test(link) || link.startsWith('#')) continue;
-      const [relative] = link.split('#');
-      if (!existsSync(path.resolve(path.dirname(file), relative)))
-        errors.push(path.relative(target, file) + ': ' + link);
-    }
-  if (errors.length) throw new Error('Broken delivered documentation links:\n' + errors.join('\n'));
+  const errors = checkDocumentationLinks(target, files);
+  if (errors.length)
+    throw new Error(
+      'Broken delivered documentation links:\n' +
+        errors
+          .map((error) => `${error.file}:${error.line}: ${error.message}: ${error.target}`)
+          .join('\n')
+    );
 }

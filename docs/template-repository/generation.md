@@ -114,3 +114,12 @@ source-hidden preparation/development/build. Source pnpm validate covers policy 
 behavior regressions; pnpm test:templates exercises real production browser, resources,
 locale, tracking isolation and page/root error recovery. Temporary verification
 projects are printed by the harness and retained for inspecting failures.
+
+Local Markdown acceptance checks file destinations and ATX heading/explicit HTML
+ID fragments, including encoded paths, inline/image and defined reference links.
+Fenced and inline code, external URLs and ignored build/local output are not
+crawled. The same checker is used by bare creation, application/library addition
+and public-artifact verification. New foundations check all delivered guides;
+addition checks only incoming package/app documentation against the complete target.
+Existing user guides are neither rewritten nor required to be complete before a
+new app can be added. Documentation does not add packages outside the delivery plan.
