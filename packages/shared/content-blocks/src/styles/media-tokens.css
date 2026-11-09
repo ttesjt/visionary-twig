@@ -1,0 +1,9 @@
+:where(:root) {
+  --ui-media-size-compact: 10rem;
+  --ui-media-size-regular: 20rem;
+  --ui-media-size-wide: 40rem;
+  --ui-media-height-compact: 12rem;
+  --ui-media-height-regular: 20rem;
+  --ui-media-height-tall: 26rem;
+  --ui-media-viewport-limit: 70dvb;
+}

@@ -1,0 +1,79 @@
+{
+  "name": "@frontend/content-blocks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Semantic content and media blocks with serializable schemas",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "import": "./dist/schema.js"
+    },
+    "./gallery": {
+      "types": "./dist/gallery.d.ts",
+      "import": "./dist/gallery.js"
+    },
+    "./viewer": {
+      "types": "./dist/viewer.d.ts",
+      "import": "./dist/viewer.js"
+    },
+    "./README.md": "./README.md",
+    "./default.css": "./src/styles/default.css"
+  },
+  "files": [
+    "dist",
+    "THIRD_PARTY_NOTICES.md",
+    "licenses",
+    "src/styles"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rm -rf dist coverage *.tsbuildinfo",
+    "dev": "tsc --build tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "workspaceKind": "react-library",
+  "dependencies": {
+    "@frontend/ui": "workspace:*",
+    "zod": "catalog:",
+    "lucide-react": "catalog:",
+    "@frontend/text-catalog": "workspace:*",
+    "react-photo-view": "catalog:",
+    "embla-carousel": "catalog:",
+    "embla-carousel-react": "catalog:",
+    "embla-carousel-fade": "catalog:"
+  }
+}

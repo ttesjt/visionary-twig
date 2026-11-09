@@ -1,0 +1,125 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+
+@layer ui-layout {
+  :where(.ui-anchor) {
+    min-inline-size: 0;
+    scroll-margin-block-start: var(--ui-anchor-clearance, 1rem);
+  }
+  :root:has(.ui-anchor) {
+    scroll-behavior: smooth;
+  }
+  :where(.ui-reveal) {
+    --ui-reveal-duration: var(--ui-motion-entrance-normal, 600ms);
+    --ui-reveal-delay: 0ms;
+    --ui-reveal-distance: var(--ui-motion-entrance-distance, 1.25rem);
+    display: flow-root;
+    min-inline-size: 0;
+  }
+  :where(.ui-reveal)[data-duration='quick'] {
+    --ui-reveal-duration: var(--ui-motion-entrance-quick, 300ms);
+  }
+  :where(.ui-reveal)[data-duration='gentle'] {
+    --ui-reveal-duration: var(--ui-motion-entrance-gentle, 900ms);
+  }
+  :where(.ui-reveal)[data-delay='short'] {
+    --ui-reveal-delay: var(--ui-motion-entrance-delay-short, 120ms);
+  }
+  :where(.ui-reveal)[data-delay='long'] {
+    --ui-reveal-delay: var(--ui-motion-entrance-delay-long, 240ms);
+  }
+  :where(.ui-reveal-content) {
+    min-inline-size: 0;
+  }
+  :where(.ui-reveal):is([data-reveal-state='waiting'], [data-reveal-state='entering']) {
+    overflow: clip;
+  }
+  :where(.ui-reveal)[data-reveal-state='waiting'] > .ui-reveal-content {
+    opacity: 0;
+  }
+  :where(.ui-reveal)[data-reveal-state='waiting'][data-effect='rise'] > .ui-reveal-content {
+    transform: translateY(var(--ui-reveal-distance));
+  }
+  :where(.ui-reveal)[data-reveal-state='waiting'][data-effect='slide-start'] > .ui-reveal-content {
+    transform: translateX(calc(-1 * var(--ui-reveal-distance)));
+  }
+  :where(.ui-reveal)[data-reveal-state='waiting'][data-effect='slide-end'] > .ui-reveal-content {
+    transform: translateX(var(--ui-reveal-distance));
+  }
+  :where(.ui-reveal)[data-reveal-state='waiting'][data-effect='scale'] > .ui-reveal-content {
+    transform: scale(var(--ui-motion-entrance-scale, 0.96));
+  }
+  :where(.ui-reveal)[data-reveal-state='waiting'][data-effect='wipe'] > .ui-reveal-content {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+  }
+  :where(.ui-reveal)[data-reveal-state='entering'] > .ui-reveal-content {
+    transition-property: opacity, transform, clip-path;
+    transition-duration: var(--ui-reveal-duration);
+    transition-delay: var(--ui-reveal-delay);
+    transition-timing-function: var(--ui-motion-entrance-easing, cubic-bezier(0.2, 0.65, 0.3, 1));
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0);
+  }
+  :where(.ui-reveal)[data-reveal-state='visible'] > .ui-reveal-content {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+  :where(.ui-reveal):focus-within {
+    overflow: visible;
+  }
+  :where(.ui-reveal):focus-within > .ui-reveal-content,
+  :where(.ui-reveal):has(:target) > .ui-reveal-content,
+  :where(.ui-anchor):target .ui-reveal-content {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+  :where(.ui-reveal):dir(rtl)[data-reveal-state='waiting'][data-effect='slide-start']
+    > .ui-reveal-content {
+    transform: translateX(var(--ui-reveal-distance));
+  }
+  :where(.ui-reveal):dir(rtl)[data-reveal-state='waiting'][data-effect='slide-end']
+    > .ui-reveal-content {
+    transform: translateX(calc(-1 * var(--ui-reveal-distance)));
+  }
+  :where(.ui-reveal):dir(rtl)[data-reveal-state='waiting'][data-effect='wipe']
+    > .ui-reveal-content {
+    clip-path: inset(0 0 0 100%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root:has(.ui-anchor) {
+      scroll-behavior: auto;
+    }
+    :where(.ui-reveal) > .ui-reveal-content {
+      opacity: 1 !important;
+      transform: none !important;
+      clip-path: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+@layer ui-layout {
+  :where(.ui-scroll-boundary) {
+    position: relative;
+    display: flow-root;
+    min-inline-size: 0;
+  }
+  :where(.ui-scroll-boundary-marker) {
+    position: absolute;
+    inset-inline-start: 0;
+    inline-size: 1px;
+    block-size: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  :where(.ui-scroll-boundary-marker)[data-edge='start'] {
+    inset-block-start: 0;
+  }
+  :where(.ui-scroll-boundary-marker)[data-edge='end'] {
+    inset-block-end: 0;
+  }
+}

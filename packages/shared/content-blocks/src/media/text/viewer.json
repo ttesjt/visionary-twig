@@ -1,0 +1,22 @@
+{
+  "previous": "Previous image",
+  "next": "Next image",
+  "loading": "Loading image…",
+  "retry": "Retry image",
+  "close": "Close viewer",
+  "controls": "Image view controls",
+  "zoomOut": "Zoom out",
+  "zoomIn": "Zoom in",
+  "actualSize": "Actual size",
+  "reset": "Reset zoom",
+  "expand": "Expand viewer",
+  "restore": "Restore viewer",
+  "fit": "Fit image",
+  "viewport": "Image viewport",
+  "failure": "Image unavailable",
+  "selection": "Image selection",
+  "hint": "Pinch or zoom to see details. Drag to explore, and use the arrow keys to browse images.",
+  "scale": "{percent}% of fit",
+  "selectImage": "View image {current} of {total}",
+  "count": "{current} / {total}"
+}

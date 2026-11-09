@@ -1,0 +1,16 @@
+{
+  "previous": "Previous image",
+  "next": "Next image",
+  "failure": "Image unavailable",
+  "empty": "No images available",
+  "choose": "Choose image",
+  "pause": "Pause slideshow",
+  "resume": "Resume slideshow",
+  "count": "{current} / {total}",
+  "countLabel": "Image {current} of {total}",
+  "stripHint": "Scroll horizontally to browse all {total} images.",
+  "viewImage": "View image: {description}",
+  "showImage": "Show image {current}: {description}",
+  "viewerLabel": "{label} — image viewer",
+  "carouselRoleDescription": "carousel"
+}
