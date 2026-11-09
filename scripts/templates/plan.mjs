@@ -1,26 +1,14 @@
-import { readAdapterProviderPackages, isProviderPackage } from '../lib/workspace-layers.mjs';
-import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { readTemplateCatalog } from './catalog.mjs';
-import { readJson } from './files.mjs';
+import { readAvailablePackages, packageClosure } from './packages.mjs';
+import { packageScope, assertAppName, DEFAULT_PROJECT_NAME } from './identities.mjs';
 
-const DEPENDENCY_GROUPS = [
-  'dependencies',
-  'devDependencies',
-  'optionalDependencies',
-  'peerDependencies',
-];
-function scopedName(value) {
-  const match = /^(@[a-z0-9][a-z0-9-]*)\/([a-z][a-z0-9-]*)$/u.exec(value);
-  if (!match) throw new Error('Project name must be scoped, for example @example/frontend.');
-  return match[1];
-}
+/** Pure source planning; Git is not needed to inspect template provenance. */
 export async function planProject(root, options = {}) {
   const catalog = await readTemplateCatalog(root);
-  const providerPackages = readAdapterProviderPackages(root);
   const requested =
     options.templates ?? catalog.filter((entry) => entry.type === 'app').map((entry) => entry.id);
-  if (!requested.length || new Set(requested).size !== requested.length)
+  if (!Array.isArray(requested) || new Set(requested).size !== requested.length)
     throw new Error('Choose distinct templates.');
   const entries = new Map(catalog.map((entry) => [entry.id, entry]));
   const visiting = new Set();
@@ -36,13 +24,13 @@ export async function planProject(root, options = {}) {
     selected.set(id, entry);
   }
   for (const id of requested) select(id);
-  const name = options.name ?? '@frontend/starter';
-  const scope = scopedName(name);
+  const name = options.name ?? DEFAULT_PROJECT_NAME;
+  const scope = packageScope(name);
   const appNames = options.appNames ?? {};
-  for (const id of Object.keys(appNames)) {
+  for (const [id, value] of Object.entries(appNames)) {
     if (selected.get(id)?.type !== 'app')
       throw new Error('App mapping must target a selected app template: ' + id);
-    if (!/^[a-z][a-z0-9-]*$/u.test(appNames[id])) throw new Error('Invalid app destination ID.');
+    assertAppName(value);
   }
   const templates = [...selected.values()].map((entry) => {
     const destination = appNames[entry.id] ? 'apps/' + appNames[entry.id] : entry.destination;
@@ -53,58 +41,27 @@ export async function planProject(root, options = {}) {
       packageName: scope + '/' + path.basename(destination),
     };
   });
-  const destinations = templates.map((entry) => entry.destination);
-  if (new Set(destinations).size !== destinations.length)
+  if (new Set(templates.map((entry) => entry.destination)).size !== templates.length)
     throw new Error('Colliding template destinations.');
-  const shared = new Map();
-  for (const layer of ['shared', 'site']) {
-    const packageRoot = path.join(root, 'packages', layer);
-    if (!existsSync(packageRoot)) continue;
-    for (const entry of readdirSync(packageRoot, { withFileTypes: true })) {
-      const source = path.join(packageRoot, entry.name);
-      if (!entry.isDirectory() || !existsSync(path.join(source, 'package.json'))) continue;
-      const manifest = readJson(path.join(source, 'package.json'));
-      shared.set(manifest.name, {
-        source,
-        layer,
-        manifest,
-        destination: 'packages/' + layer + '/' + entry.name,
-        packageName: scope + '/' + manifest.name.split('/')[1],
-      });
+  const available = readAvailablePackages(root, scope);
+  const extras = templates.flatMap((entry) => entry.config.packages ?? []);
+  if (options.allShared)
+    extras.push(
+      ...[...available.values()]
+        .filter((entry) => entry.layer === 'shared')
+        .map((entry) => entry.manifest.name)
+    );
+  const packages = packageClosure(root, available, templates, extras);
+  const sitePackageNames = new Set(
+    packages.filter((entry) => entry.layer === 'site').map((entry) => entry.packageName)
+  );
+  for (const entry of templates) {
+    if (entry.type === 'app' && sitePackageNames.has(entry.packageName)) {
+      entry.packageName += '-app';
     }
   }
-  const packages = new Map();
-  const walking = new Set();
-  function dependencies(manifest) {
-    for (const group of DEPENDENCY_GROUPS)
-      for (const [dependency, version] of Object.entries(manifest[group] ?? {})) {
-        if (isProviderPackage(dependency, providerPackages))
-          throw new Error('Provider SDKs cannot be cloned into neutral templates: ' + dependency);
-        if (!version.startsWith('workspace:')) continue;
-        if (walking.has(dependency)) throw new Error('Shared dependency cycle: ' + dependency);
-        if (packages.has(dependency)) continue;
-        const entry = shared.get(dependency);
-        if (!entry)
-          throw new Error(
-            'Only shared and site workspace dependencies can be cloned: ' + dependency
-          );
-        walking.add(dependency);
-        dependencies(entry.manifest);
-        walking.delete(dependency);
-        packages.set(dependency, entry);
-      }
-  }
-  for (const entry of templates) dependencies(entry.manifest);
-  const siteNames = new Set(
-    [...packages.values()]
-      .filter((entry) => entry.layer === 'site')
-      .map((entry) => entry.packageName)
-  );
-  for (const entry of templates)
-    if (entry.type === 'app' && siteNames.has(entry.packageName)) entry.packageName += '-app';
-  const all = [...packages.values(), ...templates];
-  const outputNames = [name, ...all.map((entry) => entry.packageName)];
-  if (new Set(outputNames).size !== outputNames.length)
+  const all = [...packages, ...templates];
+  if (new Set([name, ...all.map((entry) => entry.packageName)]).size !== all.length + 1)
     throw new Error('Colliding output package names.');
   const mapping = Object.freeze({
     packages: Object.freeze(
@@ -119,5 +76,5 @@ export async function planProject(root, options = {}) {
       )
     ),
   });
-  return { name, scope, templates, packages: [...packages.values()], mapping };
+  return { name, scope, templates, packages, mapping };
 }

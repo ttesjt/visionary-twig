@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { inside, readJson } from './files.mjs';
 
 const CATALOG_VERSION = 1;
-const ID = /^[a-z][a-z0-9-]*$/u;
+import { TEMPLATE_ID_PATTERN as ID } from './identities.mjs';
 export async function readTemplateCatalog(root) {
   const directory = path.join(root, 'packages/templates');
   const catalog = readJson(path.join(directory, 'catalog.json'));
@@ -46,6 +46,13 @@ export async function readTemplateCatalog(root) {
         !config.requires.every((id) => typeof id === 'string' && ID.test(id)))
     )
       throw new Error('Invalid required templates.');
+    if (
+      config.packages !== undefined &&
+      (!Array.isArray(config.packages) ||
+        !config.packages.every((name) => typeof name === 'string') ||
+        new Set(config.packages).size !== config.packages.length)
+    )
+      throw new Error('Invalid template delivery packages.');
     entries.push({ ...entry, type, destination, source, manifest, config });
   }
   return entries;

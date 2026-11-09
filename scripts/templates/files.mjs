@@ -1,4 +1,4 @@
-import { cpSync, existsSync, lstatSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { cpSync, lstatSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 export const isTextSource = (name) => /\.(?:json|[cm]?[jt]sx?|md|ya?ml|css)$/u.test(name);
@@ -8,6 +8,9 @@ const GENERATED = new Set([
   'node_modules',
   'dist',
   '.next',
+  '.open-next',
+  '.wrangler',
+  '.DS_Store',
   'coverage',
   '.cache',
   '.local',
@@ -32,6 +35,8 @@ export function inside(directory, relative) {
 export function copySource(source, destination, excluded = []) {
   cpSync(source, destination, {
     recursive: true,
+    force: false,
+    errorOnExist: true,
     filter(file) {
       const name = path.basename(file);
       const relative = path.relative(source, file).split(path.sep).join('/');
@@ -96,5 +101,6 @@ export function rewritePackageNames(directory, names) {
   visit(directory);
 }
 export function assertNewDestination(destination) {
-  if (existsSync(destination)) throw new Error('Destination already exists: ' + destination);
+  if (lstatSync(destination, { throwIfNoEntry: false }))
+    throw new Error('Destination already exists: ' + destination);
 }
