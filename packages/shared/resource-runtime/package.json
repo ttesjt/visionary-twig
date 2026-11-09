@@ -1,0 +1,77 @@
+{
+  "name": "@frontend/resource-runtime",
+  "version": "0.1.0",
+  "description": "Portable resource plans, validated snapshots and React initialization boundaries",
+  "private": true,
+  "type": "module",
+  "workspaceKind": "react-library",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./http": {
+      "types": "./dist/http.d.ts",
+      "import": "./dist/http.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rm -rf dist coverage *.tsbuildinfo",
+    "dev": "tsc --build tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "react": "catalog:",
+    "@types/react": "catalog:",
+    "@testing-library/react": "catalog:"
+  },
+  "dependencies": {
+    "@frontend/prepared-data": "workspace:*",
+    "swr": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "workspaceEntrypoints": {
+    ".": "pure",
+    "./http": "pure",
+    "./react": "client"
+  },
+  "workspaceFeatures": {
+    "src": {
+      "public": [
+        "index.ts",
+        "http.ts",
+        "react.tsx"
+      ],
+      "shared": [
+        "index.ts",
+        "http.ts",
+        "react.tsx"
+      ]
+    }
+  }
+}
