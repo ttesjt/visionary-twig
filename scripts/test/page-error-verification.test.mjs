@@ -6,8 +6,9 @@ import path from 'node:path';
 import { installPageErrorFixture } from '../templates/page-error-fixture.mjs';
 
 function fixture(context) {
-  const root = mkdtempSync(path.join(tmpdir(), 'page-error-verification-'));
-  context.after(() => rmSync(root, { recursive: true, force: true }));
+  const parent = mkdtempSync(path.join(tmpdir(), 'page-error-verification-'));
+  const root = path.join(parent, 'project');
+  context.after(() => rmSync(parent, { recursive: true, force: true }));
   const directory = path.join(root, 'apps/plain');
   const routeRoot = path.join(directory, 'src/app/[locale]');
   mkdirSync(routeRoot, { recursive: true });
@@ -19,7 +20,7 @@ function fixture(context) {
     '',
   ].join('\n');
   writeFileSync(layoutPath, layout);
-  return { root, app: { directory }, routeRoot, layoutPath, layout };
+  return { parent, root, app: { directory }, routeRoot, layoutPath, layout };
 }
 
 test('page-error fault injection refuses a source Git worktree before writing', (context) => {
@@ -73,4 +74,21 @@ test('an interrupted fault verification restores original bytes and leaves unrel
   ])
     assert.equal(existsSync(path.join(f.routeRoot, name)), false);
   assert.equal(existsSync(path.join(f.app.directory, '.cache/page-error-verification')), false);
+});
+
+test('generated Git projects require their explicitly owned verification area', (context) => {
+  const f = fixture(context);
+  mkdirSync(path.join(f.root, '.git'));
+  writeFileSync(path.join(f.root, '.workspace-template.json'), '{}');
+  assert.throws(() => installPageErrorFixture(f.root, f.app), /explicit verification area/);
+  const other = fixture(context);
+  assert.throws(
+    () => installPageErrorFixture(f.root, f.app, { verificationParent: other.parent }),
+    /owned area/
+  );
+  const owned = installPageErrorFixture(f.root, f.app, { verificationParent: f.parent });
+  owned.setFailure('page', true);
+  owned.restore();
+  assert.equal(readFileSync(f.layoutPath, 'utf8'), f.layout);
+  assert.ok(existsSync(path.join(f.root, '.git')));
 });

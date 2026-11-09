@@ -77,7 +77,7 @@ async function inspectErrors(url, fixture) {
 }
 
 /** Invoked only after official generation, never against a developer's source app. */
-export async function verifyPageErrorRecovery(root, id, environment) {
+export async function verifyPageErrorRecovery(root, id, environment, { verificationParent } = {}) {
   const app = selectApp(root, id);
   const build = async () => {
     const code = await runProcesses([pnpmCommand(['build', '--app', id])], {
@@ -86,7 +86,7 @@ export async function verifyPageErrorRecovery(root, id, environment) {
     });
     assert.equal(code, 0, 'Page-error fixture build failed.');
   };
-  const fixture = installPageErrorFixture(root, app);
+  const fixture = installPageErrorFixture(root, app, { verificationParent });
   try {
     await build();
     const port = await freePort();

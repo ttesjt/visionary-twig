@@ -2,6 +2,7 @@ import { verifyPageErrorRecovery } from './templates/verify-errors.mjs';
 import { verifyNamespaceInputsFlow } from './templates/verify-resources.mjs';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { verifyGeneratedWorkspace } from './generation/verification.mjs';
 import { verifyStudioInputsFlow } from './templates/verify-inputs.mjs';
 import { verifyConfiguredTracking, verifyTrackingIsolation } from './templates/verify-tracking.mjs';
 import { trackingTestEnvironment } from './lib/runner-options.mjs';
@@ -50,12 +51,11 @@ if (!sourceOnly) {
         destination,
         '--name',
         '@template-check/workspace',
-        '--app-name',
-        'plain',
         '--offline',
         '--browser',
       ],
       env,
+      verify: () => verifyGeneratedWorkspace(destination, [['web', 'plain-next']]),
     },
     {
       args: [
@@ -70,20 +70,37 @@ if (!sourceOnly) {
         '--browser',
       ],
       env,
+      verify: () =>
+        verifyGeneratedWorkspace(destination, [
+          ['web', 'plain-next'],
+          ['editor', 'studio'],
+        ]),
     },
     {
       args: [
         'repo:clone',
         '--output',
         plainDestination,
+        '--bare',
         '--name',
         '@plain-check/workspace',
-        '--app-name',
+        '--offline',
+      ],
+      env,
+      verify: () => verifyGeneratedWorkspace(plainDestination, []),
+    },
+    {
+      args: [
+        'template:clone',
+        '--target',
+        plainDestination,
+        '--name',
         'welcome',
         '--offline',
         '--browser',
       ],
       env,
+      verify: () => verifyGeneratedWorkspace(plainDestination, [['welcome', 'plain-next']]),
     }
   );
 }
@@ -93,11 +110,14 @@ for (const command of commands) {
     process.exitCode = code;
     break;
   }
+  command.verify?.();
 }
 if (!sourceOnly && !process.exitCode) {
-  await verifyNamespaceInputsFlow(destination, 'plain', env);
+  await verifyNamespaceInputsFlow(destination, 'web', env);
   await verifyNamespaceInputsFlow(plainDestination, 'welcome', env);
-  await verifyPageErrorRecovery(plainDestination, 'welcome', env);
+  await verifyPageErrorRecovery(plainDestination, 'welcome', env, {
+    verificationParent: verificationRoot,
+  });
   await verifyTrackingIsolation(destination, env);
   await verifyStudioInputsFlow(destination, 'editor', env);
   await verifyConfiguredTracking(plainDestination, 'welcome', configuredEnv);

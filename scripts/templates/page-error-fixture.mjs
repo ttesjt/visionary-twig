@@ -1,5 +1,13 @@
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  lstatSync,
+  realpathSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import path from 'node:path';
 
 const CACHE = '.cache/page-error-verification';
@@ -36,12 +44,35 @@ const OWNED_PATHS = Object.keys(ROUTES).map((name) =>
 );
 
 /** Faults belong only to a fresh generated verification project, never a source worktree. */
-export function installPageErrorFixture(root, app) {
-  assert.equal(
-    existsSync(path.join(root, '.git')),
-    false,
-    'Error verification requires a disposable clone.'
+export function installPageErrorFixture(root, app, { verificationParent } = {}) {
+  const physicalRoot = realpathSync(root);
+  const relativeApp = path.relative(physicalRoot, realpathSync(app.directory));
+  assert.ok(
+    relativeApp &&
+      relativeApp !== '..' &&
+      !relativeApp.startsWith('..' + path.sep) &&
+      !path.isAbsolute(relativeApp),
+    'Fault injection must stay inside its disposable clone.'
   );
+  if (existsSync(path.join(root, '.git'))) {
+    assert.ok(
+      lstatSync(path.join(root, '.git')).isDirectory() && typeof verificationParent === 'string',
+      'Error verification requires a disposable clone in an explicit verification area.'
+    );
+    const relative = path.relative(realpathSync(verificationParent), physicalRoot);
+    assert.ok(
+      relative &&
+        relative !== '..' &&
+        !relative.startsWith('..' + path.sep) &&
+        !path.isAbsolute(relative),
+      'Error verification requires a disposable clone inside its owned area.'
+    );
+    assert.ok(
+      existsSync(path.join(root, '.workspace-template.json')) &&
+        !existsSync(path.join(root, 'packages/templates')),
+      'Error verification requires a disposable generated clone, never the template source repository.'
+    );
+  }
   const directory = path.join(app.directory, CACHE);
   assert.equal(existsSync(directory), false, 'Verification control directory already exists.');
   for (const name of OWNED_PATHS)
