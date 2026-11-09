@@ -69,9 +69,21 @@
       "types": "./dist/ui/catalog.d.ts",
       "import": "./dist/ui/catalog.js"
     },
+    "./records": {
+      "types": "./dist/ui/records.d.ts",
+      "import": "./dist/ui/records.js"
+    },
+    "./navigation": {
+      "types": "./dist/ui/navigation.d.ts",
+      "import": "./dist/ui/navigation.js"
+    },
     "./workspace": {
       "types": "./dist/ui/workspace.d.ts",
       "import": "./dist/ui/workspace.js"
+    },
+    "./navigation/text-catalog": {
+      "types": "./dist/ui/navigation/text-catalog.d.ts",
+      "import": "./dist/ui/navigation/text-catalog.js"
     },
     ".": {
       "types": "./dist/index.d.ts",

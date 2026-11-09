@@ -1,0 +1,6 @@
+{
+  "title": "Discard unsaved changes?",
+  "description": "Changes that have not been saved will be discarded.",
+  "cancel": "Keep editing",
+  "confirm": "Discard changes"
+}

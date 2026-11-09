@@ -337,7 +337,28 @@ confirmation summary and publication I/O.
 metadata, null omits the repeated heading, and a node supplies host-specific
 content. Navigation, error boundaries and route content lifetime stay unchanged.
 
-## Resource workspaces
+## Resource workspaces and record updates
+
+`./records` exposes `StudioRecordWorkspace` (list/inspector/preview slots),
+`StudioRecordTable` (host-supplied identity and column renderers),
+`StudioRecordInspector`, and `StudioRecordPreview`. These components know no
+schema, website card, provider or route. Record fields and the actual preview
+remain host components. Tables render the supplied snapshot; filtering, remote
+querying and pagination remain host responsibilities.
+
+`useStudioRecordSession({ initial, adapter, validate, identity, fingerprint })`
+uses the neutral `StudioRecordUpdater<Row>` contract from `studio-data/records`.
+The adapter receives a cloned validated snapshot, AbortSignal and captured saved
+baseline (for host-defined optimistic concurrency checks), and returns a
+saved row or an explicit invalid/conflict/not-found/cancelled/unavailable result.
+Only a successful acknowledgement advances the baseline. New edits made during
+a write remain dirty; failed writes retain the draft for retry. A duplicate
+submission is ignored while pending. Unmount aborts the request and ignores late
+acknowledgements. Identity-changing or invalid returned rows cannot mark a draft
+saved. Initial values are read once. After a confirmed resource switch,
+`open(nextRecord)` aborts the previous operation and resets its baseline while
+keeping the surrounding table mounted. Keyed resource components are also supported. Record values must be structured-cloneable and are edited immutably.
+The fingerprint defines editable equality, excluding host-managed references.
 
 `./workspace` exposes `StudioResourceManager` with back/name/action/status slots
 and keyed content tabs, `StudioSourceWorkspace` with source/preview slots and a
@@ -345,6 +366,20 @@ compact toolbar, and `StudioFocusToolbar`. Tab contents stay mounted. The source
 workspace accepts the independent JSON Editor and Viewer rather than constructing
 another session or choosing any transport. Hosts own resource reads, routing,
 publication, association cardinality and all content.
+
+`./navigation` exposes `useStudioNavigationGuard` and `StudioDiscardDialog`.
+Call `guard.request(action)` for row selection or programmatic transitions.
+When dirty, the action waits for confirmation; Cancel preserves the current
+session. An injected `navigate` callback allows ordinary anchor interception;
+`allow(URL)` identifies routes sharing the same working session. Modified clicks,
+new-tab/download links and same-document anchors retain browser behavior.
+Unload protection exists only while needed. Routers must integrate any additional
+programmatic/history navigation themselves; cancellation of a write cannot undo
+an operation already committed by a remote service.
+
+Discard dialog labels use `studioDiscardTextSchema` at `./navigation/text-catalog` so
+host dictionaries can be validated during normal text preparation. This entry
+is independent of component engines and server adapters.
 
 ### Page workspace lifetime
 
