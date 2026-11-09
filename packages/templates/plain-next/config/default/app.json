@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "tracking": {
+    "enabled": false
+  },
+  "home": {
+    "showIntroduction": true
+  },
+  "metadata": {
+    "image": {
+      "src": "/metadata/share.png",
+      "width": 1200,
+      "height": 630
+    }
+  }
+}

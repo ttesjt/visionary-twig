@@ -1,0 +1,109 @@
+{
+  "name": "@frontend/template-plain-next",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "dev": "pnpm app:check && next dev",
+    "build": "pnpm app:check && next build",
+    "start": "next start",
+    "clean": "rm -rf .next coverage *.tsbuildinfo next-env.d.ts",
+    "typecheck": "pnpm app:check && next typegen && tsc --noEmit && tsc --noEmit -p tsconfig.e2e.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "pnpm app:check && vitest run",
+    "test:watch": "pnpm app:check && vitest",
+    "test:coverage": "pnpm app:check && vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "text:prepare": "node ../../../scripts/prepare-app.mjs --kind text --app template-plain-next",
+    "text:check": "node ../../../scripts/prepare-app.mjs --kind text --app template-plain-next --check",
+    "config:prepare": "node ../../../scripts/prepare-app.mjs --kind config --app template-plain-next",
+    "config:check": "node ../../../scripts/prepare-app.mjs --kind config --app template-plain-next --check",
+    "app:prepare": "node ../../../scripts/prepare-app.mjs --kind app --app template-plain-next",
+    "app:check": "node ../../../scripts/prepare-app.mjs --kind app --app template-plain-next --check",
+    "content:prepare": "node ../../../scripts/prepare-app.mjs --kind content --app template-plain-next",
+    "content:check": "node ../../../scripts/prepare-app.mjs --kind content --app template-plain-next --check"
+  },
+  "dependencies": {
+    "@frontend/ui": "workspace:*",
+    "@frontend/styles": "workspace:*",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "zod": "catalog:",
+    "@frontend/event-tracking": "workspace:*",
+    "swr": "catalog:",
+    "@frontend/resource-runtime": "workspace:*",
+    "@frontend/text-catalog": "workspace:*",
+    "server-only": "catalog:",
+    "@frontend/prepared-data": "workspace:*",
+    "next-themes": "catalog:"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "@playwright/test": "catalog:",
+    "@frontend/app-config": "workspace:*"
+  },
+  "workspaceKind": "next-app",
+  "workspaceApp": {
+    "devPort": 3203,
+    "testPort": 3223,
+    "testConfig": "playwright.config.ts",
+    "hostname": "127.0.0.1",
+    "testHook": "test/environment.mjs"
+  },
+  "description": "Next.js starter with prepared Text, AppConfig and Content resources",
+  "workspaceTextResources": true,
+  "workspaceAppConfig": true,
+  "workspaceFeatures": {
+    "src/infra/resources": {
+      "public": [
+        "index.ts",
+        "client.ts",
+        "server.ts",
+        "text/configuration.ts",
+        "text/client.ts",
+        "routing.ts",
+        "http/json.ts",
+        "http/text.ts"
+      ],
+      "shared": [
+        "preparation/prepared.ts",
+        "state/namespace-owner.ts",
+        "state/resource-provider.tsx"
+      ]
+    },
+    "src/infra/resources/text": {
+      "public": [
+        "index.ts",
+        "client.ts",
+        "server.ts",
+        "configuration.ts"
+      ]
+    },
+    "src/infra/theme": {
+      "public": [
+        "client.tsx"
+      ]
+    },
+    "src/infra/metadata": {
+      "public": [
+        "index.ts",
+        "server.ts"
+      ]
+    }
+  },
+  "workspaceContentResources": true
+}

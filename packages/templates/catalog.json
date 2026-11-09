@@ -9,6 +9,15 @@
         "commit": "60f483a380d88cc67fb21d90fa82adf4e274b79f",
         "path": "packages/templates/node-library"
       }
+    },
+    {
+      "id": "plain-next",
+      "kind": "next-app",
+      "destination": "apps/plain",
+      "origin": {
+        "commit": "2b831cef19727af4e24bd806c0f528b8b99bc738",
+        "path": "packages/templates/plain-next"
+      }
     }
   ]
 }
