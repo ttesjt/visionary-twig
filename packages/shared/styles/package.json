@@ -15,6 +15,7 @@
     "./studio.css": "./src/studio.css",
     "./studio-preview.css": "./src/studio-preview.css",
     "./studio-shell.css": "./src/studio-shell.css",
+    "./web-shell.css": "./src/web-shell.css",
     "./content-discovery.css": "./src/content-discovery.css",
     "./navigation-parts.css": "./src/navigation-parts.css"
   },

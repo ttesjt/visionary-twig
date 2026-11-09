@@ -42,6 +42,7 @@ layout. Single-theme sites can customize semantic tokens without designing a
 second palette. CSS imports remain host-owned; there is no theme Provider.
 
 `content-blocks.css` includes neutral media-viewer dots and state styles. Icon
+controls use the default components entry. The optional `web-shell.css` entry
 provides theme-aware frame, navigation and header extension appearance.
 
 ## Studio appearance

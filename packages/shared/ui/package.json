@@ -30,7 +30,20 @@
       "types": "./dist/theme-switcher.d.ts",
       "import": "./dist/theme-switcher.js"
     },
-    "./default.css": "./src/styles/default.css"
+    "./default.css": "./src/styles/default.css",
+    "./web-shell": {
+      "types": "./dist/web-shell/index.d.ts",
+      "import": "./dist/web-shell/index.js"
+    },
+    "./web-shell/header": {
+      "types": "./dist/web-shell/header.d.ts",
+      "import": "./dist/web-shell/header.js"
+    },
+    "./web-shell/header-extension": {
+      "types": "./dist/web-shell/header-extension.d.ts",
+      "import": "./dist/web-shell/header-extension.js"
+    },
+    "./web-shell.css": "./src/styles/web-shell.css"
   },
   "files": [
     "dist",
@@ -69,7 +82,14 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@playwright/test": "catalog:",
+    "vite": "catalog:",
+    "@frontend/styles": "workspace:*"
   },
-  "workspaceKind": "react-library"
+  "workspaceKind": "react-library",
+  "workspaceEntrypoints": {
+    "./web-shell/header": "client",
+    "./web-shell/header-extension": "client"
+  }
 }
