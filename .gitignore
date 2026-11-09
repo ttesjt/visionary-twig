@@ -64,3 +64,17 @@ Thumbs.db
 next-env.d.ts
 playwright-report/
 test-results/
+
+# Engineering records belong in the sibling references directory
+/docs/screenshots/
+/docs/*-delivery.md
+
+# Private local content profiles and databases
+.local/
+
+.generated/
+
+# Cloudflare development runtime state
+.wrangler/
+.dev.vars
+.dev.vars.*

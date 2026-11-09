@@ -8,3 +8,13 @@ pnpm-lock.yaml
 playwright-report
 test-results
 *.log
+
+.cache
+
+.local
+
+.generated/
+
+.wrangler/
+
+**/.open-next/

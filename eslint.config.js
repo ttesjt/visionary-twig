@@ -1,5 +1,11 @@
+import path from 'node:path';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import { discoverApps, discoverTemplateApps } from './tooling/workspace-apps.ts';
+
+const hasNextHosts =
+  [...discoverApps(import.meta.dirname), ...discoverTemplateApps(import.meta.dirname)].length > 0;
+const nextVitals = hasNextHosts ? (await import('eslint-config-next/core-web-vitals')).default : [];
 
 const typescriptFiles = ['**/*.{ts,tsx}'];
 export default tseslint.config(
@@ -8,9 +14,15 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/dist/**',
       '**/.next/**',
+      '**/.open-next/**',
+      '**/.generated/**',
+      '**/.wrangler/**',
+      '**/.local/**',
       '**/coverage/**',
       '**/*.tsbuildinfo',
       '**/next-env.d.ts',
+      'packages/templates/node-library/**',
+      '.cache/**',
       'playwright-report/**',
       'test-results/**',
     ],
@@ -41,14 +53,46 @@ export default tseslint.config(
       ],
     },
   },
+  ...nextVitals
+    .filter((config) => !config.ignores)
+    .map((config) => ({
+      ...config,
+      files: ['apps/*/**/*.{ts,tsx}', 'packages/templates/*/**/*.{ts,tsx}'],
+      settings: {
+        ...config.settings,
+        next: {
+          rootDir: [
+            path.join(import.meta.dirname, 'apps/*/'),
+            path.join(import.meta.dirname, 'packages/templates/*/'),
+          ],
+        },
+      },
+    })),
   {
-    files: ['packages/**/*.{ts,tsx}'],
+    files: [
+      'apps/*/playwright.config.ts',
+      'apps/*/test/e2e/**/*.{ts,tsx}',
+      'packages/templates/*/playwright.config.ts',
+      'packages/templates/*/test/e2e/**/*.{ts,tsx}',
+    ],
+    languageOptions: {
+      parserOptions: {
+        projectService: false,
+        project: ['./apps/*/tsconfig.e2e.json', './packages/templates/*/tsconfig.e2e.json'],
+      },
+    },
+  },
+  {
+    files: ['packages/{shared,site,adapters}/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
-            { group: ['next', 'next/*'], message: 'Framework integration belongs in application hosts.' },
+            {
+              group: ['next', 'next/*'],
+              message: 'Framework integration belongs in application hosts.',
+            },
             {
               group: ['*.css', '**/*.css', '*.scss', '**/*.scss'],
               message: 'Applications select the global stylesheet.',

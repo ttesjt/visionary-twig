@@ -1,9 +1,35 @@
-# Template rules
+# Template repository rules
 
-- Use the pinned pnpm version, Node policy, and one lockfile.
-- Root owns tooling; apps own runnable hosts; packages own reusable capabilities. Keep names and examples domain-neutral.
-- Declare workspaceKind and preserve its required scripts/files. Root naming defines the package scope. Use workspace:* for internal dependencies and declare external runtime dependencies in the owning manifest.
-- Consume public exports. Generic packages cannot import application internals or framework integration.
-- Shared strictness belongs in tsconfig.base.json; Node and browser environments use separate compiler/test configuration.
-- Use packages/template as the Node-library format. Tests cover source behavior and public built exports.
-- Run pnpm validate for code/configuration changes and verify clean output builds when changing package/build conventions.
+- Use the pinned pnpm version, the Node policy in package.json, and one lockfile.
+- Root owns tooling, apps own runnable hosts, and packages own reusable capabilities. Read docs/code-standards.md for portable TS/frontend requirements, docs/monorepo-standards.md for package collaboration and pnpm integration, and docs/repository-conventions.md for this repository's concrete choices and enforcement; consult docs/architecture.md and docs/package-conventions.md before changing boundaries.
+- Tracked content must be fictional and neutral, including applications, tests, documentation and media. Personal identity, projects, biography, contact information and real artwork belong only in ignored local profiles or an external content source. Website copy uses the validated JSON provider; code references keys. All packages use neutral content in runtime defaults, tests, fixtures and documentation. Site-specific packages own domain contracts and presentation behavior; applications provide actual content. Keep those ownership boundaries explicit.
+- Each workspace declares workspaceKind. Apply its required scripts/files and keep checks independent of concrete package names; workspace naming follows the root package scope.
+- React packages and apps own CSS in src/styles/. Hosts explicitly select style entries.
+- Components use stable ui-* classes/data attributes and bounded semantic variants. Do not add Tailwind, CSS modules, local component stylesheets, or authored inline styles.
+- Generic packages cannot import Next.js, app internals, application stores, transports, or stylesheets. Package dependencies and consumption follow docs/monorepo-standards.md.
+- Share compiler/test configuration by environment. Follow the package starting-point matrix and creation/check guidance in docs/repository-conventions.md; distinguish formal scaffolds from reference packages, reuse the applicable engineering contract and document justified deviations. Preserve explicit client directives in interactive React entry points.
+- Follow docs/code-standards.md for recursive feature ownership, explicit public APIs, named exports by default, type safety, constants and observable failures. Errors retain useful identity, safe context and causes; concise UI messages must not erase diagnostics.
+- docs/repository-conventions.md owns workspaceFeatures/workspaceEntrypoints integration, exact check coverage and repository-specific paths/configuration. Apply the portable rules in review even outside automated coverage. Do not auto-register features, refactor existing code solely for size reminders or add barrels everywhere.
+- Code standards, monorepo standards and repository conventions ship with generated clones. References retains rationale and engineering records, not a second standards body or a build dependency. Keep automated rules in root tooling and cover rejection and legitimate-use cases.
+- Add meaningful behavior tests. Use browser tests for layout/theme and async server page flows. Policy regressions belong in scripts/test.
+- Run pnpm validate for code/config changes and pnpm test:e2e for rendering/layout/theme changes. Verify clean output builds when changing package/build conventions.
+- Integrate reviewed worktrees by rebasing their commits onto the agreed main commit, then fast-forward main. Do not create merge commits for worktree integration. Preserve shared base commit IDs; do not rewrite those commits or synchronize other worktrees without explicit authorization.
+- Keep engineering plans, discussions, progress/review reports and verification screenshots in the sibling references directory. Repository documentation covers maintained architecture, contracts and usage; generated browser artifacts belong in ignored test output directories.
+
+- Apps and app templates opting into TextCatalog or AppConfig explicitly prepare their declared inputs before dev/build; never restore runtime default/local copy file switching. Namespace Text hosts prepare dictionaries and identity metadata under .generated/text, load dictionaries through resource plans and never bundle their payload into client JS. AppConfig may opt into preparation/checking without a runtime consumer. Shared mechanics live in prepared-data; text-catalog and app-config own separate contracts. Preserve .local source files; input preparation must not select SQL/media sources. Clone hooks remap preparation commands only for declared capabilities and exclude generated/local content. Starters may omit both systems entirely.
+
+- Application-owned external capability instances live under src/integrations/<capability>/ in the existing hosts. The plain-next starter keeps template-maintained mechanisms in src/infra/ and editable starter declarations in src/site/. User-owned features can follow their own structure. Shared packages export capabilities, never app instances. Event tracking defaults to explicit null URLs; do not add implicit identity or import-time events.
+
+- Concrete integrations live in packages/adapters. Shared, site and template workspaces cannot depend directly or transitively on adapters or provider SDKs, including tests/devDependencies. Adapters consume neutral shared contracts and never app/site code. Apps select/configure providers in src/integrations and inject already-created ports; preserve separate Node development/native runtime entries.
+
+- Do not add consuming applications to this source repository. Maintain framework packages, templates, site/adapters and root tooling in responsibility-scoped commits. Generate user applications into independent target projects. Public framework/template verification must not require existing apps.
+
+- UI TextCatalog contains strings/labels only; images, links, display modes and membership belong to language-independent AppConfig. Business documents/seeds and server secrets belong to their existing boundaries. See docs/infrastructure.md and docs/providers.md. Runtime consumes only prepared outputs: legacy fixed imports or namespace resource readers; never default/.local source selection. Preserve feature Provider lifecycles.
+
+- Self-owned UI APIs use text / *Text / TextCatalog. Preserve saved copy/viewerCopy/cardCopy fields, binding paths and real file/clipboard copying. TextCatalog hosts enforce direct UI literals through workspace policy, including examples/cases; review computed labels and domain fixtures semantically. See docs/text-catalog.md.
+
+- Root commands use --app directory IDs and explicit batch scopes, never per-host shortcut scripts. bootstrap/app:prepare default to auto optional per-file overrides; public template verification explicitly selects default. Missing optional inputs participate in freshness. Template hooks return contributions; the generator owns installation and target changes. See docs/commands.md.
+
+- Root commands expose lifecycle/capability operations, not internal execution phases. Aggregate validation builds libraries once, then reuses those outputs for checks/tests and host builds. Use check:workspace --source for source-only policy.
+
+- Declare capability ownership with workspaceFeatures; follow docs/feature-boundaries.md. Shared cross-package capability entries must be explicitly public and shared; declarations never bypass package or layer rules.

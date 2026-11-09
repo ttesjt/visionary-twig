@@ -1,19 +1,16 @@
-# Frontend Workspace Template
+# Frontend workspace foundation
 
-A pnpm-only workspace with strict shared tooling, private scoped ESM packages, explicit public exports, and package-policy checks. Root owns orchestration, apps/ contains runnable hosts, and packages/ contains reusable capabilities.
+This repository provides the pinned Node/pnpm toolchain, layered workspace policy,
+shared TypeScript and test configuration, and dependency-aware task runners.
 
-## Setup
+Reusable libraries belong in `packages/shared`, optional website-domain packages
+in `packages/site`, concrete provider implementations in `packages/adapters`, and
+copyable starters in `packages/templates`. Consuming applications are generated
+into independent target projects.
 
-Use Node 24.15.0 or a newer Node 24 patch and pnpm 10.28.0.
+Install with `pnpm install --frozen-lockfile`, then run `pnpm validate`.
+The task runners discover the workspaces that are present; an empty capability
+layer does not require placeholder packages or application hosts.
 
-```sh
-pnpm install --frozen-lockfile
-pnpm dev
-pnpm validate
-```
-
-Validation checks package policies, builds public exports, and runs format/lint/type/test checks. The reference Node library demonstrates source tests and built-package consumption. Source checks run before builds so omitted scripts cannot silently bypass validation.
-
-No application framework is installed. Add a runnable host under apps/ when choosing a framework. Root dev watches library outputs.
-
-See [architecture](docs/architecture.md), [package conventions](docs/package-conventions.md), and [copying the template](docs/using-template.md).
+The maintained guides under `docs` define the contracts implemented by the
+framework capabilities. Each package supplies its own API and behavior tests.
