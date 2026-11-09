@@ -34,6 +34,9 @@ export function HomeContent() {
           <Link href={localeHref('/examples/layout', text.locale)}>
             {text.getText('main', 'layout.title')}
           </Link>
+          <Link href={localeHref('/examples/api', text.locale)}>
+            {text.getText('main', 'api.title')}
+          </Link>
         </nav>
       </div>
     </main>

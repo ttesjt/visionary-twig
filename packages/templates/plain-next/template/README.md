@@ -33,7 +33,32 @@ The example file contains a loopback service URL and a fictional key. Replace th
 
 Declare server variables in `src/site/environment.ts`. Server code reads a capability's schema with `readServerEnvironment` from `src/infra/environment/server.ts`. Its `server-only` boundary prevents client imports. Validation happens when that capability is used, so installation and builds do not require upstream credentials. Errors identify fields without printing values.
 
-A `NEXT_PUBLIC_` variable is public and its direct references are inlined into browser JavaScript during `next build`. Set these before building. Private keys use server-only names. Keep secrets out of React props, response bodies and generated Text/AppConfig/Content data. Restart the development process after changing its environment.
+A `NEXT_PUBLIC_` variable is public and its direct references are inlined into browser JavaScript during `next build`. Set these before building. Private keys use server-only names. Our BFF reads them during each request, so a built artifact can use the deployment's runtime secret. Keep secrets out of React props, response bodies and generated Text/AppConfig/Content data. Restart the development process after changing its environment.
+
+## Calling a backend API
+
+At `/examples/api`, the form sends `{"title":"Field notes"}` to `POST /api/examples/slug` and displays `{"slug":"field-notes"}`. Try a punctuation-only title to see a server validation error, then edit it and submit again.
+
+The form is in `src/app/[locale]/examples/api/page.tsx`. Its same-origin endpoint is in `src/app/api/examples/slug/route.ts`. Both run with the starter dev command. Use these two files as a starting point for your own API.
+
+### Calling a dependency with a private key
+
+The second form on `/examples/api` sends its topic to `GET /api/examples/recommendation`. The Route Handler reads the validated server configuration, sends the key in an Authorization header to the configured service, validates the JSON and returns only its public recommendation.
+
+To try the complete local chain, first create the app's `.env.local` from `.env.example`. From the workspace root, run in separate terminals:
+
+```sh
+pnpm --dir apps/{{appId}} demo:upstream
+pnpm dev --app {{appId}}
+```
+
+The development fixture listens only on `127.0.0.1:3215` and accepts `demo-only-key`. It performs real HTTP authentication and requires no cloud account. To change its port or key, set `MOCK_UPSTREAM_PORT` or `MOCK_UPSTREAM_API_KEY` in the shell that starts it, then update the application's private env to match. The fixture uses these explicit shell values; it does not read the app's env files.
+
+The request and mapping live next to `src/app/api/examples/recommendation/route.ts`. The page component is `src/app/[locale]/examples/api/_components/server-api-example.tsx`. Change the site environment schema and the upstream request when connecting your service. The dependency deadline covers both headers and response-body reading; errors, oversized or invalid data and redirects are rejected without forwarding the raw response.
+
+For deployment, provide `EXAMPLE_UPSTREAM_URL` and `EXAMPLE_UPSTREAM_API_KEY` through the hosting platform. The local mock is a development tool. A private upstream key authenticates the BFF to its dependency; decide who may call your public BFF route before connecting a paid or privileged service.
+
+Browser tests use their own loopback mock, a random runtime secret and a separate production server. They override example env settings so they cannot contact your configured upstream, and check that the build-time and runtime secrets stay out of browser assets, requests and SSR output.
 
 ## Metadata
 
@@ -183,15 +208,15 @@ Page components use the public `@/infra/resources/client` hooks. Server preparat
 
 ## Removing the starter examples
 
-Remove the homepage links and `src/app/[locale]/examples/text/` and `src/app/[locale]/examples/content/`, the event-tracking/remote-settings routes and `public/samples/remote-settings/`, and the layout route.
-Remove the corresponding `test/e2e/examples/` acceptance tests. Resource mechanism
-tests under `test/examples/` can remain while this infrastructure is in use.
-The core theme and page-status tests remain outside the route examples.
+You can remove the example pages while keeping the resources, or prune their inputs too:
 
-Optional `textDemo`, `contentDemo` and `makingNotes` declarations and their default
-data can be pruned after their consumers are removed. Keep the `main`, `app` and
-`base` resources used by the homepage and global Layout. Prepare the app again
-after changing declarations or data.
+- Remove `scripts/examples/` and the `demo:upstream` package script when removing the server API demo.
+- Remove the example links from your homepage, the `src/app/[locale]/examples/` tree, its `src/app/api/examples/` endpoints and `public/samples/remote-settings/`.
+- Remove `test/examples/` and `test/e2e/examples/` with their fixtures. Adapt `test/e2e/starter.spec.ts` and `test/e2e/theme.spec.ts` when replacing the starter homepage or its theme control. The core theme tests are outside the removable examples; the demo navigation case is inside them.
+- To prune data, remove the `textDemo`, `contentDemo` and `makingNotes` scope entries. Remove `demo` from the Text namespace list and each locale's `demo.json`. Remove the `catalog` and `making-notes` Content schemas and their files in `content/default/data/`. Once their consumers are gone, you can remove corresponding example keys in each `main.json` and replace the sample tracking events.
+- Run `pnpm app:prepare --app {{appId}}` again, then build. The homepage and global layout use `main`, `app` and `base` in the starter.
+
+For SSR snapshots, language switching, lazy loading and retry behavior see the [resource initialization guide](../../docs/resource-initialization.md).
 
 ## Page errors and recovery
 
@@ -201,6 +226,7 @@ after changing declarations or data.
 | A page's server preparation or render fails                       | `src/app/[locale]/error.tsx`     | Next's route `retry` fetches and renders the segment again; Home leaves the failed route. |
 | A root Layout, global Provider or root resource preparation fails | `src/app/global-error.tsx`       | A standalone HTML document with Reload and Home.                                          |
 | A client resource request, validation or reader publication fails | The nearest `ResourceBoundary`   | Retry that resource region, retaining its existing behavior and cache.                    |
+| An expected form or BFF failure                                   | Its example component            | Keep the user's input and show the modeled error.                                         |
 
 Ordinary 404 and page-error labels are the `status.*` keys in each locale's
 `main.json`. Edit and prepare those as usual. The global fallback deliberately

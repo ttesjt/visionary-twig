@@ -26,7 +26,8 @@
     "app:prepare": "node ../../../scripts/prepare-app.mjs --kind app --app template-plain-next",
     "app:check": "node ../../../scripts/prepare-app.mjs --kind app --app template-plain-next --check",
     "content:prepare": "node ../../../scripts/prepare-app.mjs --kind content --app template-plain-next",
-    "content:check": "node ../../../scripts/prepare-app.mjs --kind content --app template-plain-next --check"
+    "content:check": "node ../../../scripts/prepare-app.mjs --kind content --app template-plain-next --check",
+    "demo:upstream": "node scripts/examples/mock-upstream.ts"
   },
   "dependencies": {
     "@frontend/ui": "workspace:*",

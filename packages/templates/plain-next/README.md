@@ -1,10 +1,10 @@
 # Plain Next.js starter
 
-For the takeover guide delivered to a generated app, see [Your Next.js site](template/README.md). It covers editing the homepage, adding a route and preparing content. Template upgrades can target `src/infra/`; site declarations live in `src/site/`.
+For the takeover guide delivered to a generated app, see [Your Next.js site](template/README.md). It covers editing the homepage, adding a route, preparing content and removing the examples. Template upgrades can target `src/infra/`; site declarations live in `src/site/`.
 
 A Next.js App Router starter with prepared Text, AppConfig and Content resources.
 The root prepares main Text, app configuration and base Content together. Local
-scopes support page-specific text and content without upward mutation.
+scopes demonstrate page-specific text and content without upward mutation.
 
 From the workspace root:
 
@@ -34,6 +34,7 @@ and page overrides, or the generated-app [takeover guide](template/README.md#met
 Retained capabilities:
 
 - Native HTML on the homepage and ordinary examples. In /examples/layout, Row and Column demonstrate spacing and wrapping with the shared layout styles.
+- At `/examples/api`, submit a page title to the same-origin `POST /api/examples/slug` Route Handler. The server validates the JSON and returns a Unicode slug. The slug endpoint runs without credentials or storage. A second form demonstrates a private server key and a real local mock dependency. See the takeover guide for setup.
 - Persistent theme selection through a host-owned next-themes adapter. Preferences
   survive reloads, follow the system and synchronize across tabs. The early script
   restores the root attribute before hydration. UI_THEME_POLICY still accepts
@@ -64,6 +65,11 @@ pnpm template:clone --output ../plain-project --templates plain-next
 The initializer adapts the destination's paths and app metadata. Generated apps
 start at apps/plain with development/test ports 3003/3103. Names and locations
 can be overridden through the root generator. See ../README.md for that contract.
+
+The BFF dependency example has a two-second deadline and bounded JSON responses.
+Its production browser tests start isolated servers and inspect both build-time
+and runtime test secrets. The test hook supplies fictional, unreachable upstream
+settings to keep personal env-file configurations out of the test run.
 
 ## Flat prepared Text
 
