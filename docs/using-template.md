@@ -27,7 +27,7 @@ The generator selects templates and dependencies, computes package/path mappings
 copies source, orders initialization, merges root scripts/versions, installs once,
 and validates. Each template owns its framework-specific configuration and hook;
 shared JSON/path operations live in the generator. Ordinary shared packages have
-no mandatory hook. See the contract.
+no mandatory hook. See [the contract](../packages/templates/README.md).
 
 Only the selected templates and transitive shared dependencies enter the new
 workspace. Source configs work in packages/templates; initialization updates them

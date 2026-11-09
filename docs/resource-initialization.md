@@ -469,7 +469,7 @@ schema describes the resulting artifact. Only preparation uses sourceSchema.
 Runtime definitions and JsonResource call validateJsonArtifact with the artifact
 schema. Repeated load/create/restore/SSR/HTTP validation must preserve JSON values,
 not apply transformations again. Validation rejects changes to a prepared value.
-See the prepared-data contract.
+See the [prepared-data contract](../packages/shared/prepared-data/README.md#source-conversion-and-artifact-validation).
 
 Source workspace policy checks declarations and lifecycle commands without
 executing application TypeScript. It does not assume config/default/app.json or a

@@ -131,7 +131,7 @@ adapter; the example HTTP routes assume a Next server deployment.
 
 See [resource initialization](resource-initialization.md) for APIs and limits,
 [AppConfig](app-config.md) for legacy/namespace preparation, and the
-plain-next guide for the runnable example.
+[plain-next guide](../packages/templates/plain-next/README.md) for the runnable example.
 
 ## Explicit scope gates
 

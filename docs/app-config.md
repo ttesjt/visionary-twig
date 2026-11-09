@@ -102,4 +102,4 @@ input paths. Legacy single-file Config retains its app.json paths.
 
 For conversions, declare an optional sourceSchema in the namespace preparation
 entry and keep schema as the generated-value contract. The Runtime registry uses
-only that artifact schema. See source conversion.
+only that artifact schema. See [source conversion](../packages/shared/prepared-data/README.md#source-conversion-and-artifact-validation).

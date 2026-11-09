@@ -147,7 +147,7 @@ setPreference); `useStudioTheme()` returns it and throws outside the shell.
 Page scope contains the typed `StudioPageContext` (page, registry, navigate).
 `StudioPageOutlet` reads it, throws without the shell, and rejects a route-owned
 entry that has no host route content. Use the tested StudioShell example in the
-package guide
+[package guide](../packages/shared/studio-ui/README.md#workspace-shell-and-code-owned-extensions)
 with a registered component, or `<StudioPageOutlet />` in a shell child route.
 The shell owns appearance and page error/retry boundaries, not storage/auth.
 Theme follows host-controlled values or the shell's mount lifetime; page changes

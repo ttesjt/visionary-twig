@@ -1,0 +1,32 @@
+name: Validate
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm app:prepare --all --include-templates --source default
+      - run: pnpm validate
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:templates
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: browser-test-results
+          path: |
+            test-results/
+            .cache/template-verification/project/test-results/
+            .cache/template-verification/plain-next/test-results/
+          include-hidden-files: true
+          if-no-files-found: ignore

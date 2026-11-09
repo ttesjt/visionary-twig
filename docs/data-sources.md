@@ -17,10 +17,9 @@ any explicit business import/publication workflow. Neither templates nor shared 
 site packages create Cloudflare connections. Tests for neutral business rules inject
 ports; adapter tests stay with their concrete implementation.
 
-See the storage,
-collection,
-Node adapter and
-Cloudflare adapter contracts.
+See the [storage](../packages/shared/storage/README.md),
+[Node adapter](../packages/adapters/node-storage/README.md) and
+[Cloudflare adapter](../packages/adapters/cloudflare/README.md) contracts.
 
 Prepared Text, AppConfig and Content inputs are independent of SQL/media selection.
 Installing, preparing or building resources does not create cloud resources,

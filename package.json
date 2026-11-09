@@ -29,6 +29,7 @@
     "validate": "node scripts/run-workspace.mjs validate",
     "test:tooling": "node --test scripts/test/*.test.mjs",
     "test:e2e:theme-policy": "node scripts/test-theme-policy.mjs",
+    "test:templates": "node scripts/test-templates.mjs",
     "template:clone": "node scripts/clone-template.mjs",
     "text:prepare": "node scripts/prepare-app.mjs --kind text",
     "text:check": "node scripts/prepare-app.mjs --kind text --check",
