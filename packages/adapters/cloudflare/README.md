@@ -4,4 +4,20 @@ D1 and R2 implement the neutral @frontend/storage ports. This package owns only 
 
 The default entry exports createD1Database, createR2Storage and createCloudflareStorage for native bindings supplied by a Worker host. It imports no Node development bridge. The /local entry explicitly opens Wrangler getPlatformProxy and returns a StorageConnection; the caller supplies an absolute config path and remoteBindings flag, and owns close/dispose. It is for local Node servers, never production Workers/browser graphs.
 
-SQL document storage lives in @frontend/storage/content and consumes the existing content-data protocol. Consumers choose providers and inject ports into domain services or ContentStore. Pure adapter tests stay with this package.
+Consumers choose providers and inject storage ports into their domain services. Adapter tests stay with this package.
+
+## Email and human verification
+
+The independent `/email` entry implements `@frontend/email` with the Cloudflare
+Email Sending REST API. Applications inject account ID and API token explicitly;
+imports never read environment variables or make network requests. Only supported
+plain-text fields are serialized; `replyTo` maps to the REST API's `reply_to`.
+The adapter confirms the requested recipient is delivered/queued and rejects
+bounced, suppressed, absent or unacknowledged recipients even on HTTP 200.
+
+The `/turnstile` entry validates single-use Turnstile proofs via Siteverify and
+requires the expected hostname and action. Both entries bound complete fetch/body
+deadlines, response size and cancellation. Public error objects expose only safe
+codes/status; applications own logging and must not serialize exception causes.
+These entries import no Wrangler or Node bridge. Apps own credentials, identity,
+fixed recipients, public widget integration and rate/abuse policy.

@@ -1,7 +1,7 @@
 {
   "name": "@frontend/cloudflare",
   "version": "0.1.0",
-  "description": "Cloudflare storage adapters with an explicit Node development bridge",
+  "description": "Cloudflare storage, email and verification adapters with an explicit Node development bridge",
   "private": true,
   "type": "module",
   "workspaceKind": "node-library",
@@ -13,6 +13,14 @@
     "./local": {
       "types": "./dist/local.d.ts",
       "import": "./dist/local.js"
+    },
+    "./email": {
+      "types": "./dist/email.d.ts",
+      "import": "./dist/email.js"
+    },
+    "./turnstile": {
+      "types": "./dist/turnstile.d.ts",
+      "import": "./dist/turnstile.js"
     }
   },
   "files": [
