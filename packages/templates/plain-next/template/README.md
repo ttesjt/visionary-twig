@@ -5,6 +5,7 @@
 | Change the homepage | Edit `src/app/[locale]/page.tsx` or its starter UI in `_components/home-page.tsx` beside it.                                                      |
 | Change the words    | Edit `content/default/text/<locale>/main.json`, then prepare the app. The reference language defines the keys.                                    |
 | Add a page          | Add `src/app/[locale]/about/page.tsx`. Ordinary pages inherit the global resources. Declare a scope only when a page or section needs extra data. |
+| Remove the demos    | Remove the homepage links and `src/app/[locale]/examples/`. The optional data, tests and declarations are listed below.                           |
 
 From the workspace root:
 
@@ -155,10 +156,10 @@ storage and both fixed policies. These infrastructure tests stay when deleting d
 
 1. Add the JSON in `content/default/data/` and its schema to `src/site/content-schemas.ts`.
 2. Add a scope in `src/site/resource-scopes.ts` referencing that namespace, then run `app:prepare`.
-3. For a server-rendered page, call `prepareScopeResources(scope, locale)` and pass each requested snapshot to its Provider. The locale is optional for a Content-only scope. Wrap the consumer in `ResourceScope`.
+3. For a server-rendered page, call `prepareScopeResources(scope, locale)` and pass each requested snapshot to its Provider. The locale is optional for a Content-only scope. Wrap the consumer in `ResourceScope`, as in `src/app/[locale]/examples/content/page.tsx`.
 4. For an optional section, mount `ResourceScope` when the section opens. The nearest Content Provider gains the namespace; the rest of the page stays usable.
 
-For a translated Content field, accept `contentTextReferenceSchema` in its site schema and store a reference such as `{ "$text": { "namespace": "demo", "key": "works.paper-study.title" } }`. A union with `z.string()` also accepts a literal title. Declare the dictionary in the route scope or inherit it from Layout. A page prepares its content and referenced dictionaries in parallel, then passes the snapshots to its Providers.
+For a translated Content field, accept `contentTextReferenceSchema` in its site schema and store a reference such as `{ "$text": { "namespace": "demo", "key": "works.paper-study.title" } }`. A union with `z.string()` also accepts a literal title. Declare the dictionary in the route scope or inherit it from Layout. The content example prepares its catalog and demo dictionary in parallel for the selected locale, then passes each snapshot to its Provider.
 
 ```tsx
 const content = useContent();
@@ -169,6 +170,18 @@ const works = content.getResolved('catalog', { text }).works;
 `works[i].title` is now a string. Switching languages resolves the same catalog with the new reader. Use `content.get('catalog')` when you need the original JSON, including the references.
 
 Page components use the public `@/infra/resources/client` hooks. Server preparation is available from `@/infra/resources/server`. The root Layout wires these up. `src/infra/` holds the template-maintained implementation and can be upgraded separately from site declarations. Keep the two HTTP route entries in `src/app/resources/` and the Next Proxy and instrumentation entries when using this infrastructure.
+
+## Removing the starter examples
+
+Remove the homepage links and `src/app/[locale]/examples/text/` and `src/app/[locale]/examples/content/`.
+Remove the corresponding `test/e2e/examples/` acceptance tests. Resource mechanism
+tests under `test/examples/` can remain while this infrastructure is in use.
+The core theme and page-status tests remain outside the route examples.
+
+Optional `textDemo`, `contentDemo` and `makingNotes` declarations and their default
+data can be pruned after their consumers are removed. Keep the `main`, `app` and
+`base` resources used by the homepage and global Layout. Prepare the app again
+after changing declarations or data.
 
 ## Page errors and recovery
 

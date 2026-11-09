@@ -22,6 +22,19 @@ for (const width of [320, 1440]) {
   });
 }
 
+test('homepage example links follow their displayed order with the keyboard', async ({ page }) => {
+  await page.goto('/');
+  const links = page.getByRole('navigation').getByRole('link');
+  const destinations = ['/examples/text', '/examples/content'];
+  await expect(links).toHaveCount(destinations.length);
+  await links.first().focus();
+  for (const destination of destinations) {
+    const link = page.locator('nav a[href="' + destination + '"]');
+    await expect(link).toBeFocused();
+    await page.keyboard.press('Tab');
+  }
+});
+
 test('neutral starter changes themes and has no website, editor or example routes', async ({
   page,
   request,
