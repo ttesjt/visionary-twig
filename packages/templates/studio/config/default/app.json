@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "workspace": {
+    "showIntroduction": true
+  },
+  "tracking": {
+    "enabled": false
+  }
+}

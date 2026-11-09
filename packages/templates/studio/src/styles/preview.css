@@ -1,0 +1,6 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example;
+@layer ui-layout {
+  .ui-studio-preview-page {
+    min-block-size: 100dvh;
+  }
+}

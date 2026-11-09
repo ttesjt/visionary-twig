@@ -1,0 +1,10 @@
+{
+  "title": "Sample content",
+  "summary": "A simple page assembled from reusable text, layout and media blocks.",
+  "overview": "Content overview",
+  "imageGrid": "Image grid",
+  "galleryLabel": "Sample gallery",
+  "details": "Text and media",
+  "overviewBody": "This sample combines a heading, a short paragraph and a collection of images. The same content can be arranged in different layouts.",
+  "detailBody": "A section can place an illustration beside a short description. On a smaller screen, the content stacks vertically so that each part stays easy to read."
+}

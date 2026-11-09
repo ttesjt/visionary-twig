@@ -18,6 +18,15 @@
         "commit": "2b831cef19727af4e24bd806c0f528b8b99bc738",
         "path": "packages/templates/plain-next"
       }
+    },
+    {
+      "id": "studio",
+      "kind": "next-app",
+      "destination": "apps/studio",
+      "origin": {
+        "commit": "fc2fcbbf439665051c282e916c09baf0262f16dd",
+        "path": "packages/templates/studio"
+      }
     }
   ]
 }

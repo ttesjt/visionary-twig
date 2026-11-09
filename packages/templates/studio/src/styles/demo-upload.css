@@ -1,0 +1,17 @@
+@layer ui-layout {
+  .ui-studio-upload-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--ui-studio-space-content);
+    align-items: start;
+    min-inline-size: 0;
+  }
+  .ui-studio-upload-layout .ui-studio-record-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (max-width: 70rem) {
+    .ui-studio-upload-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
