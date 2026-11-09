@@ -56,10 +56,13 @@ uses foundation Column for block spacing; `--ui-layout-space-content` controls
 the gap between paragraphs, headings and lists, independently of visual CSS.
 
 Import `@frontend/ui/default.css` and
-`component-owned CSS/content-blocks.css` explicitly in the host. Optionally
+`@frontend/content-blocks/default.css` explicitly in the host. Optionally
 add `@frontend/styles/default.css` and `@frontend/styles/content-blocks.css`.
 Domain entries preserve the shared cascade order. Layout rules have structural
-fallbacks; visual rules reuse foundation tokens. No new theme token is added.
+fallbacks; visual rules reuse foundation tokens. The default entry includes the
+viewer dependency's stylesheet. Hosts that load content features separately can
+use `content-interactions.css`, `content-discovery.css`, or
+`navigation-parts.css` from `@frontend/content-blocks`.
 Public hooks: ui-content-hero, ui-content-summary, ui-heading (data-appearance),
 ui-rich-text, ui-content-section (data-surface), ui-action-links/item/link/reason/hint
 (link data-kind/data-icon), ui-media-figure/frame/image/failure/caption
@@ -114,9 +117,8 @@ and existing ImageAsset JSON formats remain unchanged.
 The content Viewer uses react-photo-view 1.2.7 for photo sizing, swipe, pinch,
 double-tap, drag and zoom. Its thin controlled integration retains native Dialog
 modality/focus, accessible labels, image captions, display-only URLs and named
-selection controls. Art's domain-specific ArtworkViewer is independent. The
-custom pan/scroll-snap/zoom engine has been removed. Zoom buttons and Reset call
-the photo engine; the view uses the full viewport without a Fullscreen API request.
+selection controls. Zoom buttons and Reset call the photo engine. The view uses
+the full viewport.
 Legacy actualSize/expand/restore/fit/scale/hint copy keys remain accepted for old
 documents but no longer select custom zoom presets or a second viewer frame.
 
@@ -211,6 +213,7 @@ There is no arbitrary icon component/HTML prop in the data format.
 ## Examples and verification
 
 Source-adjacent schema, component and selection tests exercise the reusable contracts.
+The Studio starter additionally exercises editor/server rendering and isolated preview behavior.
 Hosts supply their own media and route-level acceptance. Run `pnpm validate` and the
 relevant source-template browser checks.
 
@@ -363,7 +366,7 @@ never changes them or the full-size photo viewer.
 
 Omitting presentation preserves previous geometry. Width presets default to
 10rem / 20rem / 40rem; height presets default to 12rem / 20rem / 26rem. Global
-`--ui-media-size-*`, `--ui-media-height-*` and `--ui-media-viewport-limit` tokens belong to layout-styles.
+`--ui-media-size-*`, `--ui-media-height-*` and `--ui-media-viewport-limit` tokens come from `@frontend/content-blocks/default.css`.
 JSON accepts semantic choices, never arbitrary CSS lengths or style objects.
 
 Gallery placement bounds the whole block, including its controls. Its separate
@@ -382,7 +385,7 @@ uses the original HTML dimensions. The same attributes are emitted during SSR
 and remain usable without JavaScript. Public hooks: `.ui-media-presentation`,
 `data-media-width`, `data-media-height` and `data-media-align`.
 
-## Named destinations
+## Named destinations and entrances
 
 `Anchor` declares a stable destination independently of component bookkeeping IDs:
 
@@ -397,4 +400,290 @@ bookmarks, browser history and focus (`tabIndex=-1` without adding a Tab stop).
 The host owns document-wide ID uniqueness; the JSON adapter validates its own document.
 A destination may wrap any content group. Do not put targets inside hidden tab panels.
 
-Import `component-owned CSS/content-blocks.css` for anchor-clearance hooks.
+`Reveal` wraps a content group without changing its semantic order:
+
+```tsx
+<Reveal effect="rise" duration="normal" delay="short" trigger="visible" once>
+  <MediaFigure image={image} />
+</Reveal>
+```
+
+| Option   | Values                                          | Default |
+| -------- | ----------------------------------------------- | ------- |
+| effect   | fade, rise, slide-start, slide-end, scale, wipe | rise    |
+| duration | quick, normal, gentle                           | normal  |
+| delay    | none, short, long                               | none    |
+| trigger  | visible, early                                  | visible |
+| once     | boolean                                         | true    |
+
+`wipe` is useful for a separator or an illustration. Logical slide directions follow
+writing direction. `early` observes an 80px expanded viewport; `visible` observes the
+actual viewport. Intersection uses the first visible pixel, so tall sections can enter.
+Content already in view on hydration stays visible. `once=false` rearms after leaving.
+Focus and fragment navigation reveal content immediately. JavaScript-disabled clients,
+unsupported observers and reduced-motion users see readable content without animation.
+The state never controls `display`, `hidden` or `aria-hidden`, and waiting preserves
+layout dimensions. Only preset values are accepted in JSON; no CSS/JavaScript strings.
+
+Import `@frontend/content-blocks/default.css` for both capabilities. Global motion
+and anchor-clearance tokens are defined in the content interaction stylesheet. No stylesheet is imported
+by the components. Editor integration is outside these runtime contracts.
+
+## ScrollBoundary
+
+`ScrollBoundary` is a reversible **position sensor**. It preserves its children in
+place, supplies Context and an ordinary React callback, and exposes
+`data-scroll-boundary-state` for CSS/DOM consumers. It does not position, hide, clone,
+move or focus content. It imports no Header, application integration or editor code.
+
+```tsx
+'use client';
+import { ScrollBoundary, useScrollBoundaryState } from '@frontend/content-blocks';
+
+function Readout() {
+  const state = useScrollBoundaryState(); // nearest containing boundary
+  return <output>{state}</output>;
+}
+function Example() {
+  return (
+    <ScrollBoundary range="within" offset={referenceOffset} onStateChange={setPosition}>
+      <Readout />
+      <Article />
+    </ScrollBoundary>
+  );
+}
+```
+
+| Prop          | Meaning                                                                                                               | Default    |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- | ---------- |
+| range         | `past-start`: stays active beyond its start; `within`: active only while the reference line lies within the container | past-start |
+| offset        | finite, nonnegative CSS pixels below the selected scroll viewport's top; clamped to its height                        | 0          |
+| disabled      | stops sensing; children remain interactive                                                                            | false      |
+| scrollRoot    | React-only ancestor HTMLElement in the same document; null uses the owning document viewport                          | null       |
+| onStateChange | React-only state notification; use the Context hook for descendants                                                   | absent     |
+
+`offset` is a behavioral reference coordinate, not authored CSS. Define application
+values centrally or provide a measured runtime value. JSON can bind it from variables.
+There are no Header constants, DOM queries for host targets or automatic host actions.
+For an element scrollRoot, its inner border edge is the origin of the scroll viewport.
+Other ancestor scrolls and window resize are observed too. The context hook throws
+when called outside a boundary, and nested boundaries provide independent state.
+
+| State    | Meaning                                                      |
+| -------- | ------------------------------------------------------------ |
+| pending  | SSR/no JS, detached/hidden layout, or not measured yet       |
+| before   | container top is below the reference line                    |
+| active   | start reached; for within, its end has not reached the line  |
+| after    | within range has passed its end; never emitted by past-start |
+| disabled | sensing explicitly disabled                                  |
+
+Equality at the start activates; equality at the end deactivates a bounded region.
+An empty within range is never active. Callback notifications begin with the first
+measured/disabled state and occur only on changes; a fresh callback identity does not
+re-emit the same state. If layout becomes hidden after measurement it reports pending.
+Unmount disconnects subscriptions and cancels queued work; it does not invent a final
+state or clean up an external consumer's registrations.
+
+IntersectionObserver watches stable original-position markers. Shared passive scroll
+and resize/layout subscriptions cover fast jumps that skip a complete viewport between
+observer samples, including restored/deep-linked positions. Notifications from a document
+share a frame batch; React updates only when state changes. ResizeObserver, image load
+and font loading remeasure layout. Without observer APIs, basic scroll/resize/load tracking
+continues. SSR/no-JS content stays readable with an explicit pending state. Sensing is
+independent of reduced-motion preferences and does not animate anything.
+
+Import `@frontend/content-blocks/default.css` for the structural hooks. The wrapper
+forms a flow root; markers are out of flow and excluded from accessibility. Readable
+content and focus are never hidden by a sensing state. Style the state externally when
+needed, and keep the measured container geometry stable across those visual changes.
+
+## Reading navigation
+
+`ContentNavigation` wraps a document's reading region. Give it `label`, optional
+`title`, `progressLabel`, and ordered `items: [{label, href: '#anchor-name'}]`.
+Place the corresponding `Anchor` components inside its children. Native links
+preserve fragments, history, keyboard navigation and no-JavaScript reading.
+The current chapter follows the upper reading band, including the original row's
+height so an expanding flow Header does not undo a clicked chapter highlight.
+Progress measures the content inside the reading region.
+
+`inlineWidth` reuses the standard Container widths: `content` (default), `reading`
+and `full`. Only the original inline row and its progress rail are constrained;
+the reading body and registered Header surface keep their own layout. Container
+widths use the same global width, gutter and inset tokens as ContentSection, and
+respect an existing parent Container. `full` fills the available parent width;
+it does not break out of a parent into the viewport. Older JSON without this
+option now uses the content width. No stored-document migration is needed.
+
+```tsx
+<ContentNavigation
+  label="In this project"
+  title="Paper Atlas"
+  progressLabel="Reading progress"
+  items={[{ label: 'Process', href: '#process' }]}
+>
+  <Anchor name="process">
+    <h2>Process</h2>
+    <p>...</p>
+  </Anchor>
+</ContentNavigation>
+```
+
+Without an integration provider the navigation stays inline. To dock it, a host
+installs `ContentNavigationIntegrationProvider` with a stable `integration`:
+
+- `Dock` receives `resourceKey`, `children` and `bottom`; it owns registration and cleanup.
+- Optional `Menu` receives `trigger`, `label`, `children`; it owns accessible popover behavior.
+- `geometry(origin)` returns live `boundaryOffset`, `readingOffset`, `releaseOffset`
+  in viewport CSS pixels, plus `observedElements` whose resizing changes those edges.
+
+The shared package never queries a site Header. Start sensing includes the expanded
+Header edge so growth cannot oscillate the handoff; release sensing uses the primary
+edge. The inline row retains its space and becomes inert/hidden only while docked.
+Focus inside that row defers handoff. A focused Header navigation stays mounted
+until focus leaves it, even when scrolling back, so keyboard focus is never hidden.
+A document needs sufficient following scroll
+space to move its complete reading region above the release edge.
+
+`ContentNavigationHeader` and `ContentReadingProgress` are reusable presentation
+components. React's optional `headerContent` / `progressContent` can replace them
+inside a ContentNavigation; `useContentReading()` supplies `{href, progress}` in
+that context, including the registered Header subtree. Progress updates do not
+re-register the Header. Do not call the hook outside this reading context.
+
+The content-blocks stylesheets include the `content-discovery.css` entry for
+`ui-content-navigation-*` and `ui-content-reading-progress`. Use
+`--ui-content-navigation-row-size` to adjust the navigation row height. The
+progress transition respects reduced-motion settings.
+
+ScrollBoundary additionally accepts React-only `getOffset(element)`: a live,
+finite nonnegative reference coordinate, re-read on geometry changes. This supports
+measured host edges without putting Header knowledge or functions into JSON.
+
+### Composable reading navigation
+
+`ContentNavigation` remains one React/Puck block. Its optional `presentation`
+selects a registered `preset`, preset `options`, and optional `parts.title`,
+`parts.item`, or `parts.progress` replacements (`{ id, options? }`). An omitted
+presentation uses the neutral default. A replacement replaces the whole slot
+selection; it does not implicitly merge the replaced part's options. Each selected
+part's schema applies its own defaults. Presets may declare an `overrides`
+allowlist; when present, an omitted slot is closed to replacement.
+
+Use `createNavigationCatalog` and `defineNavigationPreset` from `/schema` to define
+pure, server/browser-safe schemas and preset composition. The neutral `default`
+name is reserved. Hosts then pair that catalogue with Title/Item/Progress React
+components through `createNavigationPresentationRegistry` and mount
+`NavigationPresentationProvider`. Components and schemas use separate entry
+points so server validation never needs a client registry. No theme names or
+project records enter this package.
+
+Part props include validated `options`, `navigation`, `reading`, and `placement`
+(`inline`, `header`, `menu`, or `trigger`), plus zero-based `currentIndex` and
+`itemCount`. Item parts additionally receive their own zero-based `index` and
+`current` state. The compact trigger renders the same part inside a shared native
+button, so parts must not return interactive elements. Shared surfaces own native links, accessible link
+labels, `aria-current`, focus retention and progressbar semantics. A custom part
+renders noninteractive contents, with decorative media hidden from assistive
+technology; it must not add links/buttons or duplicate progressbar semantics.
+Visual renderers stay mounted and retain the selected design through entry,
+exit, hidden copies and menu readiness. `active` controls eligibility for side
+effects; `interactive` independently reports interaction readiness. Custom parts
+must render their visual structure for both flag values and gate subscriptions,
+timers and other effects with `active`, cleaning up when it becomes false.
+Shared surfaces use `inert` for unavailable interaction; hiding/clipping remains
+host/layout-owned. `NavigationSurfaceActivityProvider` accepts both flags;
+`interactive` defaults to `active` for hosts with a single readiness policy.
+Reading state lives in the navigation session and survives handoff. Scope any
+further state shared across placements to a host-owned session. The compact
+breakpoint is 48rem in both the content navigation stylesheet and its responsive observer.
+
+The optional whole-surface `headerContent`/`progressContent` React escape hatches
+remain available and take precedence over the respective docked parts. Unlike
+part customization, those escape hatches own their own accessible structure.
+
+A part definition may declare `mediaSources(options)` for the resources its
+renderer actually uses. Hosts must use the same catalogue for validation,
+rendering and media inspection. Unknown IDs, invalid options and disallowed
+replacements fail explicitly; they never silently fall back to a different design.
+
+### Configurable navigation parts
+
+The client entry exports `ConfigurableNavigationTitle`, `ConfigurableNavigationItem`
+and `ConfigurableNavigationProgress`. `/schema` exports their schemas, inferred
+option types, `configurableNavigationDefinitions`, configuration bounds and pure
+item/progress resolvers. Register the `configurable` definition and renderer in
+each relevant slot of the host catalogue/registry; nothing registers globally.
+React and Puck consume the same options. Site presets may layer their defaults
+on top, while shared parts contain no website palette or assets.
+
+Title options: `display: text | media | media-text` (default text), optional `media`,
+`mediaSize: small | medium | large`, `mediaFit: contain | cover`, `appearance`,
+and `compact: same | media | text`. `mediaShape: intrinsic` preserves a wide logo's
+aspect ratio at the selected media height; square remains the default. The
+`--ui-navigation-media-max-width` hook bounds wide artwork (default 10rem). An image uses `{kind: 'image', src}`; an icon
+uses `{kind: 'icon', name}` from `NAVIGATION_ICONS`. Media display requires explicit
+media. The title's accessible name always comes from `title ?? label`.
+
+Item options group label/media choices under `representation` with the same
+`display`, `media`, `mediaSize`, `mediaFit` fields, plus optional `showIndex`.
+The framework retains `item.label` as the accessible link/button name, including
+image-only displays. Decorative images have empty alternative text. `base`,
+`unselected` and `selected` independently configure `color`, `background`,
+`borderColor`, `borderWidth: none | thin | thick`, `radius: none | soft | pill`,
+`underline`, `font: system | mono | serif`, `weight: regular | medium | semibold`,
+and optional `palette`. Each state may also override `representation`, including
+a different image, media size or text/media display mode.
+
+Resolution is field-wise: common base + current state, then `cycle[index % length]`
+base + state, then `overrides[href]` base + state. Each layer may also override
+representation fields. Reordering preserves anchor-keyed overrides; cycle behavior
+intentionally follows the new order. Omitted state fields never reset the other
+state. Missing overrides retain their preceding value; `media: null` explicitly
+removes inherited media (with text display). A slot replacement still replaces
+its entire selection; these rules apply _inside_ a selected configurable part.
+
+Progress options: `height` (1–16 CSS pixels), `color`, `track`, `rounded`, optional
+`marker`, `markerSize` (8–40 pixels), optional `ticks` (2–24) and `checkpoints`.
+`cycle[currentIndex % length]`, ascending unique `stages: [{at, design}]` thresholds (last reached stage)
+in [0, 1], and anchor-keyed `sections[href]` override the base in that order.
+Progress is continuous reading geometry, not equal sections. The marker travels
+at the fill's tip with an inset reserved at both ends and a row tall enough to
+contain it. SVG attributes carry geometry, never authored inline CSS. Its
+Initial geometry is measured before paint even during Header entry; its
+ResizeObserver runs only while the surface is active and releases on deactivation.
+Hidden/exiting copies retain their selected visual tree. Custom animated markers
+must also respect the existing activity and reduced-motion contracts.
+
+Colors are semantic references from `NAVIGATION_COLORS`: `inherit`, `ink`, `muted`,
+`surface`, `raised`, `line`, `accent`, `accent-soft`, `transparent`. Defaults use
+system theme tokens. `palette` selects a host CSS scope via `data-palette`; the
+host defines `--ui-navigation-accent` / `--ui-navigation-accent-soft`, including
+light/dark/system variants. Arbitrary CSS or executable expressions are not JSON
+options. Custom colors remain unrestricted in the host's styles-kind package.
+Public CSS overrides include `--ui-navigation-part-gap`,
+`--ui-navigation-title-padding`, `--ui-navigation-item-padding`,
+`--ui-navigation-media-size`, `--ui-navigation-radius`, `--ui-navigation-font-mono`
+and `--ui-navigation-font-serif`. All use `@frontend/content-blocks/default.css`
+and `styles/content-blocks.css`; no site stylesheet is required.
+
+For example, an item slot can use:
+
+```json
+{
+  "id": "configurable",
+  "options": {
+    "representation": { "display": "media-text", "media": { "kind": "icon", "name": "compass" } },
+    "base": { "radius": "soft", "borderWidth": "thin", "borderColor": "transparent" },
+    "unselected": { "color": "muted" },
+    "selected": { "color": "accent", "background": "accent-soft", "borderColor": "accent" },
+    "cycle": [{ "base": { "palette": "first-tone" } }, { "base": { "palette": "second-tone" } }],
+    "overrides": { "#details": { "selected": { "underline": true } } }
+  }
+}
+```
+
+Configurable media declarations include image sources in selectable cycles,
+anchor overrides, progress markers and stages. Pure text representations do not
+consume their unused media. Hosts must pass the same catalogue to rendering,
+validation and publication media inspection.

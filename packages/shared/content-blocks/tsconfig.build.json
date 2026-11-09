@@ -9,12 +9,5 @@
     "sourceMap": true
   },
   "include": ["src/**/*", "src/**/*.json"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
-  ]
+  "exclude": ["node_modules", "dist", "**/*.test.*", "**/*.spec.*"]
 }

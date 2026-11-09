@@ -22,7 +22,11 @@
       "import": "./dist/viewer.js"
     },
     "./README.md": "./README.md",
-    "./default.css": "./src/styles/default.css"
+    "./default.css": "./src/styles/default.css",
+    "./content-interactions.css": "./src/styles/content-interactions.css",
+    "./content-discovery.css": "./src/styles/content-discovery.css",
+    "./navigation-parts.css": "./src/styles/navigation-parts.css",
+    "./photo-viewer-vendor.css": "./src/styles/photo-viewer-vendor.css"
   },
   "files": [
     "dist",

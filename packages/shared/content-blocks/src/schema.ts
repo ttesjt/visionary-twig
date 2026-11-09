@@ -118,3 +118,87 @@ export {
   anchorPropsSchema,
   type AnchorData,
 } from './navigation/anchor.schema.js';
+export {
+  revealPropsSchema,
+  REVEAL_EFFECTS,
+  REVEAL_DURATIONS,
+  REVEAL_DELAYS,
+  REVEAL_TRIGGERS,
+  type RevealData,
+} from './reveal/reveal.schema.js';
+
+export {
+  scrollBoundaryPropsSchema,
+  SCROLL_BOUNDARY_RANGES,
+  SCROLL_BOUNDARY_STATES,
+  DEFAULT_SCROLL_BOUNDARY_RANGE,
+  DEFAULT_SCROLL_BOUNDARY_OFFSET,
+  type ScrollBoundaryData,
+  type ScrollBoundaryState,
+  type ScrollBoundaryRange,
+} from './scroll-boundary/scroll-boundary.schema.js';
+
+export {
+  contentNavigationPropsSchema,
+  contentNavigationItemSchema,
+  type ContentNavigationData,
+  type ContentNavigationItem,
+} from './content-navigation/content-navigation.schema.js';
+
+export {
+  navigationPresentationSchema,
+  navigationPartSelectionSchema,
+  NAVIGATION_PARTS,
+  DEFAULT_NAVIGATION_PRESENTATION,
+  type NavigationPresentation,
+  type NavigationPartSelection,
+  type NavigationPart,
+} from './content-navigation/presentation/presentation.schema.js';
+export {
+  createNavigationCatalog,
+  defineNavigationPreset,
+  defaultNavigationCatalog,
+  inspectNavigationPresentation,
+  resolveNavigationPresentation,
+  navigationPresentationMedia,
+  type NavigationPresentationCatalog,
+  type NavigationPresetDefinition,
+  type NavigationPartDefinition,
+  type NavigationPartSelections,
+  type NavigationPresentationIssue,
+  type ResolvedNavigationPresentation,
+} from './content-navigation/presentation/catalog.js';
+
+export {
+  NAVIGATION_PART_LIMITS,
+  NAVIGATION_PROGRESS_DEFAULTS,
+  NAVIGATION_COLORS,
+  NAVIGATION_ICONS,
+  navigationMediaSchema,
+  navigationAppearanceSchema,
+  navigationItemDesignSchema,
+  navigationItemStateSchema,
+  configurableTitleSchema,
+  configurableItemSchema,
+  navigationProgressDesignSchema,
+  configurableProgressSchema,
+  type NavigationMedia,
+  type NavigationAppearance,
+  type NavigationProgressDesign,
+  type NavigationItemDesign,
+  type ConfigurableTitleOptions,
+  type ConfigurableItemOptions,
+  type ConfigurableProgressOptions,
+} from './content-navigation/configurable/schema.js';
+export {
+  configurableNavigationDefinitions,
+  configurableTitleMedia,
+  configurableItemMedia,
+  configurableProgressMedia,
+} from './content-navigation/configurable/definitions.js';
+export {
+  resolveItemDesign,
+  resolveProgressDesign,
+  type ResolvedNavigationItem,
+  type ResolvedNavigationProgress,
+} from './content-navigation/configurable/resolve.js';
