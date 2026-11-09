@@ -183,6 +183,37 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
 
+  packages/adapters/cloudflare:
+    dependencies:
+      '@cloudflare/workers-types':
+        specifier: 'catalog:'
+        version: 5.20261019.1
+      '@frontend/email':
+        specifier: workspace:*
+        version: link:../../shared/email
+      '@frontend/storage':
+        specifier: workspace:*
+        version: link:../../shared/storage
+      wrangler:
+        specifier: 'catalog:'
+        version: 4.151.2(@cloudflare/workers-types@5.20261019.1)(@types/node@24.19.2)
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.19.2
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 4.1.12(vitest@4.1.12)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.12(@opentelemetry/api@1.9.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(happy-dom@20.14.6)(jsdom@30.1.3)(vite@7.3.7(@types/node@24.19.2)(yaml@2.9.1))
+
   packages/adapters/node-storage:
     dependencies:
       '@frontend/storage':

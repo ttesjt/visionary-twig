@@ -1,0 +1,57 @@
+{
+  "name": "@frontend/cloudflare",
+  "version": "0.1.0",
+  "description": "Cloudflare storage adapters with an explicit Node development bridge",
+  "private": true,
+  "type": "module",
+  "workspaceKind": "node-library",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./local": {
+      "types": "./dist/local.d.ts",
+      "import": "./dist/local.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rm -rf dist coverage *.tsbuildinfo",
+    "dev": "tsc --build tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "catalog:",
+    "wrangler": "catalog:",
+    "@frontend/storage": "workspace:*",
+    "@frontend/email": "workspace:*",
+    "zod": "catalog:"
+  },
+  "workspaceAdapter": {
+    "providerPackages": [
+      "wrangler",
+      "@cloudflare/workers-types"
+    ]
+  }
+}
