@@ -18,8 +18,7 @@ import {
 } from '@frontend/content-blocks/schema';
 import { containerSchema, columnSchema, rowSchema, gridSchema } from './layout-schemas.js';
 
-/** Existing editor component inventory. New JSON-only composition blocks stay separate
- * until the independently maintained editor adopts them. */
+/** One schema inventory for current renderable and editable document components. */
 export const componentSchemas = {
   Container: containerSchema,
   Row: rowSchema,
@@ -37,6 +36,10 @@ export const componentSchemas = {
   MediaText: mediaTextPropsSchema,
   MediaGallery: mediaGalleryPropsSchema,
   Video: videoPropsSchema,
+  Anchor: anchorPropsSchema,
+  Reveal: revealPropsSchema,
+  ScrollBoundary: scrollBoundaryPropsSchema,
+  ContentNavigation: contentNavigationPropsSchema,
 };
 export type ComponentName = keyof typeof componentSchemas;
 export const COMPONENT_NAMES = Object.keys(componentSchemas).filter((name): name is ComponentName =>
@@ -51,6 +54,10 @@ export const SLOT_COMPONENTS = [
   'Grid',
   'ContentSection',
   'MediaText',
+  'Anchor',
+  'Reveal',
+  'ScrollBoundary',
+  'ContentNavigation',
 ] as const satisfies readonly ComponentName[];
 export type SlotComponentName = (typeof SLOT_COMPONENTS)[number];
 export const SLOT_PROP = 'content';
@@ -62,29 +69,11 @@ export function slotAllowedTypes(name: string): readonly ComponentName[] {
   return name === 'Tabs' ? ['TabPanel'] : COMPONENT_NAMES;
 }
 
-/** Serializable runtime inventory; does not require editor fields or default values. */
-export const documentComponentSchemas = {
-  ...componentSchemas,
-  Anchor: anchorPropsSchema,
-  Reveal: revealPropsSchema,
-  ScrollBoundary: scrollBoundaryPropsSchema,
-  ContentNavigation: contentNavigationPropsSchema,
-};
-export type DocumentComponentName = keyof typeof documentComponentSchemas;
-export const DOCUMENT_COMPONENT_NAMES = Object.keys(documentComponentSchemas).filter(
-  (name): name is DocumentComponentName => Object.hasOwn(documentComponentSchemas, name)
-);
-export const DOCUMENT_SLOT_COMPONENTS = [
-  ...SLOT_COMPONENTS,
-  'Anchor',
-  'Reveal',
-  'ScrollBoundary',
-  'ContentNavigation',
-] as const;
-export type DocumentSlotComponentName = (typeof DOCUMENT_SLOT_COMPONENTS)[number];
-export function hasDocumentContentSlot(name: string): boolean {
-  return DOCUMENT_SLOT_COMPONENTS.some((component) => component === name);
-}
-export function documentSlotAllowedTypes(name: string): readonly DocumentComponentName[] {
-  return name === 'Tabs' ? ['TabPanel'] : DOCUMENT_COMPONENT_NAMES;
-}
+/** Public runtime aliases share the adopted editor inventory; no schema is copied. */
+export const documentComponentSchemas = componentSchemas;
+export type DocumentComponentName = ComponentName;
+export const DOCUMENT_COMPONENT_NAMES = COMPONENT_NAMES;
+export const DOCUMENT_SLOT_COMPONENTS = SLOT_COMPONENTS;
+export type DocumentSlotComponentName = SlotComponentName;
+export const hasDocumentContentSlot = hasContentSlot;
+export const documentSlotAllowedTypes = slotAllowedTypes;

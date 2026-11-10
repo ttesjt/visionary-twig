@@ -14,6 +14,7 @@ import {
 } from '@frontend/ui-document';
 import type {
   ContentDocument,
+  ContentRegistry,
   ContentIssue,
   ContentSaveResult,
   DocumentEditOptions,
@@ -38,10 +39,14 @@ export interface ContentEditorSnapshot {
   readonly issues: readonly ContentIssue[];
   /** Invalid field drafts are not in document.data; exporting that data would lose visible edits. */
   readonly invalidFieldIds: readonly string[];
+  /** Native edits that have not been accepted into the serializable document. */
+  readonly hasUnappliedChanges: boolean;
   readonly canExport: boolean;
 }
 
 export interface ContentEditorProps extends ResolveOptions {
+  /** Host-selected validation policies; no site catalogue is built into the editor. */
+  readonly registry?: ContentRegistry;
   readonly fieldEditor?: EditorFieldRenderer;
   /** Separates retained field drafts, for example when a host changes editing language. */
   readonly fieldScope?: string | number;
@@ -68,6 +73,7 @@ function EditorSession({
   context,
   limits,
   selectionMemory,
+  registry = contentRegistry,
 }: Omit<ContentEditorProps, 'document'> & {
   readonly initial: ContentDocument;
   readonly selectionMemory: { current: string | null };
@@ -89,8 +95,8 @@ function EditorSession({
     [context, limits]
   );
   const preview = useMemo(
-    () => resolveDocument(document, contentRegistry, options),
-    [document, options]
+    () => resolveDocument(document, registry, options),
+    [document, registry, options]
   );
   const propsById = useMemo(
     () => (preview.ok ? previewPropsById(preview.value.data) : new Map()),
@@ -107,12 +113,16 @@ function EditorSession({
       invalidFieldIds: [
         ...new Set([...drafts, ...[...structuredDrafts.values.values()].map((draft) => draft.id)]),
       ],
+      hasUnappliedChanges: Boolean(
+        editIssues.length || drafts.size || structuredDrafts.values.size
+      ),
       canExport: !issues.length && !drafts.size && !structuredDrafts.values.size,
     }),
-    [document, issues, drafts, structuredDrafts.values]
+    [document, issues, editIssues, drafts, structuredDrafts.values]
   );
   const { state: saveState, save } = useEditorSave({
     raw,
+    registry,
     options,
     canExport: snapshot.canExport,
     onSave,
@@ -166,7 +176,7 @@ function EditorSession({
           setEditIssues([]);
           return;
         }
-        const result = reconcileDocumentEdit(raw.current, normalized, contentRegistry, {
+        const result = reconcileDocumentEdit(raw.current, normalized, registry, {
           ...(limits === undefined ? {} : { limits }),
           ...(duplicate === undefined ? {} : { duplicate }),
         });
@@ -188,7 +198,7 @@ function EditorSession({
         ]);
       }
     },
-    [limits]
+    [limits, registry]
   );
 
   const onAction = useCallback(
@@ -226,7 +236,7 @@ function EditorSession({
 
   const unbind = useCallback(
     (nodeId: string, path: readonly string[]) => {
-      const result = unbindDocumentField(raw.current, nodeId, path, contentRegistry, options);
+      const result = unbindDocumentField(raw.current, nodeId, path, registry, options);
       if (result.ok) {
         raw.current = result.value;
         setDocument(result.value);
@@ -234,7 +244,7 @@ function EditorSession({
       } else setEditIssues(result.errors);
       return result;
     },
-    [options]
+    [options, registry]
   );
 
   return (
@@ -311,6 +321,7 @@ export function ContentEditor({
   document,
   sessionKey,
   selectionScope,
+  registry = contentRegistry,
   ...props
 }: ContentEditorProps): ReactElement {
   const selectionMemory = useRef<string | null>(null);
@@ -320,7 +331,7 @@ export function ContentEditor({
     previousScope.current = scope;
     selectionMemory.current = null;
   }
-  const parsed = parseDocument(document, contentRegistry, props);
+  const parsed = parseDocument(document, registry, props);
   if (!parsed.ok)
     return (
       <div role="alert">
@@ -335,6 +346,7 @@ export function ContentEditor({
     <EditorSession
       key={sessionKey ?? `${parsed.value.documentId}:${parsed.value.revision}`}
       initial={parsed.value}
+      registry={registry}
       selectionMemory={selectionMemory}
       {...props}
     />

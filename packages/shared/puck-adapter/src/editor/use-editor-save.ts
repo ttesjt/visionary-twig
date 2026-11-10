@@ -2,11 +2,11 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import { resolveDocument } from '@frontend/ui-document';
 import type {
   ContentDocument,
+  ContentRegistry,
   ContentIssue,
   ContentSaveResult,
   ResolveOptions,
 } from '@frontend/ui-document';
-import { contentRegistry } from '../registry/content-registry.js';
 
 export type SaveState =
   | { readonly status: 'idle' | 'saving' }
@@ -30,6 +30,7 @@ export function saveMessage(
 
 export function useEditorSave({
   raw,
+  registry,
   options,
   canExport,
   onSave,
@@ -37,6 +38,7 @@ export function useEditorSave({
   onIssues,
 }: {
   readonly raw: RefObject<ContentDocument>;
+  readonly registry: ContentRegistry;
   readonly options: ResolveOptions;
   readonly canExport: boolean;
   readonly onSave:
@@ -49,7 +51,7 @@ export function useEditorSave({
   useEffect(() => () => saving.current?.abort(), []);
   async function save(): Promise<void> {
     if (saving.current || state.status === 'saving' || !canExport) return;
-    const validated = resolveDocument(raw.current, contentRegistry, options);
+    const validated = resolveDocument(raw.current, registry, options);
     if (!validated.ok) {
       onIssues(validated.errors);
       return;

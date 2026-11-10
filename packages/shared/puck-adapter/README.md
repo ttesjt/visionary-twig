@@ -221,7 +221,8 @@ continue to be bookkeeping IDs; use an explicit Anchor for public destinations.
 ## Reading and discovery document nodes
 
 The public document registry also accepts `ContentNavigation` (native `content`
-are runtime/schema registrations; the separate Studio/editor inventory is unchanged.
+editor and runtime aliases use one schema/slot inventory, including Anchor, Reveal
+and ScrollBoundary, so nested content remains available in Puck.
 
 ```json
 {
@@ -263,5 +264,6 @@ catalogue is invalid.
 
 There is still only one `ContentNavigation` node. Presentation options support
 normal document bindings, including nested JSON option paths. Raw variables and
-bindings are not rewritten. This runtime extension does not add editor fields or
-change the separately maintained Studio inventory.
+bindings are not rewritten. The editor exposes presentation as a structured field. `ContentEditor` accepts an
+optional neutral `registry`; hosts must inject the matching registry and client
+presentation provider for custom presets. Default editors keep the neutral catalogue.

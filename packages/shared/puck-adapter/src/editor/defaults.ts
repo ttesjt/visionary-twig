@@ -55,6 +55,15 @@ export const editorDefaults: RuntimeProps = {
     proportion: 'balanced',
     content: [],
   },
+  Anchor: { name: 'section', content: [] },
+  Reveal: { content: [] },
+  ScrollBoundary: { content: [] },
+  ContentNavigation: {
+    label: 'In this page',
+    progressLabel: 'Reading progress',
+    items: [{ label: 'Section', href: '#section' }],
+    content: [{ type: 'Anchor', props: { id: 'section-anchor', name: 'section', content: [] } }],
+  },
   Video: {
     label: 'Video',
     sources: [{ src: '/video.webm', type: 'video/webm' }],
