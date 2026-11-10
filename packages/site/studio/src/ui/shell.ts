@@ -13,5 +13,6 @@ export type {
 
 export { StudioPageOutlet } from './shell/page-outlet.js';
 
+export { StudioAppearanceSwitcher } from './shell/appearance-switcher.js';
 export { useStudioTheme } from './shell/theme-context.js';
 export type { StudioAppearance, StudioThemeState } from './shell/theme-context.js';

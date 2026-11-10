@@ -1,8 +1,13 @@
-# Studio UI
+# Studio
 
 The package provides a workspace shell, project sessions, source editing,
 read-only viewing and optional file/publication controls. Hosts select their
 routes, data implementations and CSS. The legacy combined editor remains available.
+
+Import `@frontend/studio/data` to read, edit or validate a project in a server
+module or CLI. This entry and `/data/records` load independently of React and
+Puck. UI entry points use React and the editor entry integrates with the Puck
+adapter. Installing the Studio package still installs its declared dependencies.
 
 ## Workspace shell and code-owned extensions
 
@@ -85,11 +90,11 @@ Hosts explicitly import these independently replaceable global entries:
 ```ts
 import '@frontend/ui/default.css';
 import '@frontend/styles/default.css';
-import 'component-owned CSS/studio-shell.css';
+import '@frontend/studio/shell.css';
 import '@frontend/styles/studio-shell.css';
 ```
 
-Structural hooks live in layout-styles; appearance stays in styles. Public hooks
+The Studio UI entries provide structural defaults. The shared styles entries select appearance. Public hooks
 include `ui-studio-shell`, `ui-studio-sidebar`, `ui-studio-topbar`,
 `ui-studio-main`, `ui-studio-page-navigation`, `ui-studio-page-heading`,
 `ui-studio-surface`, `ui-studio-flow`, `ui-studio-grid`, `ui-studio-feature`,
@@ -99,6 +104,15 @@ spacing are controlled by `--ui-studio-sidebar-width`, `--ui-studio-content-widt
 and `--ui-studio-page-inset`. No component stylesheets or authored inline styles
 are required. The appearance supports foundation themes, narrow viewports,
 reduced motion and forced colors.
+
+Load `@frontend/studio/editor.css` and optional
+`@frontend/styles/studio.css` in routes that show the workbench. The shell and
+editor can be styled independently and share density defaults. Controls start
+at `2rem`, rising to `2.5rem` on narrow screens or coarse pointers. Override
+`--ui-studio-control-height`, `--ui-studio-space-content`,
+`--ui-studio-space-section`, or `--ui-studio-panel-inset` at the Studio root
+to adjust density. Resource tab panels retain their contents when hidden, and
+the active panel can scroll within `--ui-studio-resource-panel-max-height`.
 
 ## Source editing and viewing
 
@@ -313,7 +327,7 @@ an optional `heading` slot for embedding in a resource page.
 
 ## Compact resource composition
 
-`studio-ui/files` exports `StudioSaveActions`, `StudioOpenActions`,
+`studio/files` exports `StudioSaveActions`, `StudioOpenActions`,
 `StudioFileStatus`, `StudioFileIdentity` and `StudioThemeControl`. They consume the
 same caller-owned session/file controller and translated Studio text. A host can
 keep local Save/Save As in a toolbar and place imports, file identity and theme
@@ -321,7 +335,7 @@ preferences elsewhere. `StudioFileControls` retains its existing combined layout
 as a compatibility composition of these same parts. No duplicated persistence
 logic or additional session is created.
 
-`studio-ui/editor` also exports `StudioCatalogPanel`. Set
+`studio/editor` also exports `StudioCatalogPanel`. Set
 `<StudioEditor catalogPanel={null} ... />` when placing that panel in host tabs;
 undefined retains the default built-in panel. Keep tab contents mounted when
 hiding them, so unapplied field drafts continue blocking save/publication and
@@ -347,7 +361,7 @@ remain host components. Tables render the supplied snapshot; filtering, remote
 querying and pagination remain host responsibilities.
 
 `useStudioRecordSession({ initial, adapter, validate, identity, fingerprint })`
-uses the neutral `StudioRecordUpdater<Row>` contract from `studio-data/records`.
+uses the neutral `StudioRecordUpdater<Row>` contract from `studio/data/records`.
 The adapter receives a cloned validated snapshot, AbortSignal and captured saved
 baseline (for host-defined optimistic concurrency checks), and returns a
 saved row or an explicit invalid/conflict/not-found/cancelled/unavailable result.
@@ -383,13 +397,13 @@ is independent of component engines and server adapters.
 
 ### Page workspace lifetime
 
-`useStudioPageWorkspace` from `studio-ui/workspace` composes the existing project
+`useStudioPageWorkspace` from `studio/workspace` composes the existing project
 session, browser file adapter and staged JSON drafts. Mount it above Viewer,
 JSON and experimental Puck routes; changing modes then retains history, drafts
 and file handles. Publication, routing and resource identity remain host-owned.
 The separate `session` entry stays independent of file/publication transports.
 
-`studio-ui/viewer` exports `useStudioViewerTheme` and
+`studio/viewer` exports `useStudioViewerTheme` and
 `StudioViewerThemeControl`: Viewer follows the supplied global preference by
 default, while an explicit override only affects the rendered preview. Fixed
 policies override both. The host provides labels and persists global appearance.
@@ -419,3 +433,34 @@ Host-specific document policies can be passed as `registry` in
 on the session and used for import, JSON application, binding/catalog operations,
 Puck snapshots, Viewer validation and publication preparation. Omitting it keeps
 the neutral default; hosts own any presentation providers and actual rendering.
+
+## Document format and data API
+
+`@frontend/studio/data` provides portable Studio projects in TypeScript. No React, browser I/O, application data, database, or provider dependencies. Callers inject a ContentRegistry and I/O adapters.
+
+A `studio-project` v1 file wraps the unchanged ContentDocument with a declared default locale, all loaded catalogs, non-copy context and optional neutral source/target revision associations. Media remain references. File handles and credentials never belong in the envelope.
+
+`importProject` explicitly accepts this envelope, ContentDocument and registered native Puck Data (hosts may provide the Puck normalization callback). Declared malformed/unknown projects fail without format fallback. Legacy context.copy becomes the explicitly selected language catalog. Embedded variables.copy cannot coexist with project catalogs.
+
+`parseProject` checks a saveable structure. Missing values remain editable/saveable. `projectIssues` reports language/source/node/field information; `preparePublication` validates the declared default and each selected publication language and returns an owned snapshot. No silent language fallback or translation occurs.
+
+Catalog rename updates all loaded languages and references atomically; referenced deletion is rejected. Catalogs may contain structured values. Project history covers authored layout, bindings, catalogs and context. The UI coordinates native Puck edits with this project history; runtime file locations and source/target revision acknowledgements remain outside content undo. Optional portable associations are serialized separately from these runtime handles.
+
+Publication is an injected capability. Save writes the current local file; Save As selects a new local destination. Publication version checks apply to their specific target, independently of the source and local file baseline. No cloud draft/history/rollback or embedded-media archive is implied.
+
+Renderer contracts may declare `mediaSources` for their validated props. `preparePublication` resolves each selected language and collects only those active renderer URLs; unused context strings are not treated as media permissions. Publication targets must validate their own managed object inventory and update access references atomically.
+
+Media inspection uses ui-document.collectResolvedMedia on each resolved data tree alone, so valid near-limit documents are not rejected by counting embedded variables twice. Raw, context and expanded-tree limits still apply. Publication adapters enforce their own storage limits.
+
+### Neutral record contracts
+
+`studio/data/records` exports `StudioRecordSource<Row>`, `StudioRecordUpdater<Row>`
+and `StudioRecordUpdateResult<Row>`. Sources provide stable immutable client
+snapshots and subscriptions; a remote implementation may refresh that cache
+asynchronously. Update receives a row snapshot, AbortSignal and the captured saved baseline
+(for host-owned revision/fingerprint checks), and returns an
+explicit saved/invalid/conflict/not-found/cancelled/unavailable result. A saved
+result acknowledges the submitted operation according to that adapter's durability
+contract. Providers own validation, identity/version enforcement, authorization
+and actual persistence. These contracts contain no SQL dialect, SDK, connection
+configuration or memory adapter dependency.

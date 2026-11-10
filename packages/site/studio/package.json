@@ -5,6 +5,10 @@
   "type": "module",
   "description": "Studio editing tools, document contracts and workspaces",
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./data": {
       "types": "./dist/data/index.d.ts",
       "import": "./dist/data/index.js"
@@ -85,10 +89,6 @@
       "types": "./dist/ui/navigation/text-catalog.d.ts",
       "import": "./dist/ui/navigation/text-catalog.js"
     },
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
     "./shell.css": "./src/styles/shell.css",
     "./editor.css": "./src/styles/editor.css"
   },
@@ -120,6 +120,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
@@ -129,17 +130,16 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:",
-    "@types/node": "catalog:"
+    "vitest": "catalog:"
   },
   "workspaceKind": "react-library",
   "dependencies": {
+    "@frontend/ui-document": "workspace:*",
     "@frontend/puck-adapter": "workspace:*",
     "@frontend/ui": "workspace:*",
     "@frontend/text-catalog": "workspace:*",
     "zod": "catalog:",
-    "@frontend/content-blocks": "workspace:*",
-    "@frontend/ui-document": "workspace:*"
+    "@frontend/content-blocks": "workspace:*"
   },
   "workspaceEntrypoints": {
     "./data": "pure",

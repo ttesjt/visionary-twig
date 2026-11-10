@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { Dialog } from '@frontend/ui/dialog';
-import { ThemeSwitcher } from '@frontend/ui/theme-switcher';
+import { StudioAppearanceSwitcher } from './appearance-switcher.js';
 import { DEFAULT_THEME_POLICY, resolveThemePreference, type ThemePolicy } from '@frontend/ui/theme';
 import type { StudioNavigation, StudioRegistry } from './contracts.js';
 import { DEFAULT_STUDIO_SHELL_TEXT, type StudioShellTextCatalog } from './text-catalog.js';
@@ -145,12 +145,7 @@ export function StudioShell({
               <span aria-current="page">{page.title}</span>
             </div>
             <div className="ui-studio-topbar-actions">
-              <ThemeSwitcher
-                preference={theme}
-                onPreferenceChange={changeTheme}
-                policy={themePolicy}
-                labels={componentText.theme}
-              />
+              <StudioAppearanceSwitcher text={componentText.theme} />
               {headerActions}
             </div>
           </header>
