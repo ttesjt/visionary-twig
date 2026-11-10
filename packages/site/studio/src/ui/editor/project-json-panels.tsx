@@ -2,7 +2,6 @@ import { Button } from '@frontend/ui';
 import { useEffect, useState } from 'react';
 import { parseDocument } from '@frontend/ui-document';
 import { parseProject, encodeProject } from '../../data/index.js';
-import { contentRegistry } from '@frontend/puck-adapter/schema';
 import type { ProjectSession } from '../session/use-project-session.js';
 import { useStudioTextCatalog } from '../text/context.js';
 function JsonPanel({
@@ -68,13 +67,13 @@ export function ProjectJsonPanels({ session }: { readonly session: ProjectSessio
         applyLabel={componentText.applyDocument}
         session={session}
         apply={(text) => {
-          const result = parseDocument(text, contentRegistry);
+          const result = parseDocument(text, session.registry);
           if (!result.ok) {
             session.setIssues(result.errors);
             return false;
           }
           return session.run(
-            parseProject({ ...session.project, document: result.value }, contentRegistry)
+            parseProject({ ...session.project, document: result.value }, session.registry)
           );
         }}
       />
@@ -87,7 +86,7 @@ export function ProjectJsonPanels({ session }: { readonly session: ProjectSessio
         apply={(text) => {
           try {
             const context: unknown = JSON.parse(text);
-            return session.run(parseProject({ ...session.project, context }, contentRegistry));
+            return session.run(parseProject({ ...session.project, context }, session.registry));
           } catch {
             session.setIssues([
               { code: 'invalid-json', path: ['context'], message: 'Enter valid JSON.' },
@@ -102,7 +101,7 @@ export function ProjectJsonPanels({ session }: { readonly session: ProjectSessio
         current={encodeProject(session.project)}
         applyLabel={componentText.applyProject}
         session={session}
-        apply={(text) => session.run(parseProject(text, contentRegistry))}
+        apply={(text) => session.run(parseProject(text, session.registry))}
       />
     </details>
   );

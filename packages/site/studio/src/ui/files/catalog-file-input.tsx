@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { parseProject } from '../../data/index.js';
-import { contentRegistry } from '@frontend/puck-adapter/schema';
 import type { ProjectSession } from '../session/use-project-session.js';
 import { useStudioTextCatalog } from '../text/context.js';
 import { readLocalJson } from './local-files.js';
@@ -46,7 +45,7 @@ export function CatalogFileInput({ session }: { readonly session: ProjectSession
             ...current.project,
             catalogs: { ...current.project.catalogs, [locale]: value },
           },
-          contentRegistry
+          session.registry
         )
       );
     } catch {

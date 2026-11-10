@@ -73,7 +73,7 @@ export function useStudioJsonDrafts(session: ProjectSession) {
       return false;
     }
     const drafts = stored.generation === latest.state.generation ? stored.drafts : {};
-    const result = jsonDraftIssues(latest.project, drafts);
+    const result = jsonDraftIssues(latest.project, drafts, session.registry);
     setStored((previous) => ({ ...previous, issues: result.ok ? [] : result.errors }));
     if (!result.ok) return false;
     if (apply && session.run(result)) {

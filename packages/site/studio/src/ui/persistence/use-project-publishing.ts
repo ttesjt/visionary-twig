@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { preparePublication, publicationTargetSchema } from '../../data/index.js';
 import type { StudioPublishing, PublicationTarget, PublicationChoice } from '../../data/index.js';
-import { contentRegistry } from '@frontend/puck-adapter/schema';
 import type { ProjectSession } from '../session/use-project-session.js';
 export function useProjectPublishing(session: ProjectSession, publishing?: StudioPublishing) {
   const initial = session.project.publishing?.target;
@@ -75,7 +74,7 @@ export function useProjectPublishing(session: ProjectSession, publishing?: Studi
     const current = session.latest.current;
     const generation = current.state.generation;
     const snapshot =
-      action === 'publish' ? preparePublication(current.project, contentRegistry, locales) : null;
+      action === 'publish' ? preparePublication(current.project, session.registry, locales) : null;
     if (action === 'publish' && (!current.flags.canSave || !snapshot?.ok)) {
       if (snapshot && !snapshot.ok) session.setIssues(snapshot.errors);
       setStatus('invalid');

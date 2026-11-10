@@ -3,7 +3,6 @@ import { useState, type ReactNode } from 'react';
 import { z } from 'zod';
 import { applyHistoryShortcut, SemanticField } from '@frontend/puck-adapter/fields';
 import { projectHistoryControls } from '../session/history-controls.js';
-import { contentRegistry } from '@frontend/puck-adapter/schema';
 import { readJsonPath } from '@frontend/ui-document/inspection';
 import {
   catalogEntries,
@@ -46,7 +45,7 @@ export function CatalogPanel({
   const draftChanged = session.setDraft;
   function applyValue(value: JsonValue) {
     if (path.length)
-      session.run(setCatalogValue(project, state.locale, path, value, contentRegistry));
+      session.run(setCatalogValue(project, state.locale, path, value, session.registry));
   }
   return (
     <section
@@ -105,7 +104,7 @@ export function CatalogPanel({
               session.run(
                 parseProject(
                   { ...project, catalogs: { ...project.catalogs, [newLocale]: {} } },
-                  contentRegistry
+                  session.registry
                 )
               );
             session.dispatch({ type: 'locale', locale: newLocale });
@@ -121,7 +120,7 @@ export function CatalogPanel({
             session.run(
               parseProject(
                 { ...project, metadata: { ...project.metadata, defaultLocale: state.locale } },
-                contentRegistry
+                session.registry
               )
             )
           }
@@ -199,7 +198,7 @@ export function CatalogPanel({
                 }
                 if (
                   session.run(
-                    setCatalogValue(project, state.locale, parsed.value, '', contentRegistry)
+                    setCatalogValue(project, state.locale, parsed.value, '', session.registry)
                   )
                 )
                   setSelected(newKey);
@@ -216,7 +215,7 @@ export function CatalogPanel({
                   session.setIssues(next.errors);
                   return;
                 }
-                if (session.run(renameCatalogKey(project, path, next.value, contentRegistry)))
+                if (session.run(renameCatalogKey(project, path, next.value, session.registry)))
                   setSelected(newKey);
               }}
             >
@@ -226,7 +225,7 @@ export function CatalogPanel({
               type="button"
               disabled={!session.flags.canSave || !path.length || references.length > 0}
               onClick={() => {
-                if (session.run(deleteCatalogKey(project, path, contentRegistry))) setSelected('');
+                if (session.run(deleteCatalogKey(project, path, session.registry))) setSelected('');
               }}
             >
               {componentText.deleteKey}

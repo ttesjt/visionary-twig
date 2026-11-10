@@ -1,9 +1,8 @@
 import { DEFAULT_PROJECT_FILENAME } from './session-constants.js';
 import { useCallback, useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react';
-import type { ContentResult, ContentIssue } from '@frontend/ui-document';
+import type { ContentResult, ContentIssue, ContentRegistry } from '@frontend/ui-document';
 import type { ContentEditorSnapshot } from '@frontend/puck-adapter/editor';
-import { normalizePuckInput } from '@frontend/puck-adapter/schema';
-import { contentRegistry } from '@frontend/puck-adapter/schema';
+import { contentRegistry, normalizePuckInput } from '@frontend/puck-adapter/schema';
 import {
   importProject,
   parseProject,
@@ -30,6 +29,8 @@ interface PendingReplacement extends ProjectReplacement {
   readonly generation: number;
 }
 export interface ProjectSessionOptions {
+  /** Host-owned component and presentation policies; defaults stay neutral. */
+  readonly registry?: ContentRegistry;
   /** Resource hosts retain their own publication identity across imports/content replacement. */
   readonly associations?: 'file' | 'host';
   /** Establish an initial remote publication baseline without implying a local file save. */
@@ -39,6 +40,7 @@ export function useProjectSession(
   initialProject?: StudioProject,
   options: ProjectSessionOptions = {}
 ) {
+  const registry = options.registry ?? contentRegistry;
   const [state, dispatch] = useReducer(projectSessionReducer, undefined, () => {
     const initial = createProjectSession(initialProject);
     return {
@@ -106,7 +108,7 @@ export function useProjectSession(
       input: unknown,
       options: Omit<ProjectReplacement, 'project'> & { readonly context?: unknown }
     ) => {
-      const result = importProject(input, contentRegistry, {
+      const result = importProject(input, registry, {
         locale: latest.current.state.locale,
         context: options.context,
         documentId: crypto.randomUUID(),
@@ -130,7 +132,7 @@ export function useProjectSession(
         saved: Boolean(options.saved && complete),
       });
     },
-    [requestReplace]
+    [requestReplace, registry]
   );
   const onSnapshot = useCallback(
     (snapshot: ContentEditorSnapshot) => {
@@ -140,14 +142,12 @@ export function useProjectSession(
         current.state.editorEpoch !== state.editorEpoch
       )
         return;
-      dispatch({ type: 'draft', id: 'puck-fields', pending: snapshot.invalidFieldIds.length > 0 });
+      // Invalid cross-node constraints are also unapplied editor work, not only field JSON.
+      dispatch({ type: 'draft', id: 'puck-fields', pending: snapshot.hasUnappliedChanges });
       if (JSON.stringify(snapshot.document) !== JSON.stringify(current.project.document))
-        run(
-          parseProject({ ...current.project, document: snapshot.document }, contentRegistry),
-          true
-        );
+        run(parseProject({ ...current.project, document: snapshot.document }, registry), true);
     },
-    [run, state.generation, state.editorEpoch]
+    [run, state.generation, state.editorEpoch, registry]
   );
   useEffect(() => {
     if (!flags.hasChanges) return;
@@ -155,8 +155,9 @@ export function useProjectSession(
     window.addEventListener('beforeunload', protect);
     return () => window.removeEventListener('beforeunload', protect);
   }, [flags.hasChanges]);
-  const errors = projectIssues(project, contentRegistry, state.locale);
+  const errors = projectIssues(project, registry, state.locale);
   return {
+    registry,
     state,
     project,
     flags,

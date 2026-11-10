@@ -1,4 +1,4 @@
-import type { ContentIssue, ContentResult } from '@frontend/ui-document';
+import type { ContentIssue, ContentResult, ContentRegistry } from '@frontend/ui-document';
 import { parseProject, type StudioProject } from '../../data/index.js';
 import { contentRegistry } from '@frontend/puck-adapter/schema';
 
@@ -15,7 +15,8 @@ export function sectionSource(project: StudioProject, section: JsonSection): str
 }
 export function jsonDraftIssues(
   project: StudioProject,
-  drafts: JsonDrafts
+  drafts: JsonDrafts,
+  registry: ContentRegistry = contentRegistry
 ): ContentResult<StudioProject> {
   const candidate: Record<string, unknown> = { ...project };
   const errors: ContentIssue[] = [];
@@ -37,5 +38,5 @@ export function jsonDraftIssues(
       errors.push({ code: 'invalid-json', path: [section], message: 'Enter valid JSON.' });
     }
   }
-  return errors.length ? { ok: false, errors } : parseProject(candidate, contentRegistry);
+  return errors.length ? { ok: false, errors } : parseProject(candidate, registry);
 }

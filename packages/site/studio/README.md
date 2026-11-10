@@ -413,3 +413,9 @@ an overwrite if the destination or pending editor input changed during the read.
 The current working copy is preserved on conflict; choosing the file again retries
 against the new baseline. StudioPuckEditor supplies the session language as the
 native field draft scope.
+
+Host-specific document policies can be passed as `registry` in
+`useProjectSession` or `useStudioPageWorkspace` options. That registry is retained
+on the session and used for import, JSON application, binding/catalog operations,
+Puck snapshots, Viewer validation and publication preparation. Omitting it keeps
+the neutral default; hosts own any presentation providers and actual rendering.

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { SemanticField, unwrap } from '@frontend/puck-adapter/fields';
 import type { EditorFieldProps } from '@frontend/puck-adapter/fields';
-import { contentRegistry } from '@frontend/puck-adapter/schema';
 import { readJsonPath } from '@frontend/ui-document/inspection';
 import {
   parseVariablePath,
@@ -73,7 +72,7 @@ function BoundValue({
             binding.targetPath,
             json.data,
             session.state.locale,
-            contentRegistry
+            session.registry
           );
           if (!checked.ok) {
             session.setIssues(checked.errors);
@@ -85,7 +84,7 @@ function BoundValue({
               binding.sourcePath,
               json.data,
               session.state.locale,
-              contentRegistry
+              session.registry
             )
           );
         }}
@@ -102,7 +101,7 @@ function BoundValue({
               binding.nodeId,
               binding.targetPath,
               session.state.locale,
-              contentRegistry
+              session.registry
             )
           )
         }
@@ -152,7 +151,7 @@ export function BindingField({
         parsed.value,
         value.data,
         session.state.locale,
-        contentRegistry
+        session.registry
       );
       if (!created.ok) {
         session.setIssues(created.errors);
@@ -166,14 +165,14 @@ export function BindingField({
         [field.name],
         existing,
         session.state.locale,
-        contentRegistry
+        session.registry
       );
       if (!check.ok) {
         session.setIssues(check.errors);
         return;
       }
     }
-    session.run(bindProjectField(next, field.nodeId, [field.name], parsed.value, contentRegistry));
+    session.run(bindProjectField(next, field.nodeId, [field.name], parsed.value, session.registry));
     setMode('direct');
   }
   return (

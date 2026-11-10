@@ -12,6 +12,7 @@ export function StudioPuckEditor({ session }: { readonly session: ProjectSession
     <section className="ui-studio-editor" aria-label={componentText.editor} lang={state.locale}>
       <ContentEditor
         document={project.document}
+        registry={session.registry}
         selectionScope={state.generation}
         fieldScope={state.locale}
         sessionKey={state.generation + ':' + state.editorEpoch}

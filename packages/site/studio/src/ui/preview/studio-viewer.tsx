@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { resolveDocument, hasRenderableContent } from '@frontend/ui-document';
-import { contentRegistry } from '@frontend/puck-adapter/schema';
 import type { ProjectSession } from '../session/use-project-session.js';
 import { useStudioTextCatalog } from '../text/context.js';
 import type { StudioTheme } from './preview-options.js';
@@ -19,9 +18,9 @@ export interface StudioViewerProps {
 export function StudioViewer({ session, adapter, theme, toolbarActions }: StudioViewerProps) {
   const componentText = useStudioTextCatalog();
   const document = { ...session.project.document, locale: session.state.locale };
-  const resolved = resolveDocument(document, contentRegistry, { context: session.context });
+  const resolved = resolveDocument(document, session.registry, { context: session.context });
   const presence = resolved.ok
-    ? hasRenderableContent(resolved.value.data, contentRegistry)
+    ? hasRenderableContent(resolved.value.data, session.registry)
     : resolved;
   const empty = presence.ok && !presence.value;
   return (
