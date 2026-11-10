@@ -104,10 +104,9 @@ owns cancellation and submitted-snapshot acknowledgement.
 
 ## JSON navigation and scroll entrances
 
-The rendering registry additionally accepts two composition blocks with native `content`
-slots. They are JSON/runtime capabilities; editor fields/defaults are maintained separately.
-`documentComponentSchemas`, `DOCUMENT_COMPONENT_NAMES` and `DOCUMENT_SLOT_COMPONENTS`
-expose the full runtime inventory. Existing editor inventory exports remain unchanged.
+`Anchor` and `Reveal` are available in the renderer and the interactive editor.
+Both use native `content` slots. `documentComponentSchemas`, `DOCUMENT_COMPONENT_NAMES`
+and `DOCUMENT_SLOT_COMPONENTS` expose the same inventory used by the editor.
 
 ```json
 {
@@ -176,9 +175,9 @@ need no database migration and no Studio/editor configuration to render.
 
 ## JSON ScrollBoundary
 
-`ScrollBoundary` is also a JSON-only runtime node with one native `content` slot.
-It uses the same component, schema and state model as ordinary React. The editor
-inventory is unchanged.
+`ScrollBoundary` is available in the renderer and the interactive editor, with
+one native `content` slot. It uses the same component, schema and state model as
+ordinary React.
 
 ```json
 {
