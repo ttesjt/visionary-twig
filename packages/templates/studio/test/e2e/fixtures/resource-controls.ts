@@ -8,9 +8,7 @@ export async function selectStudioTheme(
 ): Promise<void> {
   if ((await page.locator('.ui-studio-shell').getAttribute('data-theme')) === value) return;
   const labels = { light: 'Light', dark: 'Dark', system: 'System' } as const;
-  await page.locator('.ui-studio-topbar .ui-theme-switcher-trigger').click();
-  await page
-    .locator('.ui-studio-topbar')
-    .getByRole('button', { name: labels[value], exact: true })
-    .click();
+  const switcher = page.locator('.ui-studio-appearance-switcher:visible');
+  await switcher.locator('.ui-theme-switcher-trigger').click();
+  await switcher.getByRole('button', { name: labels[value], exact: true }).click();
 }

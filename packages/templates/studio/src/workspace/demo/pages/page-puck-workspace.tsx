@@ -1,6 +1,7 @@
 'use client';
 import { StudioLink } from '../../navigation/studio-link';
 import { StudioFocusToolbar } from '@frontend/studio/workspace';
+import { StudioAppearanceSwitcher } from '@frontend/studio/shell';
 import { StudioPuckEditor } from '@frontend/studio/editor';
 import { useStudioText } from '../../../text/use-studio-text';
 import { demoEditorHref } from '../demo-routes';
@@ -42,6 +43,7 @@ export function DemoPuckWorkspace() {
             <StudioLink href={demoEditorHref(state.base, 'json', state.search)}>
               {componentText.editJson}
             </StudioLink>
+            <StudioAppearanceSwitcher text={catalog.workspace.chrome.theme} />
           </>
         }
       />

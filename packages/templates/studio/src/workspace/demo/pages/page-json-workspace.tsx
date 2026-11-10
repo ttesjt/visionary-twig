@@ -1,6 +1,7 @@
 'use client';
 import { StudioLink } from '../../navigation/studio-link';
 import { StudioSourceWorkspace } from '@frontend/studio/workspace';
+import { StudioAppearanceSwitcher } from '@frontend/studio/shell';
 import { StudioJsonEditor, StudioSessionHistory } from '@frontend/studio/json-editor';
 import { DemoPageViewer } from './preview/page-viewer';
 import { useStudioText } from '../../../text/use-studio-text';
@@ -21,7 +22,12 @@ export function DemoJsonWorkspace() {
           {labels.back}
         </StudioLink>
       }
-      actions={<StudioSessionHistory session={state.session} />}
+      actions={
+        <>
+          <StudioSessionHistory session={state.session} />
+          <StudioAppearanceSwitcher text={componentText.workspace.chrome.theme} />
+        </>
+      }
       labels={labels}
       json={<StudioJsonEditor drafts={state.drafts} text={componentText.jsonEditor} />}
       preview={<DemoPageViewer />}
