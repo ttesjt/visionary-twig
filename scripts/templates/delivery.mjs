@@ -1,36 +1,33 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parse, stringify } from 'yaml';
-import { DEPENDENCY_GROUPS } from '../lib/workspace-layers.mjs';
+import { DEPENDENCY_GROUPS, NODE_WORKSPACE_GROUPS } from '../lib/workspace-discovery.mjs';
+import { NODE_PRESET, scaffoldDirectory } from './presets.mjs';
 import { copySource, inside, readJson, writeJson } from './files.mjs';
 
 export const WORKSPACE_CONTRACT_VERSION = 1;
 export const WORKSPACE_RECORD = '.workspace-template.json';
 
 /** This declaration is the allowlist for user-owned workspace delivery. */
-export function readDelivery(root) {
-  const definition = readJson(path.join(root, 'scaffolds/monorepo/delivery.json'));
+export function readDelivery(root, preset) {
+  const definition = readJson(path.join(scaffoldDirectory(root, preset), 'delivery.json'));
   if (definition.version !== WORKSPACE_CONTRACT_VERSION)
     throw new Error('Unsupported delivery definition.');
   return definition;
 }
-export function copyWorkspaceFoundation(root, destination) {
-  const definition = readDelivery(root);
+export function copyWorkspaceFoundation(root, destination, preset) {
+  const definition = readDelivery(root, preset);
   for (const file of [...definition.files, ...definition.directories])
     copySource(inside(root, file), inside(destination, file));
   for (const [source, target] of Object.entries(definition.configurations ?? {}))
     copySource(inside(root, source), inside(destination, target));
   for (const [source, target] of Object.entries(definition.documents))
     copySource(inside(root, source), inside(destination, target));
-  const scaffold = path.join(root, 'scaffolds/monorepo');
-  for (const file of [
-    '.npmrc',
-    'AGENTS.md',
-    'apps/README.md',
-    'packages/site/README.md',
-    'packages/adapters/README.md',
-  ])
-    copySource(inside(scaffold, file), inside(destination, file));
+  copySource(path.join(root, 'scaffolds/monorepo/.npmrc'), path.join(destination, '.npmrc'));
+  copySource(
+    path.join(scaffoldDirectory(root, preset), 'AGENTS.md'),
+    path.join(destination, 'AGENTS.md')
+  );
 }
 export function mergeRequirements(target, contribution = {}) {
   for (const group of ['scripts', 'devDependencies', 'catalog']) {
@@ -42,7 +39,7 @@ export function mergeRequirements(target, contribution = {}) {
     }
   }
 }
-function usedCatalogs(destination, manifest) {
+function usedCatalogs(destination, manifest, plan) {
   const needed = new Set();
   function collect(value) {
     for (const group of DEPENDENCY_GROUPS)
@@ -50,18 +47,14 @@ function usedCatalogs(destination, manifest) {
         if (version === 'catalog:') needed.add(name);
   }
   collect(manifest);
-  for (const parent of ['apps', 'packages/shared', 'packages/site', 'packages/adapters']) {
-    const folder = path.join(destination, parent);
-    if (!existsSync(folder)) continue;
-    for (const entry of readdirSync(folder, { withFileTypes: true })) {
-      const file = path.join(folder, entry.name, 'package.json');
-      if (entry.isDirectory() && existsSync(file)) collect(readJson(file));
-    }
-  }
+  for (const entry of [...plan.packages, ...plan.templates])
+    collect(readJson(path.join(destination, entry.destination, 'package.json')));
   return needed;
 }
 export function writeWorkspaceConfiguration(root, destination, plan, contributions) {
-  const manifest = readJson(path.join(root, 'scaffolds/monorepo/package.base.json'));
+  const scaffold = scaffoldDirectory(root, plan.preset);
+  const node = plan.preset === NODE_PRESET;
+  const manifest = readJson(path.join(scaffold, 'package.base.json'));
   const source = readJson(path.join(root, 'package.json'));
   manifest.name = plan.name;
   manifest.packageManager = source.packageManager;
@@ -86,10 +79,10 @@ export function writeWorkspaceConfiguration(root, destination, plan, contributio
   const primary = apps.find((entry) => entry.config.primary) ?? apps[0];
   if (primary) manifest.workspaceDefaultApp = primary.appId;
   writeJson(path.join(destination, 'package.json'), manifest);
-  const workspace = parse(
-    readFileSync(path.join(root, 'scaffolds/monorepo/pnpm-workspace.yaml'), 'utf8')
-  );
-  const needed = usedCatalogs(destination, manifest);
+  const workspace = node
+    ? { packages: NODE_WORKSPACE_GROUPS.map(({ parent }) => parent + '/*') }
+    : parse(readFileSync(path.join(scaffold, 'pnpm-workspace.yaml'), 'utf8'));
+  const needed = usedCatalogs(destination, manifest, plan);
   for (const name of needed)
     if (!requirements.catalog[name]) throw new Error('Missing catalog version: ' + name);
   writeFileSync(
@@ -99,7 +92,7 @@ export function writeWorkspaceConfiguration(root, destination, plan, contributio
       packageManagerStrictVersion: sourceWorkspace.packageManagerStrictVersion,
       allowBuilds: Object.fromEntries(
         Object.entries(sourceWorkspace.allowBuilds ?? {}).filter(
-          ([name]) => needed.has(name) || ['esbuild', 'sharp'].includes(name)
+          ([name]) => needed.has(name) || name === 'esbuild' || (!node && name === 'sharp')
         )
       ),
       catalog: Object.fromEntries(
@@ -107,14 +100,11 @@ export function writeWorkspaceConfiguration(root, destination, plan, contributio
       ),
     })
   );
-  const readme = readFileSync(path.join(root, 'scaffolds/monorepo/README.md.template'), 'utf8');
+  const readme = readFileSync(path.join(scaffold, 'README.md.template'), 'utf8');
   writeFileSync(
     path.join(destination, 'README.md'),
     readme.replaceAll('{{projectName}}', plan.name)
   );
   mkdirSync(path.join(destination, '.github/workflows'), { recursive: true });
-  copySource(
-    path.join(root, 'scaffolds/monorepo/ci.yml'),
-    path.join(destination, '.github/workflows/ci.yml')
-  );
+  copySource(path.join(scaffold, 'ci.yml'), path.join(destination, '.github/workflows/ci.yml'));
 }

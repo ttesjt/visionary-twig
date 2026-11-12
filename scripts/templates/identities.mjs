@@ -2,6 +2,7 @@ export const TEMPLATE_ID_PATTERN = /^[a-z][a-z0-9-]*$/u;
 export const DEFAULT_APP_TEMPLATE = 'plain-next';
 export const DEFAULT_LIBRARY_TEMPLATE = 'node-library';
 export const DEFAULT_APP_NAME = 'web';
+export const DEFAULT_NODE_PROJECT_NAME = '@workspace/starter';
 export const DEFAULT_PROJECT_NAME = '@frontend/starter';
 export function packageScope(value) {
   const match = /^(@[a-z0-9][a-z0-9-]*)\/([a-z][a-z0-9-]*)$/u.exec(value);

@@ -1,7 +1,9 @@
 import { existsSync, lstatSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { discoverApps, MAX_TCP_PORT } from '../../tooling/workspace-apps.ts';
-import { DEPENDENCY_GROUPS } from '../lib/workspace-layers.mjs';
+import { WORKSPACE_GROUPS } from '../lib/workspace-layers.mjs';
+import { DEPENDENCY_GROUPS, NODE_WORKSPACE_GROUPS } from '../lib/workspace-discovery.mjs';
+import { NODE_PRESET } from '../templates/presets.mjs';
 import { planProject } from '../templates/plan.mjs';
 import { readJson } from '../templates/files.mjs';
 import { assertAppName, DEFAULT_APP_TEMPLATE } from '../templates/identities.mjs';
@@ -34,9 +36,15 @@ export async function planTemplateAddition(source, target, options) {
   if (!['app', 'library'].includes(kind)) throw new Error('Unsupported template task kind.');
   if (kind === 'app') assertAppName(options.appName);
   const record = readWorkspaceRecord(target);
+  const node = record.preset === NODE_PRESET;
+  if (node && kind === 'app')
+    throw new Error(
+      'App templates require a frontend workspace. This target uses the Node preset.'
+    );
   safeTargetPath(target, 'pnpm-workspace.yaml');
   const plan = await planProject(source, {
     name: record.projectName,
+    preset: record.preset,
     templates: [options.template ?? DEFAULT_APP_TEMPLATE],
     ...(kind === 'app'
       ? { appNames: { [options.template ?? DEFAULT_APP_TEMPLATE]: options.appName } }
@@ -47,9 +55,12 @@ export async function planTemplateAddition(source, target, options) {
   const selection = plan.templates[0];
   const location = safeTargetPath(target, selection.destination);
   if (lstatSync(location, { throwIfNoEntry: false }))
-    throw new Error('App destination already exists: ' + selection.destination);
+    throw new Error('Template destination already exists: ' + selection.destination);
   const names = new Set([readJson(path.join(target, 'package.json')).name]);
-  for (const parent of ['apps', 'packages/shared', 'packages/site', 'packages/adapters']) {
+  const groups = node
+    ? NODE_WORKSPACE_GROUPS
+    : WORKSPACE_GROUPS.filter(({ layer }) => layer !== 'template');
+  for (const { parent } of groups) {
     const folder = safeTargetPath(target, parent);
     if (!existsSync(folder)) continue;
     for (const directory of readdirSync(folder, { withFileTypes: true })) {

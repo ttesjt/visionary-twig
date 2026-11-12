@@ -3,9 +3,14 @@ import path from 'node:path';
 import { checkDeliveredDocumentation } from '../templates/documentation.mjs';
 import { createTemplateProject } from '../templates/generate.mjs';
 import { planProject } from '../templates/plan.mjs';
-import { assertAppName } from '../templates/identities.mjs';
+import {
+  assertAppName,
+  DEFAULT_LIBRARY_TEMPLATE,
+  DEFAULT_APP_NAME,
+  DEFAULT_APP_TEMPLATE,
+} from '../templates/identities.mjs';
+import { NODE_PRESET } from '../templates/presets.mjs';
 import { assertNewDestination, copySource } from '../templates/files.mjs';
-import { DEFAULT_APP_NAME, DEFAULT_APP_TEMPLATE } from '../templates/identities.mjs';
 import { formatProject } from '../templates/format.mjs';
 import { WORKSPACE_RECORD } from '../templates/delivery.mjs';
 import { assertExternalTarget } from './paths.mjs';
@@ -14,23 +19,27 @@ import { git, commitPaths } from './git.mjs';
 import { qualifyWorkspace, runTargetCommand } from './execution.mjs';
 import { appendTemplate } from './append.mjs';
 
-/** Create a standalone baseline before calling the same public app-add pipeline. */
+/** Create a standalone baseline before calling the same template transaction. */
 export async function cloneRepository(
   source,
   destination,
   options = {},
   { run = runTargetCommand } = {}
 ) {
+  const node = options.preset === NODE_PRESET;
+  const kind = options.kind ?? (node ? 'library' : 'app');
+  const template =
+    options.template ?? (kind === 'library' ? DEFAULT_LIBRARY_TEMPLATE : DEFAULT_APP_TEMPLATE);
+  const appName = options.appName ?? DEFAULT_APP_NAME;
   if (!options.bare) {
-    const appName = options.appName ?? DEFAULT_APP_NAME;
-    const template = options.template ?? DEFAULT_APP_TEMPLATE;
-    assertAppName(appName);
+    if (kind === 'app') assertAppName(appName);
     const check = await planProject(source, {
       name: options.name,
       templates: [template],
-      ...(options.kind === 'library' ? {} : { appNames: { [template]: appName } }),
+      preset: options.preset,
+      ...(kind === 'app' ? { appNames: { [template]: appName } } : {}),
     });
-    if (check.templates.length !== 1 || check.templates[0].type !== (options.kind ?? 'app'))
+    if (check.templates.length !== 1 || check.templates[0].type !== kind)
       throw new Error('Choose one app template; library templates use library:clone.');
   }
   assertExternalTarget(source, destination);
@@ -43,7 +52,8 @@ export async function cloneRepository(
     const plan = await createTemplateProject(source, candidate, {
       name: options.name,
       templates: [],
-      allShared: true,
+      preset: options.preset,
+      allShared: !node,
     });
     createWorkspaceRecord(source, candidate, plan);
     checkDeliveredDocumentation(candidate);
@@ -66,7 +76,9 @@ export async function cloneRepository(
       git(destination, ['ls-files', '--others', '--exclude-standard', '-z'])
         .split('\0')
         .filter(Boolean),
-      'chore(workspace): initialize frontend monorepo'
+      node
+        ? 'chore(workspace): initialize TypeScript monorepo'
+        : 'chore(workspace): initialize frontend monorepo'
     );
   } finally {
     rmSync(temporary, { recursive: true, force: true });
@@ -80,17 +92,21 @@ export async function cloneRepository(
         destination,
         {
           ...options,
-          appName: options.appName ?? DEFAULT_APP_NAME,
-          template: options.template ?? DEFAULT_APP_TEMPLATE,
+          appName,
+          kind,
+          template,
         },
         { run }
       )),
     };
   } catch (cause) {
     throw new Error(
-      'The bare workspace is ready at ' +
+      'The workspace baseline is ready at ' +
         destination +
-        '; app initialization failed. Retry template:clone after resolving the cause: ' +
+        '; ' +
+        kind +
+        ' initialization failed. ' +
+        (kind === 'app' ? 'Retry template:clone after resolving the cause: ' : '') +
         cause.message,
       { cause }
     );

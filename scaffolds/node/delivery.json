@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "files": [
+    "LICENSE",
+    ".node-version",
+    ".prettierrc",
+    "tsconfig.base.json",
+    "vitest.config.base.ts",
+    "tooling/eslint-base.mjs",
+    "scripts/require-pnpm.mjs",
+    "scripts/lib/entry-boundaries.mjs",
+    "scripts/lib/feature-boundaries/check.mjs",
+    "scripts/lib/feature-boundaries/declarations.mjs",
+    "scripts/lib/feature-boundaries/resolution.mjs",
+    "scripts/lib/node-workspace-policy.mjs",
+    "scripts/lib/package-policy.mjs",
+    "scripts/lib/processes.mjs",
+    "scripts/lib/workspace-discovery.mjs",
+    "scripts/workspace/options.mjs",
+    "scripts/workspace/package-tasks.mjs",
+    "scripts/test/node-workspace-policy.test.mjs",
+    "scripts/test/processes.test.mjs"
+  ],
+  "directories": [],
+  "configurations": {
+    "scaffolds/node/.gitignore": ".gitignore",
+    "scaffolds/node/.prettierignore": ".prettierignore",
+    "scaffolds/node/eslint.config.js": "eslint.config.js",
+    "scaffolds/node/tsconfig.json": "tsconfig.json",
+    "scaffolds/node/tsconfig.node.json": "tsconfig.node.json",
+    "scaffolds/node/check-workspace.mjs": "scripts/check-workspace.mjs",
+    "scaffolds/node/run-packages.mjs": "scripts/run-packages.mjs",
+    "scaffolds/node/packages/README.md": "packages/README.md"
+  },
+  "documents": {
+    "docs/common/code-standards.md": "docs/code-standards.md",
+    "docs/common/monorepo-standards.md": "docs/monorepo-standards.md",
+    "docs/common/documentation-standards.md": "docs/documentation-standards.md",
+    "docs/common/feature-boundaries.md": "docs/feature-boundaries.md",
+    "scaffolds/node/docs/README.md": "docs/README.md",
+    "scaffolds/node/docs/development.md": "docs/development.md",
+    "scaffolds/node/docs/repository-conventions.md": "docs/repository-conventions.md"
+  },
+  "documentAliases": {
+    "docs/template-repository/repository-conventions.md": "docs/repository-conventions.md",
+    "docs/template-repository/development.md": "docs/development.md"
+  }
+}

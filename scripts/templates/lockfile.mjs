@@ -3,8 +3,12 @@ import path from 'node:path';
 import { parse, stringify } from 'yaml';
 import { readJson } from './files.mjs';
 import { pruneLockfile } from './lockfile-graph.mjs';
+import { NODE_PRESET } from './presets.mjs';
 
 const DEPENDENCY_GROUPS = ['dependencies', 'devDependencies', 'optionalDependencies'];
+// Vitest and coverage share a peer graph. The source snapshots include DOM test
+// environments, so resolve this pair again against the Node target's manifest.
+const NODE_TEST_PEERS = new Set(['vitest', '@vitest/coverage-v8']);
 /** Reuse tested resolutions; the single initial install reconciles new hook requirements. */
 export function seedLockfile(source, destination, plan) {
   const file = path.join(source, 'pnpm-lock.yaml');
@@ -21,6 +25,7 @@ export function seedLockfile(source, destination, plan) {
         Object.entries(updated[group] ?? {}).flatMap(([before, value]) => {
           const name = plan.mapping.packages[before] ?? before;
           if (!manifest[group]?.[name]) return [];
+          if (plan.preset === NODE_PRESET && NODE_TEST_PEERS.has(name)) return [];
           const target = directoriesByName.get(before);
           return [
             [

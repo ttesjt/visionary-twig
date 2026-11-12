@@ -2,13 +2,14 @@ import path from 'node:path';
 import { generationOptions } from './generation/options.mjs';
 import { cloneRepository } from './generation/create.mjs';
 import { readTemplateCatalog } from './templates/catalog.mjs';
+import { NODE_PRESET } from './templates/presets.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 try {
   const options = generationOptions(process.argv.slice(2), 'repository');
   if (options.help)
     console.log(
-      'pnpm repo:clone --output <new-directory> [--bare | --template <id> --app-name <name>] [--name @scope/project] [--offline] [--no-verify] [--browser]\nDefault: independent monorepo plus plain-next in apps/web. Each template has its own commit.'
+      'pnpm repo:clone --output <new-directory> [--preset frontend|node] [--bare | --template <id> --app-name <name>] [--name @scope/project] [--offline] [--no-verify] [--browser]\nDefault: independent monorepo plus plain-next in apps/web. The Node preset starts with one Node library. Each template has its own commit.'
     );
   else if (options.list) {
     for (const entry of await readTemplateCatalog(root))
@@ -20,7 +21,9 @@ try {
       options.destination,
       '\nBaseline:',
       result.baseCommit,
-      result.commit ? '\nApp: ' + result.commit : ''
+      result.commit
+        ? (options.preset === NODE_PRESET ? '\nLibrary: ' : '\nApp: ') + result.commit
+        : ''
     );
   }
 } catch (error) {

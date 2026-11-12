@@ -18,7 +18,7 @@ export async function createTemplateProject(root, destination, options = {}) {
   mkdirSync(path.dirname(destination), { recursive: true });
   mkdirSync(destination);
   try {
-    copyWorkspaceFoundation(root, destination);
+    copyWorkspaceFoundation(root, destination, plan.preset);
     const contributions = await materializePackages(destination, plan);
     writeWorkspaceConfiguration(root, destination, plan, contributions);
     rewritePackageNames(destination, Object.entries(plan.mapping.packages));

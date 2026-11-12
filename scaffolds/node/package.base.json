@@ -1,0 +1,34 @@
+{
+  "license": "MIT",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Independent TypeScript workspace for Node.js",
+  "scripts": {
+    "preinstall": "node scripts/require-pnpm.mjs",
+    "build": "node scripts/run-packages.mjs build",
+    "dev": "node scripts/run-packages.mjs dev",
+    "clean": "pnpm -r --if-present clean",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "node scripts/run-packages.mjs lint",
+    "lint:fix": "node scripts/run-packages.mjs lint --fix",
+    "typecheck": "node scripts/run-packages.mjs typecheck",
+    "test": "node scripts/run-packages.mjs test",
+    "test:watch": "node scripts/run-packages.mjs test --watch",
+    "test:coverage": "node scripts/run-packages.mjs test --coverage",
+    "test:tooling": "node --test scripts/test/*.test.mjs",
+    "check:workspace": "node scripts/check-workspace.mjs",
+    "validate": "node scripts/run-packages.mjs validate"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vitest": "catalog:"
+  }
+}

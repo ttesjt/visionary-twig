@@ -1,13 +1,23 @@
 import path from 'node:path';
 import { readTemplateCatalog } from './catalog.mjs';
 import { readAvailablePackages, packageClosure } from './packages.mjs';
-import { packageScope, assertAppName, DEFAULT_PROJECT_NAME } from './identities.mjs';
+import {
+  packageScope,
+  assertAppName,
+  DEFAULT_PROJECT_NAME,
+  DEFAULT_NODE_PROJECT_NAME,
+} from './identities.mjs';
+import { FRONTEND_PRESET, NODE_PRESET } from './presets.mjs';
+import { NODE_WORKSPACE_GROUPS } from '../lib/workspace-discovery.mjs';
 
 /** Pure source planning; Git is not needed to inspect template provenance. */
 export async function planProject(root, options = {}) {
+  const preset = options.preset ?? FRONTEND_PRESET;
+  const node = preset === NODE_PRESET;
   const catalog = await readTemplateCatalog(root);
   const requested =
-    options.templates ?? catalog.filter((entry) => entry.type === 'app').map((entry) => entry.id);
+    options.templates ??
+    (node ? [] : catalog.filter((entry) => entry.type === 'app').map((entry) => entry.id));
   if (!Array.isArray(requested) || new Set(requested).size !== requested.length)
     throw new Error('Choose distinct templates.');
   const entries = new Map(catalog.map((entry) => [entry.id, entry]));
@@ -18,13 +28,15 @@ export async function planProject(root, options = {}) {
     if (selected.has(id)) return;
     const entry = entries.get(id);
     if (!entry) throw new Error('Unknown template: ' + id);
+    if (node && entry.kind !== 'node-library')
+      throw new Error('The Node preset requires Node library templates.');
     visiting.add(id);
     for (const dependency of entry.config.requires ?? []) select(dependency);
     visiting.delete(id);
     selected.set(id, entry);
   }
   for (const id of requested) select(id);
-  const name = options.name ?? DEFAULT_PROJECT_NAME;
+  const name = options.name ?? (node ? DEFAULT_NODE_PROJECT_NAME : DEFAULT_PROJECT_NAME);
   const scope = packageScope(name);
   const appNames = options.appNames ?? {};
   for (const [id, value] of Object.entries(appNames)) {
@@ -33,7 +45,11 @@ export async function planProject(root, options = {}) {
     assertAppName(value);
   }
   const templates = [...selected.values()].map((entry) => {
-    const destination = appNames[entry.id] ? 'apps/' + appNames[entry.id] : entry.destination;
+    const destination = node
+      ? path.posix.join(NODE_WORKSPACE_GROUPS[0].parent, path.posix.basename(entry.destination))
+      : appNames[entry.id]
+        ? 'apps/' + appNames[entry.id]
+        : entry.destination;
     return {
       ...entry,
       destination,
@@ -43,7 +59,7 @@ export async function planProject(root, options = {}) {
   });
   if (new Set(templates.map((entry) => entry.destination)).size !== templates.length)
     throw new Error('Colliding template destinations.');
-  const available = readAvailablePackages(root, scope);
+  const available = node ? new Map() : readAvailablePackages(root, scope);
   const extras = templates.flatMap((entry) => entry.config.packages ?? []);
   if (options.allShared)
     extras.push(
@@ -76,5 +92,5 @@ export async function planProject(root, options = {}) {
       )
     ),
   });
-  return { name, scope, templates, packages, mapping };
+  return { preset, name, scope, templates, packages, mapping };
 }

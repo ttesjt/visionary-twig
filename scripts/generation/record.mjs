@@ -2,6 +2,7 @@ import { z } from 'zod';
 import path from 'node:path';
 import { readJson, writeJson } from '../templates/files.mjs';
 import { WORKSPACE_CONTRACT_VERSION, WORKSPACE_RECORD } from '../templates/delivery.mjs';
+import { NODE_PRESET } from '../templates/presets.mjs';
 import { packageScope } from '../templates/identities.mjs';
 import { sourceIdentity } from './git.mjs';
 import { safeTargetPath } from './paths.mjs';
@@ -13,6 +14,7 @@ const sourceSchema = z.object({
 const packageSchema = z.object({ name: z.string(), destination: z.string(), version: z.string() });
 const recordSchema = z.object({
   version: z.literal(WORKSPACE_CONTRACT_VERSION),
+  preset: z.literal(NODE_PRESET).optional(),
   projectName: z.string(),
   scope: z.string(),
   source: sourceSchema,
@@ -37,6 +39,7 @@ export function createWorkspaceRecord(source, destination, plan) {
   const identity = sourceIdentity(source);
   const record = {
     version: WORKSPACE_CONTRACT_VERSION,
+    ...(plan.preset === NODE_PRESET ? { preset: NODE_PRESET } : {}),
     projectName: plan.name,
     scope: plan.scope,
     source: identity,

@@ -11,7 +11,7 @@ import { runProcesses } from '../lib/processes.mjs';
 
 test('propagates failure and spawn errors', async () => {
   assert.equal(await runProcesses([[process.execPath, ['-e', 'process.exit(7)']]]), 7);
-  assert.equal(await runProcesses([['/definitely-missing-gallery-command', []]]), 1);
+  assert.equal(await runProcesses([['/definitely-missing-workspace-command', []]]), 1);
 });
 
 async function eventually(predicate) {
@@ -34,10 +34,10 @@ function alive(pid) {
 
 for (const signal of ['SIGINT', 'SIGTERM']) {
   test(
-    `${signal} reaches app/watch descendants and preserves unrelated processes`,
+    `${signal} reaches worker/watch descendants and preserves unrelated processes`,
     { skip: process.platform === 'win32' },
     async (context) => {
-      const root = mkdtempSync(path.join(tmpdir(), 'gallery-process-'));
+      const root = mkdtempSync(path.join(tmpdir(), 'workspace-process-'));
       const unrelated = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)']);
       const module = new URL('../lib/processes.mjs', import.meta.url).href;
       const commands = ['app', 'watch'].map((name) => [

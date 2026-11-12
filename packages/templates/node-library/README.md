@@ -2,8 +2,7 @@
 
 Replace the neutral greeting example, choose the package name and declare the
 library's dependencies. This scaffold uses ESM dist exports and the workspace's
-shared compiler, formatter, lint and test configuration. It is inactive in the
-source template repository; generated copies are ordinary shared workspaces.
+workspace compiler, formatter, lint and test configuration.
 
 Read the [repository conventions](../../../docs/template-repository/repository-conventions.md) for
 package starting points and [development guidance](../../../docs/template-repository/development.md)

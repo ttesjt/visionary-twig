@@ -49,7 +49,7 @@ export async function appendTemplate(source, target, options, { run = runTargetC
       'pnpm-workspace.yaml',
       WORKSPACE_RECORD,
     ]);
-    await qualifyWorkspace(candidate, options, run);
+    await qualifyWorkspace(candidate, { ...options, preset: plan.preset }, run);
     const paths = changedPaths(candidate);
     const rootFiles = new Set([
       'package.json',

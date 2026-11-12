@@ -92,7 +92,10 @@
     "scaffolds/monorepo/docs/README.md": "docs/README.md"
   },
   "configurations": {
-    "scaffolds/monorepo/eslint.config.js": "eslint.config.js"
+    "scaffolds/monorepo/eslint.config.js": "eslint.config.js",
+    "scaffolds/monorepo/apps/README.md": "apps/README.md",
+    "scaffolds/monorepo/packages/site/README.md": "packages/site/README.md",
+    "scaffolds/monorepo/packages/adapters/README.md": "packages/adapters/README.md"
   },
   "documentAliases": {
     "docs/template-repository/architecture.md": "docs/architecture.md",

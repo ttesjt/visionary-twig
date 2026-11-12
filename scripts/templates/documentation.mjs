@@ -13,7 +13,7 @@ export function rewriteDeliveredDocumentation(
   entries,
   { foundation = false } = {}
 ) {
-  const delivery = readDelivery(source);
+  const delivery = readDelivery(source, plan.preset);
   const documents = { ...delivery.documents, ...delivery.documentAliases };
   const directories = Object.entries(plan.mapping.directories).sort(
     ([a], [b]) => b.length - a.length
