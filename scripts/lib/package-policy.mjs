@@ -3,6 +3,8 @@ import { checkEntryBoundaries } from './entry-boundaries.mjs';
 import { DEPENDENCY_GROUPS, discoverWorkspaces } from './workspace-discovery.mjs';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { isBuiltin } from 'node:module';
+import { URL } from 'node:url';
+import { contains, importTargets, localPackageImport } from './module-targets.mjs';
 import path from 'node:path';
 import ts from 'typescript';
 
@@ -53,10 +55,6 @@ function walk(directory, includeBuildOutput = false) {
 function exportTargets(value) {
   return typeof value === 'string' ? [value] : Object.values(value ?? {}).flatMap(exportTargets);
 }
-function outside(directory, target) {
-  const relative = path.relative(directory, target);
-  return relative === '..' || relative.startsWith('..' + path.sep) || path.isAbsolute(relative);
-}
 function matches(pattern, value) {
   if (!pattern.includes('*')) return pattern === value;
   const [prefix, suffix] = pattern.split('*');
@@ -74,6 +72,41 @@ function exported(exports, subpath) {
   return keys.some((key) => key.startsWith('.'))
     ? keys.some((key) => matches(key, subpath) && exportTargets(exports[key]).length > 0)
     : subpath === '.';
+}
+
+function dependencySpecifiers(workspace, specifiers, report, checkExports) {
+  return specifiers.flatMap((original) => {
+    if (!original.startsWith('#')) return [{ specifier: original, report }];
+    const targets = importTargets(workspace.manifest, original);
+    if (!targets.length) report('package import is not defined: ' + original);
+    const runtimeTargets = checkExports
+      ? new Set(importTargets(workspace.manifest, original, { runtime: true }))
+      : undefined;
+    return targets.flatMap((specifier) => {
+      const viaAlias = (message) => report(message + ' (via ' + original + ')');
+      if (specifier.startsWith('./')) {
+        const target = localPackageImport(workspace.directory, specifier);
+        if (!target) viaAlias('package import target must stay inside the package: ' + specifier);
+        else if (runtimeTargets?.has(specifier) && !target.fileExists)
+          viaAlias(
+            'missing package import runtime file: ' +
+              specifier +
+              '; build packages first or correct the target'
+          );
+        return [];
+      }
+      if (
+        !specifier ||
+        /^[.#/]/u.test(specifier) ||
+        specifier.startsWith('@/') ||
+        URL.canParse(specifier)
+      ) {
+        viaAlias('invalid package import target: ' + specifier);
+        return [];
+      }
+      return [{ specifier, report: viaAlias }];
+    });
+  });
 }
 
 export function checkPackageWorkspace(root, { groups, policies, rules = {}, checkExports = true }) {
@@ -145,7 +178,7 @@ export function checkPackageWorkspace(root, { groups, policies, rules = {}, chec
     if (checkExports) {
       for (const target of exportTargets(manifest.exports)) {
         const resolved = path.resolve(directory, target);
-        if (!target.startsWith('./') || outside(directory, resolved)) {
+        if (!target.startsWith('./') || !contains(directory, resolved)) {
           errors.push(label + ': exports must target files inside the package: ' + target);
         } else if (target.includes('*')) {
           if (!walk(directory, true).some((file) => matches(resolved, file)))
@@ -181,40 +214,54 @@ export function checkPackageWorkspace(root, { groups, policies, rules = {}, chec
       const specifiers = code
         ? ts.preProcessFile(text, true, true).importedFiles.map(({ fileName }) => fileName)
         : [...text.matchAll(/@import\s+(?:url\(\s*)?['"]([^'"]+)['"]/g)].map((match) => match[1]);
-      for (const specifier of specifiers) {
+      for (const { specifier, report: reportImport } of dependencySpecifiers(
+        workspace,
+        specifiers,
+        report,
+        checkExports
+      )) {
         if (specifier.startsWith('.')) {
-          rules.checkRelativeImport?.({ workspace, specifier, code, report });
-          if ((source || test) && outside(directory, path.resolve(path.dirname(file), specifier)))
-            report('source import crosses a package boundary: ' + specifier);
+          rules.checkRelativeImport?.({ workspace, specifier, code, report: reportImport });
+          if ((source || test) && !contains(directory, path.resolve(path.dirname(file), specifier)))
+            reportImport('source import crosses a package boundary: ' + specifier);
           if (
             source &&
             !test &&
             manifest.workspaceKind === 'node-library' &&
             !/\.(?:[cm]?js|json|node)$/.test(specifier)
           )
-            report('Node library imports need explicit runtime extensions: ' + specifier);
+            reportImport('Node library imports need explicit runtime extensions: ' + specifier);
           continue;
         }
         if (rules.isAlias?.(workspace, specifier)) continue;
         if (isBuiltin(specifier)) {
-          rules.checkBuiltin?.({ manifest, source, test, report });
+          rules.checkBuiltin?.({ manifest, source, test, report: reportImport });
           continue;
         }
         const dependency = specifier.startsWith('@')
           ? specifier.split('/').slice(0, 2).join('/')
           : specifier.split('/')[0];
         const imported = byName.get(dependency);
-        rules.checkImport?.({ workspace, imported, dependency, specifier, code, report });
+        rules.checkImport?.({
+          workspace,
+          imported,
+          dependency,
+          specifier,
+          code,
+          report: reportImport,
+        });
         if (location === 'packages' && imported?.location === 'apps')
-          report('packages cannot depend on application hosts.');
+          reportImport('packages cannot depend on application hosts.');
         const allowed = source && !test ? runtime : declared;
         if (dependency !== manifest.name && !allowed[dependency])
-          report('undeclared ' + (source && !test ? 'runtime ' : '') + 'dependency ' + dependency);
+          reportImport(
+            'undeclared ' + (source && !test ? 'runtime ' : '') + 'dependency ' + dependency
+          );
         if (imported) {
           const subpath =
             specifier === dependency ? '.' : './' + specifier.slice(dependency.length + 1);
           if (!exported(imported.manifest.exports, subpath))
-            report('import uses a non-public export: ' + specifier);
+            reportImport('import uses a non-public export: ' + specifier);
         }
       }
     }

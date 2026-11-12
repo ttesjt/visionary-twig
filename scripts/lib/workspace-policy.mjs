@@ -1,3 +1,4 @@
+import { contains } from './module-targets.mjs';
 import { checkUiTextSource } from './ui-text-policy.mjs';
 import {
   checkPackageWorkspace,
@@ -30,11 +31,6 @@ const policies = {
   },
   styles: { location: 'packages', scripts: formatScripts, files: ['README.md'] },
 };
-
-function contains(directory, target) {
-  const relative = path.relative(directory, target);
-  return !relative.startsWith('..' + path.sep) && relative !== '..' && !path.isAbsolute(relative);
-}
 
 function checkReactStyles({ directory, manifest, files }, label, errors) {
   const stylesDirectory = path.join(directory, 'src/styles');

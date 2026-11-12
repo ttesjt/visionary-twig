@@ -1,8 +1,8 @@
 import { existsSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
-import { publicTarget, sourceFile } from '../entry-boundaries.mjs';
-import { contains } from './declarations.mjs';
+import { publicTarget } from '../entry-boundaries.mjs';
+import { contains, importTargets, localPackageImport, sourceFile } from '../module-targets.mjs';
 
 const NO_INPUT_FILES_DIAGNOSTIC_CODE = 18003;
 
@@ -35,7 +35,7 @@ export function createSourceResolver(workspaces, byName) {
     );
     return result;
   }
-  return (workspace, file, specifier) => {
+  function resolve(workspace, file, specifier) {
     const name = specifier.startsWith('@')
       ? specifier.split('/').slice(0, 2).join('/')
       : specifier.split('/')[0];
@@ -66,5 +66,13 @@ export function createSourceResolver(workspaces, byName) {
       if (source) return realpathSync(source);
     }
     return physical;
-  };
+  }
+  return (workspace, file, specifier) =>
+    importTargets(workspace.manifest, specifier).flatMap((target) => {
+      const resolved =
+        specifier.startsWith('#') && target.startsWith('.')
+          ? localPackageImport(workspace.directory, target)?.source
+          : resolve(workspace, file, target);
+      return resolved ? [resolved] : [];
+    });
 }

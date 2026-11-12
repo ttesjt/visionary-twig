@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -89,4 +89,69 @@ test('Node validation builds flat packages once before checks and tests', (conte
   );
   assert.deepEqual(steps.slice(-2), [['test:tooling'], ['-r', '--if-present', 'test']]);
   assert.ok(!steps.some((step) => step.some((value) => value.startsWith('app:'))));
+});
+
+test('Node package imports accept local targets, specific patterns and declared public packages before dist exists', (context) => {
+  const { root, write, library } = fixture(context);
+  library('vendor');
+  library('consumer', {
+    imports: {
+      '#internal': './src/internal.ts',
+      '#entry/*': { types: './src/*.ts', default: './dist/*.js' },
+      '#entry/*.js': ['./dist/*.js'],
+      '#*': 'undeclared-fallback/*',
+      '#vendor': '@fixture/vendor',
+    },
+    dependencies: { '@fixture/vendor': 'workspace:*' },
+  });
+  write('packages/consumer/src/internal.ts', 'export const internal = 1;');
+  write(
+    'packages/consumer/src/nested/index.ts',
+    "import '#internal';\nimport '#entry/internal';\nimport '#entry/internal.js';\nimport '#vendor';\n"
+  );
+  assert.deepEqual(checkNodeWorkspace(root, { checkExports: false }), []);
+});
+
+test('Node package imports cannot bypass dependency, public export or filesystem boundaries', (context) => {
+  const { root, write, library } = fixture(context);
+  library('vendor');
+  library('consumer', {
+    imports: {
+      '#blocked': null,
+      '#bad': { import: './src/internal.ts', require: '@fixture/vendor/private' },
+      '#escape': './../vendor/src/index.ts',
+      '#link': './src/link.js',
+    },
+  });
+  write('packages/consumer/src/internal.ts', 'export const internal = 1;');
+  symlinkSync(
+    path.join(root, 'packages/vendor/src/index.ts'),
+    path.join(root, 'packages/consumer/src/link.ts')
+  );
+  write(
+    'packages/consumer/src/index.ts',
+    "import '#missing';\nimport '#blocked';\nimport '#bad';\nimport '#escape';\nimport '#link';\n"
+  );
+  const errors = checkNodeWorkspace(root, { checkExports: false }).join('\n');
+  assert.match(errors, /package import is not defined: #missing/u);
+  assert.match(errors, /package import is not defined: #blocked/u);
+  assert.match(errors, /undeclared runtime dependency @fixture\/vendor \(via #bad\)/u);
+  assert.match(errors, /non-public export: @fixture\/vendor\/private \(via #bad\)/u);
+  assert.match(errors, /must stay inside the package: .+ \(via #escape\)/u);
+  assert.match(errors, /must stay inside the package: .+ \(via #link\)/u);
+});
+
+test('feature and public entry checks follow the source behind an aliased build output', (context) => {
+  const { root, write, library } = fixture(context);
+  library('consumer', {
+    imports: { '#internal': './dist/feature/internal.js' },
+    workspaceFeatures: { 'src/feature': { public: ['index.ts'] } },
+    workspaceEntrypoints: { '.': 'pure' },
+  });
+  write('packages/consumer/src/feature/index.ts', 'export const published = 1;');
+  write('packages/consumer/src/feature/internal.ts', "export { readFileSync } from 'node:fs';");
+  write('packages/consumer/src/index.ts', "export { readFileSync } from '#internal';");
+  const errors = checkNodeWorkspace(root, { checkExports: false }).join('\n');
+  assert.match(errors, /feature access must use a declared public entry.+#internal/u);
+  assert.match(errors, /pure entry reaches Node:.+#internal.+node:fs/u);
 });

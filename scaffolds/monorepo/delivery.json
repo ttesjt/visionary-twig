@@ -29,6 +29,7 @@
     "scripts/lib/ui-text-policy.mjs",
     "scripts/lib/workspace-discovery.mjs",
     "scripts/lib/workspace-layers.mjs",
+    "scripts/lib/module-targets.mjs",
     "scripts/lib/package-policy.mjs",
     "scripts/lib/workspace-policy.mjs",
     "scripts/list-apps.mjs",

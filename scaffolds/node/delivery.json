@@ -14,6 +14,7 @@
     "scripts/lib/feature-boundaries/declarations.mjs",
     "scripts/lib/feature-boundaries/resolution.mjs",
     "scripts/lib/node-workspace-policy.mjs",
+    "scripts/lib/module-targets.mjs",
     "scripts/lib/package-policy.mjs",
     "scripts/lib/processes.mjs",
     "scripts/lib/workspace-discovery.mjs",

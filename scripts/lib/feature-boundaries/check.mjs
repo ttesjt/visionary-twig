@@ -1,7 +1,8 @@
 import { readFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
-import { contains, readFeatures } from './declarations.mjs';
+import { readFeatures } from './declarations.mjs';
+import { contains } from '../module-targets.mjs';
 import { createSourceResolver } from './resolution.mjs';
 
 const isCode = (file) => /\.[cm]?[jt]sx?$/.test(file);
@@ -27,42 +28,43 @@ export function checkFeatureBoundaries(root, workspaces, byName) {
       const references = ts.preProcessFile(readFileSync(file, 'utf8'), true, true).importedFiles;
       const targets = new Set();
       for (const { fileName: specifier } of references) {
-        let target;
+        let resolved;
         try {
-          target = resolve(workspace, file, specifier);
+          resolved = resolve(workspace, file, specifier);
         } catch (error) {
           report(file, 'feature import resolution failed: ' + error.message);
           continue;
         }
-        if (!target) continue; // Missing modules are checked by TypeScript and package policy.
-        targets.add(target);
-        const from = owner(file);
-        const to = owner(target);
-        if (from === to) continue;
-        if (from && (!to || contains(to.directory, from.directory))) {
-          if (to && !to.sharedEntries.has(target))
-            report(file, 'feature may consume ancestor shared entries only: ' + specifier);
-          else sharedStarts.add(target);
-          continue;
-        }
-        // Across packages, only explicitly neutral shared public capabilities can
-        // be consumed by another feature. Package/layer checks still apply.
-        if (from && isSharedPublicDependency(from.workspace, to, target)) {
-          sharedStarts.add(target);
-        } else if (from && to && !contains(from.directory, to.directory)) {
-          report(file, 'unrelated features cannot depend on each other: ' + specifier);
-          continue;
-        }
-        for (const feature of features) {
-          if (!contains(feature.directory, target) || contains(feature.directory, file)) continue;
-          if (!feature.publicEntries.has(target))
-            report(
-              file,
-              'feature access must use a declared public entry of ' +
-                feature.label +
-                ': ' +
-                specifier
-            );
+        for (const target of resolved) {
+          targets.add(target);
+          const from = owner(file);
+          const to = owner(target);
+          if (from === to) continue;
+          if (from && (!to || contains(to.directory, from.directory))) {
+            if (to && !to.sharedEntries.has(target))
+              report(file, 'feature may consume ancestor shared entries only: ' + specifier);
+            else sharedStarts.add(target);
+            continue;
+          }
+          // Across packages, only explicitly neutral shared public capabilities can
+          // be consumed by another feature. Package/layer checks still apply.
+          if (from && isSharedPublicDependency(from.workspace, to, target)) {
+            sharedStarts.add(target);
+          } else if (from && to && !contains(from.directory, to.directory)) {
+            report(file, 'unrelated features cannot depend on each other: ' + specifier);
+            continue;
+          }
+          for (const feature of features) {
+            if (!contains(feature.directory, target) || contains(feature.directory, file)) continue;
+            if (!feature.publicEntries.has(target))
+              report(
+                file,
+                'feature access must use a declared public entry of ' +
+                  feature.label +
+                  ': ' +
+                  specifier
+              );
+          }
         }
       }
       graph.set(file, { workspace, targets });

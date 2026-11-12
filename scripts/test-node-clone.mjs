@@ -102,18 +102,18 @@ async function verifyLocalConsumer(project, scope) {
   copySource(path.join(project, starter), directory);
   const manifestPath = path.join(directory, 'package.json');
   const manifest = readJson(manifestPath);
-  writeJson(manifestPath, {
+  const consumer = {
     ...manifest,
     name: consumerName,
     dependencies: { [libraryName]: 'workspace:*' },
-  });
-
-  const index = path.join(directory, 'src/index.ts');
-  const validSource =
-    "import { greet } from '" +
-    libraryName +
-    "';\n\nexport const message = greet({ name: 'consumer' });\n";
-  writeFileSync(index, validSource);
+    imports: { '#message': './dist/message.js', '#greet': libraryName },
+  };
+  writeJson(manifestPath, consumer);
+  writeFileSync(path.join(directory, 'src/index.ts'), "export { message } from '#message';\n");
+  writeFileSync(
+    path.join(directory, 'src/message.ts'),
+    "import { greet } from '#greet';\n\nexport const message = greet({ name: 'consumer' });\n"
+  );
   writeFileSync(
     path.join(directory, 'test/public-api.test.ts'),
     "import { expect, it } from 'vitest';\nimport { message } from '../src/index.js';\n\nit('consumes the built library', () => {\n  expect(message).toBe('Hello from consumer!');\n});\n"
@@ -138,22 +138,20 @@ async function verifyLocalConsumer(project, scope) {
   );
   assert.equal(output.trim(), 'Hello from consumer!');
 
-  writeJson(manifestPath, { ...manifest, name: consumerName });
-  writeFileSync(index, validSource.replace(libraryName, libraryName + '/src/lib/index.js'));
+  writeJson(manifestPath, {
+    ...manifest,
+    name: consumerName,
+    imports: { ...consumer.imports, '#greet': libraryName + '/src/lib/index.js' },
+  });
   const result = spawnSync(process.execPath, ['scripts/check-workspace.mjs', '--source'], {
     cwd: project,
     env,
     encoding: 'utf8',
   });
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /undeclared runtime dependency/u);
-  assert.match(result.stderr, /non-public export/u);
-  writeJson(manifestPath, {
-    ...manifest,
-    name: consumerName,
-    dependencies: { [libraryName]: 'workspace:*' },
-  });
-  writeFileSync(index, validSource);
+  assert.match(result.stderr, /undeclared runtime dependency.+via #greet/u);
+  assert.match(result.stderr, /non-public export.+via #greet/u);
+  writeJson(manifestPath, consumer);
 }
 
 const generated = path.join(scratch, 'node-project');

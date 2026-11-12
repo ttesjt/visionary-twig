@@ -1,13 +1,8 @@
 import { existsSync, realpathSync, statSync } from 'node:fs';
 import path from 'node:path';
 
-export function contains(directory, file) {
-  const relative = path.relative(directory, file);
-  return (
-    relative === '' ||
-    (!relative.startsWith('..' + path.sep) && relative !== '..' && !path.isAbsolute(relative))
-  );
-}
+import { contains } from '../module-targets.mjs';
+
 const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 function boundedPath(base, relative, directory) {
   if (
