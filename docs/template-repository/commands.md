@@ -12,14 +12,20 @@ pnpm bootstrap --include-templates --source default
 pnpm dev --app template-plain-next
 pnpm dev --app template-studio
 pnpm repo:clone --output ../my-project --name @example/frontend
+pnpm repo:clone --preset node --output ../my-tools --name @example/tools
 ```
 
 `repo:clone` creates an independent framework baseline and, by default, one plain-next
-app named web. --bare omits apps. `template:clone --target <repo> --name <app>` adds
+app named web. The frontend `--bare` option creates the framework without apps. `template:clone --target <repo> --name <app>` adds
 one named app to an existing generated monorepo; --template defaults to plain-next.
 Both operations validate installation and preserve existing source. Every app task
 has its own commit. See [the generation contract](generation.md) for flags, conflicts,
 optional package delivery, history and failure behavior.
+
+`repo:clone --preset node` generates a package-only workspace with its own
+[development commands](../../scaffolds/node/docs/development.md). Run
+`pnpm test:node-clone` in the source repository to verify independent
+installation, build, tests and public exports.
 
 ## Generic host selection
 

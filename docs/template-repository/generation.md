@@ -9,11 +9,12 @@ remotes, worktree metadata, templates and maintenance tools are not inherited.
 ```sh
 pnpm repo:clone --output ../site
 pnpm repo:clone --output ../framework --bare --name @example/framework
+pnpm repo:clone --preset node --output ../tools --name @example/tools
 pnpm repo:clone --output ../editor --template studio --app-name workbench
 pnpm template:clone --target ../site --name editor --template studio
 ```
 
-repo:clone defaults to one plain-next app named web. --bare only creates the
+The frontend preset defaults to one plain-next app named web. --bare only creates the
 framework. --template selects one app; --app-name renames its destination.
 --name in repo:clone defines the root package identity/scope. In template:clone,
 --name is a required app directory ID with no default; its root scope is inherited.
@@ -21,18 +22,28 @@ Library templates use library:clone --output <new-directory> with optional
 --name @scope/project. They use the same framework baseline and a separate library
 commit, remain valid targets for later app addition, and never expand into apps/.
 
-Both app commands accept --offline (populated store), --no-verify (skip aggregate
+Select `--preset node` to create a pure TypeScript workspace. It initializes
+`packages/*` and expands `node-library` into `packages/example-library`. The
+default root name is `@workspace/starter`. The Node preset uses `--name`,
+`--offline`, and `--no-verify`. The frontend options `--bare`, `--template`,
+`--app-name`, and `--browser` require the default or explicit `--preset frontend`.
+
+Both frontend commands accept --offline (populated store), --no-verify (skip aggregate
 validate, still reconcile and verify installation/prepare), and --browser (also
 production and fixed-theme browser checks; requires verification). --help and
 --list inspect available app choices without changing targets.
 
 ## Ownership and inputs
 
-scaffolds/monorepo/delivery.json is the explicit foundation file/document/config
-allowlist. package.base.json owns target scripts/tool dependencies; toolchain
+Each preset has an explicit foundation allowlist. The frontend allowlist lives
+in `scaffolds/monorepo/delivery.json`, and the Node allowlist in
+`scaffolds/node/delivery.json`. package.base.json owns target scripts/tool dependencies; toolchain
 versions come from the source package.json and catalog. Workspace paths are apps,
 shared, site and adapters, with no template path. Default shared delivery includes
 all neutral shared packages; empty app/site/adapter directories have README guides.
+The Node foundation delivers NodeNext configuration, package policy and tasks, CI,
+and package development guides. Shared compiler, lint, testing, policy and
+generation mechanisms have one implementation.
 
 Templates own template.config.mjs and optional local initializer. The source
 manifest declares ordinary dependencies, including any site packages needed by
@@ -54,7 +65,7 @@ runtime behavior. Local inputs and previous generated/build outputs are excluded
 ## Existing targets and conflicts
 
 App addition requires a generated-workspace contract record, matching root identity,
-clean Git worktree/index (ignored personal files allowed), and an available Git
+the frontend preset, a clean Git worktree/index (ignored personal files allowed), and an available Git
 identity. Target must be the repository root. A generator lock and HEAD/status
 checks prevent concurrent tasks publishing stale changes.
 
@@ -77,7 +88,9 @@ automatic framework update protocol.
 Each stage has matching manifests/catalog/lockfile. A seed retains only the pnpm v9
 resolution closure required by selected importers, including optional platforms and
 peer variants; unrelated provider/private records are not copied. During app addition,
-existing target importers/pins take precedence over source seeds.
+existing target importers/pins take precedence over source seeds. Node generation
+resolves Vitest and its coverage provider in the target so optional DOM peers
+from the source lockfile do not become dependencies.
 
 Creation qualifies an isolated bare candidate, then publishes source into an
 exclusively created directory, performs a target frozen install and initializes
@@ -92,6 +105,12 @@ feat(web): initialize from plain-next
 feat(editor): initialize from studio
 ```
 
+The Node history has a TypeScript workspace baseline and a second commit for
+`example-library`. Both install with their own lockfile. Node qualification uses
+the package-only validate task and the output contains its own CI workflow.
+If library qualification fails, the baseline remains available. Retry generation
+into a new directory after resolving the error.
+
 The first commit is independently installable. Each app commit includes necessary
 new shared/site/adapter packages, root contributions, provenance and lockfile.
 Only task-owned paths are staged. Git hooks/signing remain active. Failure does not
@@ -103,7 +122,7 @@ stale lock rather than deleting another process's lock automatically.
 ## Documentation delivery and acceptance
 
 Common standards live once in docs/common. Source guides live here. Target-specific
-README/AGENTS/guides live in scaffolds/monorepo; each app recipe owns its delivered
+README/AGENTS/guides live in the frontend and Node scaffolds; each app recipe owns its delivered
 README. Package docs/licenses travel with their selected package. Links are mapped
 through the same source/destination plan and checked in target coordinates. Existing
 user docs are not synchronized on each app addition.
@@ -111,7 +130,8 @@ user docs are not synchronized on each app addition.
 Verify real public bare/default/renamed/Studio flows, repeated app addition, conflict
 refusals, hooks/rollback/custom preservation, per-stage frozen installation, and
 source-hidden preparation/development/build. Source pnpm validate covers policy and
-behavior regressions; pnpm test:templates exercises real production browser, resources,
+behavior regressions. Run `pnpm test:node-clone` for the independent Node
+installation, build, test and consumer checks. `pnpm test:templates` exercises real production browser, resources,
 locale, tracking isolation and page/root error recovery. Temporary verification
 projects are printed by the harness and retained for inspecting failures.
 

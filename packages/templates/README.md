@@ -33,12 +33,16 @@ pnpm repo:clone --output ../bare --bare
 pnpm repo:clone --output ../tools --template studio --app-name editor
 pnpm template:clone --target ../new-frontend --name editor --template studio
 pnpm library:clone --output ../library-workspace --name @example/tools
+pnpm repo:clone --preset node --output ../node-workspace --name @example/tools
 ```
 
 Default creation supplies one plain-next app in apps/web. Bare mode supplies the
 shared framework and empty app/site/adapter layers. App injection requires a name
 and creates one complete commit with required additions. Existing package source,
 README and custom inputs are preserved; conflicting contracts or paths fail.
+The Node preset expands `node-library` under `packages/example-library` in a
+package-only workspace. The existing `library:clone` uses the frontend
+framework and places the library under `packages/shared`.
 See [the generation protocol](../../docs/template-repository/generation.md).
 
 ## Template contract
@@ -72,6 +76,8 @@ production Chromium, fixed themes and frozen offline reinstalls. Event delivery
 tests explicitly enable tracking in a disposable clone and intercept its endpoint.
 Use `--source-only` or `--clone-only` to select one phase. Generated verification
 projects live in a printed task-owned temporary directory outside this source repo.
+Run `pnpm test:node-clone` for the Node preset's independent install, build and
+public package consumption checks.
 
 ## Prepared resources
 

@@ -63,4 +63,4 @@ The [repository conventions](repository-conventions.md) own workspaceFeatures de
 check coverage, repository paths/configuration and validation requirements. This
 document owns package/build formats.
 
-See [feature boundaries](feature-boundaries.md) for the resource packages’ declarations and cross-package shared capabilities.
+See [feature boundaries](feature-boundaries.md) for declarations and cross-package shared capabilities. The resource guide describes the [template examples](resource-initialization.md#feature-boundaries-in-the-resource-implementation).

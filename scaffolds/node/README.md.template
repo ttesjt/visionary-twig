@@ -10,7 +10,7 @@ pnpm test
 pnpm validate
 ```
 
-Start in `packages/example-library`. Edit the greeting in `src/index.ts` and
+The starter library lives in `packages/example-library`. Edit its greeting and
 run `pnpm dev` to rebuild on changes. Packages consume each other by package name
 through public exports.
 

@@ -18,6 +18,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm app:prepare --all --include-templates --source default
       - run: pnpm validate
+      - run: pnpm test:node-clone
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:templates
       - uses: actions/upload-artifact@v7

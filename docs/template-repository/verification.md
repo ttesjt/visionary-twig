@@ -41,6 +41,13 @@ refusal; use a separate checkout rather than resetting another developer's input
 
 ## Independent generated projects
 
+Run `pnpm test:node-clone` to generate the Node preset and verify both commits
+using detached checkouts with frozen installation. The check also builds and
+tests the generated library, adds a local consumer, imports its built public API
+in Node and checks dependency and export violations.
+
+For frontend projects:
+
 ```sh
 pnpm test:templates --clone-only
 ```

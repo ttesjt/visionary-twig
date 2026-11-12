@@ -1,7 +1,7 @@
 # Repository conventions
 
 This document owns this workspace's concrete choices and enforcement. The
-[code standards](code-standards.md) own portable TS/frontend requirements; the
+[TypeScript](code-standards.md) and [frontend](frontend-code-standards.md) standards own portable requirements; the
 [monorepo standards](monorepo-standards.md) own package collaboration and pnpm
 integration. General rules stay in those documents rather than being restated here.
 Architecture, package and command contracts describe their repository-specific details.

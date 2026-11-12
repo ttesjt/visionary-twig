@@ -6,13 +6,4 @@ Within one feature, internal imports are allowed. Outer composition consumes chi
 
 Package exports and workspace layers remain mandatory. A feature in another workspace may consume an explicitly shared public entry as a neutral reusable capability. Merely exporting a business feature does not make it shared. Shared entries cannot reach a specialized child, so re-exports cannot bypass this boundary. Transitive checks use the same shared/public entry rule as direct imports. Each approved dependency is checked separately from its own scope, allowing neutral capability chains and cycles without exempting their implementations from checks. Unscoped common helpers follow the same cross-package entry rule; same-workspace sibling dependencies remain forbidden.
 
-Text-catalog is one reusable Text capability. Legacy catalog and namespace resources are formats/responsibility areas within that capability, not independent business features. Their common locale/template/format rules keep one implementation and can be used internally. Resource-runtime similarly owns one generic initialization capability; core and React are environment/responsibility areas. Both declare src and their public entries as neutral shared capability APIs.
-
-Plain-next declares the host resources capability and its text child. Route plans and Next composition stay in the parent; the child owns Text installation and state. Parent public entries explicitly expose the preparation-safe text/configuration.ts path. Both layers consume the same site-owned scope declarations in src/site/resource-scopes.ts. The template checks feature ownership under src/infra/resources. The site directory supplies values for the starter and does not establish a feature layout for user code. No child reaches private parent modules.
-
 Run pnpm check:workspace --source or pnpm validate. Declaration failures and boundary violations are hard errors. Undeclared folders remain opt-in; package, environment and dependency checks still apply. Generator copies this checker and its tests to independent workspaces.
-
-The resources/preparation/prepared.ts ancestor shared entry contains the neutral
-internal ResourcePublisher contract and projection of already validated resources.
-Text and JSON owners implement it; outer scope composition prepares their
-candidates before publishing. It has no Text, JSON registry or React dependency.

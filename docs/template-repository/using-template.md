@@ -1,4 +1,4 @@
-# Create and extend an application workspace
+# Create and extend a workspace
 
 Install this source repository with its pinned Node/pnpm versions. Generate into a
 new external directory; use the source commands again when adding another app.
@@ -12,7 +12,7 @@ pnpm repo:clone --output ../workbench --template studio --app-name editor
 pnpm template:clone --target ../my-site --name editor --template studio
 ```
 
-repo:clone creates all shared capabilities and empty site/adapter layers. Default
+Frontend generation includes all shared capabilities and empty site/adapter layers. Default
 mode adds plain-next in apps/web; --bare omits apps. Each app is one independent
 commit after the framework baseline. template:clone requires --name and preserves
 existing app/package source, README, ignored custom data and default-app selection.
@@ -23,13 +23,29 @@ frozen installation, explicitly prepares defaults and runs validate. --browser a
 production/fixed-theme acceptance. --no-verify skips aggregate validation, not
 installation or preparation. No source environment/token files are copied.
 
-Library-only generation remains available separately:
+## Generate a Node workspace
+
+```sh
+pnpm repo:clone --preset node --output ../tools --name @example/tools
+cd ../tools
+pnpm build
+pnpm test
+pnpm validate
+```
+
+The Node preset starts with `packages/example-library`, Node tooling and a
+single lockfile. Its README and docs explain package development and validation.
+Use a frontend workspace for app-template additions.
+
+To start with a library inside the frontend framework workspace, use:
 
 ```sh
 pnpm library:clone --output ../tools --name @example/tools
 ```
 
-Enter your generated project, use its README and docs/commands.md, then develop:
+## Develop a generated frontend workspace
+
+Enter your project and follow its README and docs/commands.md:
 
 ```sh
 pnpm bootstrap --source default

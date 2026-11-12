@@ -32,16 +32,21 @@ checks their browser behavior and independently generated projects.
 ```sh
 pnpm repo:clone --output ../my-project --name @example/frontend
 pnpm repo:clone --output ../bare --bare
+pnpm repo:clone --preset node --output ../tools --name @example/tools
 pnpm template:clone --target ../my-project --name editor --template studio
 ```
 
-The generator creates an external pnpm monorepo with all neutral shared packages.
+Frontend generation creates an external pnpm monorepo with all neutral shared packages.
 Default mode adds plain-next in apps/web; --bare creates only the framework and
 empty app/site/adapter layers. Add more apps with template:clone. Selected optional
 packages follow their real dependency closure. Existing source is never overwritten;
 each app task is a separate commit after the framework baseline. Targets carry their
 own manifests, standards, guides, tools, CI and lockfile. Templates, source history,
-private inputs and source-maintenance tools stay here. See the
+private inputs and source-maintenance tools stay here.
+
+The Node preset creates a TypeScript monorepo with one Node library under
+`packages/example-library`, a Node build and test lifecycle, and its own CI and
+workspace guides. See the
 [generation contract](docs/template-repository/generation.md).
 
 ## Ownership
@@ -70,7 +75,7 @@ Start with the [task-based documentation index](docs/README.md). Contributors fo
 - [Template contract and generation](packages/templates/README.md)
 - [Workspace commands](docs/template-repository/commands.md) and [development ports](docs/template-repository/development.md)
 - [Architecture](docs/template-repository/architecture.md) and [package conventions](docs/template-repository/package-conventions.md)
-- [Code standards](docs/common/code-standards.md), [monorepo standards](docs/common/monorepo-standards.md) and [repository conventions](docs/template-repository/repository-conventions.md)
+- [Code standards](docs/common/code-standards.md), [frontend standards](docs/common/frontend-code-standards.md), [monorepo standards](docs/common/monorepo-standards.md) and [repository conventions](docs/template-repository/repository-conventions.md)
 - [Resource initialization](docs/common/resource-initialization.md), [resource model](docs/common/resource-model.md) and [Provider contracts](docs/template-repository/providers.md)
 - [Text](docs/common/text-catalog.md), [AppConfig](docs/common/app-config.md) and [private local inputs](docs/common/content-profiles.md)
 

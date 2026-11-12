@@ -71,6 +71,7 @@
   "documents": {
     "docs/common/data-fetching.md": "docs/data-fetching.md",
     "docs/common/code-standards.md": "docs/code-standards.md",
+    "docs/common/frontend-code-standards.md": "docs/frontend-code-standards.md",
     "docs/common/monorepo-standards.md": "docs/monorepo-standards.md",
     "scaffolds/monorepo/docs/repository-conventions.md": "docs/repository-conventions.md",
     "scaffolds/monorepo/docs/package-conventions.md": "docs/package-conventions.md",

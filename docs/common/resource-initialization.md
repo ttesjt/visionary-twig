@@ -18,9 +18,9 @@ implementation is production code; plain-next is an independent example host.
 | @frontend/text-catalog/resource/react | Thin typed TextProvider/useText factory; no loading                                                  |
 | Host integrations                     | Locale/route selection, actual resource declarations, readers, errors, UI and deployment             |
 
-Existing text-catalog root, /node, /react and generated catalog preparation remain
-supported. Namespace source preparation uses workspaceTextResources and text-resources.config.ts; the legacy catalog format remains separate. AppConfig and business content remain independent; generic resource plans
-can carry non-text JSON without creating a TextResource.
+Text preparation uses `workspaceTextResources`, `text-resources.config.ts` and
+`@frontend/text-catalog/resource/node`. AppConfig and business content have
+independent contracts. Generic resource plans can also carry those JSON resources.
 
 ## Resource declarations
 
@@ -605,3 +605,14 @@ the installed Next client runtime and require JavaScript. This leaves normal
 SSR/SSG unchanged. Direct unknown-page requests return 404; streamed errors may
 retain an already-sent 200 response. Production verification uses disposable
 clone-only fault injection to test these Next behaviors and recovery paths.
+
+## Feature boundaries in the resource implementation
+
+Text-catalog provides one reusable Text capability. Locale validation, placeholder parsing and formatting are shared between namespace resources and standalone component helpers. Resource-runtime similarly owns one generic initialization capability; core and React are environment/responsibility areas. Both declare src and their public entries as neutral shared capability APIs.
+
+Plain-next declares the host resources capability and its text child. Route plans and Next composition stay in the parent; the child owns Text installation and state. Parent public entries explicitly expose the preparation-safe text/configuration.ts path. Both layers consume the same site-owned scope declarations in src/site/resource-scopes.ts. The template checks feature ownership under src/infra/resources. The site directory supplies values for the starter and does not establish a feature layout for user code. No child reaches private parent modules.
+
+The resources/preparation/prepared.ts ancestor shared entry contains the neutral
+internal ResourcePublisher contract and projection of already validated resources.
+Text and JSON owners implement it; outer scope composition prepares their
+candidates before publishing. It has no Text, JSON registry or React dependency.

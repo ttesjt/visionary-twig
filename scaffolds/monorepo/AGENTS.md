@@ -8,7 +8,8 @@ neutral interfaces. Shared/site packages must not depend on concrete adapters.
 Use docs/README.md to find the task owner. Follow docs/documentation-standards.md
 when writing or moving guides.
 
-Read docs/code-standards.md for portable TypeScript/frontend requirements,
+Read docs/code-standards.md and docs/frontend-code-standards.md for portable
+TypeScript and frontend requirements,
 docs/monorepo-standards.md for package collaboration and pnpm integration,
 docs/repository-conventions.md for paths, supported workspace kinds and check
 coverage, and docs/package-conventions.md for required scripts/files and builds.
