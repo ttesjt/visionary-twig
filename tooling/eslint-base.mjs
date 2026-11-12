@@ -1,7 +1,9 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
-export const typescriptFiles = ['**/*.{ts,tsx}'];
+import { TYPESCRIPT_EXTENSION_GLOB } from './typescript-files.ts';
+
+export const typescriptFiles = ['**/*.' + TYPESCRIPT_EXTENSION_GLOB];
 
 export function eslintBase(root) {
   return [

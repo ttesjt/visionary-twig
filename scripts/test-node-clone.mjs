@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { parse } from 'yaml';
 import { git } from './generation/git.mjs';
+import { addModuleTestFixtures, verifyModuleTests } from './generation/verify-module-tests.mjs';
 import { readWorkspaceRecord } from './generation/record.mjs';
 import { pnpmCommand, runProcesses } from './lib/processes.mjs';
 import { checkDeliveredDocumentation } from './templates/documentation.mjs';
@@ -118,11 +119,13 @@ async function verifyLocalConsumer(project, scope) {
     "import { expect, it } from 'vitest';\nimport { message } from '../src/index.js';\n\nit('consumes the built library', () => {\n  expect(message).toBe('Hello from consumer!');\n});\n"
   );
 
+  addModuleTestFixtures(directory);
   await run(project, ['install', '--no-frozen-lockfile']);
   await run(project, ['install', '--frozen-lockfile']);
   await run(project, ['format']);
   await run(project, ['clean']);
   await run(project, ['validate']);
+  await verifyModuleTests(project, directory, consumerName, scratch, run);
 
   const output = execFileSync(
     process.execPath,

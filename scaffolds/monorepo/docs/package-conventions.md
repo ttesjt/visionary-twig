@@ -17,7 +17,7 @@ All workspaces are private ESM packages under the root package's scope. The chec
 
 The starting-point matrix, creation routes and baseline-review coverage live in [repository conventions](repository-conventions.md). Libraries have src/index.ts, explicit exports, tsconfig.json, tsconfig.build.json, vitest.config.ts, and a README. Apps retain their framework compiler/type-generation lifecycle. CSS packages export source styles and preserve CSS side effects; they do not manufacture JavaScript build/typecheck/test commands.
 
-Unit/component tests live beside source as .test.ts or .test.tsx; integration tests and fixtures live in test/. Build configs exclude both test and spec files. Apps own test/e2e and thin Playwright configs with shared Node+DOM typechecking. scripts/test contains Node-based tooling regression tests.
+Unit and component tests use the .test or .spec suffix before .ts, .tsx, .mts or .cts. Tests can live beside source or in test/ with integration fixtures. Build configs exclude test and spec files. Apps own test/e2e and thin Playwright configs with shared Node+DOM typechecking. scripts/test contains Node-based tooling regression tests.
 
 Dependency roles and cross-package APIs follow the [monorepo standards](monorepo-standards.md). This repository's selected workspace/catalog protocols and layer restrictions live in [repository conventions](repository-conventions.md). React libraries declare React peers and install development test versions.
 

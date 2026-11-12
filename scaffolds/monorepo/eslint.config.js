@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { TYPESCRIPT_EXTENSION_GLOB } from './tooling/typescript-files.ts';
 import { eslintBase, typescriptFiles } from './tooling/eslint-base.mjs';
 import { discoverApps } from './tooling/workspace-apps.ts';
 
@@ -35,7 +36,7 @@ export default [
     .filter((config) => !config.ignores)
     .map((config) => ({
       ...config,
-      files: ['apps/*/**/*.{ts,tsx}'],
+      files: ['apps/*/**/*.' + TYPESCRIPT_EXTENSION_GLOB],
       settings: {
         ...config.settings,
         next: {
@@ -44,7 +45,7 @@ export default [
       },
     })),
   {
-    files: ['apps/*/playwright.config.ts', 'apps/*/test/e2e/**/*.{ts,tsx}'],
+    files: ['apps/*/playwright.config.ts', 'apps/*/test/e2e/**/*.' + TYPESCRIPT_EXTENSION_GLOB],
     languageOptions: {
       parserOptions: {
         projectService: false,
@@ -53,7 +54,7 @@ export default [
     },
   },
   {
-    files: ['packages/{shared,site,adapters}/**/*.{ts,tsx}'],
+    files: ['packages/{shared,site,adapters}/**/*.' + TYPESCRIPT_EXTENSION_GLOB],
     rules: {
       'no-restricted-imports': [
         'error',

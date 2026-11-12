@@ -7,7 +7,8 @@ TypeScript configuration resolves modules as Node ESM does, and build output
 goes to each package's `dist` directory.
 
 Each library has a README, `src/index.ts`, a Node TypeScript config, a separate
-build config and a Vitest config. Keep tests out of the library build. The example
+build config and a Vitest config. Vitest and lint cover .test and .spec files with
+.ts, .tsx, .mts or .cts extensions. The build excludes those tests. The example
 library shows the package script contract. Use the [development guide](development.md)
 for root commands and the [monorepo standards](monorepo-standards.md) for package
 dependency rules.
