@@ -41,6 +41,7 @@ test(
       'scripts/workspace/options.mjs',
       'scripts/workspace/targets.mjs',
       'scripts/workspace/packages.mjs',
+      'scripts/lib/workspace-discovery.mjs',
       'scripts/lib/workspace-layers.mjs',
       'scripts/workspace/inputs.mjs',
       'scripts/workspace/help.mjs',

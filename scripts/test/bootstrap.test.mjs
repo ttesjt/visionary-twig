@@ -28,6 +28,7 @@ function fixture(t) {
     'scripts/workspace',
     'scripts/lib/preparation-options.mjs',
     'scripts/lib/processes.mjs',
+    'scripts/lib/workspace-discovery.mjs',
     'scripts/lib/workspace-layers.mjs',
     'tooling/workspace-apps.ts',
   ]) {

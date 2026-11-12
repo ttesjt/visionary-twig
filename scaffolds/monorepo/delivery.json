@@ -27,7 +27,9 @@
     "scripts/lib/processes.mjs",
     "scripts/lib/runner-options.mjs",
     "scripts/lib/ui-text-policy.mjs",
+    "scripts/lib/workspace-discovery.mjs",
     "scripts/lib/workspace-layers.mjs",
+    "scripts/lib/package-policy.mjs",
     "scripts/lib/workspace-policy.mjs",
     "scripts/list-apps.mjs",
     "scripts/prepare-app.mjs",
@@ -62,7 +64,8 @@
     "scripts/workspace/options.mjs",
     "scripts/workspace/packages.mjs",
     "scripts/workspace/targets.mjs",
-    "scripts/workspace/tasks.mjs"
+    "scripts/workspace/tasks.mjs",
+    "scripts/workspace/package-tasks.mjs"
   ],
   "directories": ["tooling"],
   "documents": {

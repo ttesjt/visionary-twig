@@ -1,47 +1,27 @@
 import path from 'node:path';
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import { eslintBase, typescriptFiles } from './tooling/eslint-base.mjs';
 import { discoverApps } from './tooling/workspace-apps.ts';
 
 const hasNextHosts = discoverApps(import.meta.dirname).length > 0;
 const nextVitals = hasNextHosts ? (await import('eslint-config-next/core-web-vitals')).default : [];
 
-const typescriptFiles = ['**/*.{ts,tsx}'];
-export default tseslint.config(
+export default [
+  ...eslintBase(import.meta.dirname),
   {
     ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
       '**/.next/**',
       '**/.open-next/**',
       '**/.generated/**',
       '**/.wrangler/**',
       '**/.local/**',
-      '**/coverage/**',
-      '**/*.tsbuildinfo',
       '**/next-env.d.ts',
-      '.cache/**',
       'playwright-report/**',
       'test-results/**',
     ],
   },
-  { ...js.configs.recommended, files: ['**/*.{js,mjs}'] },
-  {
-    files: ['**/*.{js,mjs}'],
-    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
-  },
-  ...tseslint.configs.recommendedTypeChecked.map((config) => ({
-    ...config,
-    files: typescriptFiles,
-  })),
   {
     files: typescriptFiles,
-    languageOptions: {
-      parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
-    },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'no-restricted-syntax': [
         'error',
         {
@@ -91,5 +71,5 @@ export default tseslint.config(
         },
       ],
     },
-  }
-);
+  },
+];

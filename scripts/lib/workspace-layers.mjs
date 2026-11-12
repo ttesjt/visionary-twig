@@ -1,17 +1,18 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
+import { DEPENDENCY_GROUPS } from './workspace-discovery.mjs';
+export { DEPENDENCY_GROUPS } from './workspace-discovery.mjs';
 export const WORKSPACE_GROUPS = [
   { parent: 'apps', location: 'apps', layer: 'app' },
   { parent: 'packages/shared', location: 'packages', layer: 'shared' },
   { parent: 'packages/site', location: 'packages', layer: 'site' },
   { parent: 'packages/adapters', location: 'packages', layer: 'adapter' },
-  { parent: 'packages/templates', location: 'apps', layer: 'template' },
-];
-export const DEPENDENCY_GROUPS = [
-  'dependencies',
-  'peerDependencies',
-  'devDependencies',
-  'optionalDependencies',
+  {
+    parent: 'packages/templates',
+    location: 'apps',
+    layer: 'template',
+    accept: (manifest) => manifest.workspaceKind === 'next-app',
+  },
 ];
 export function layerViolation(from, to) {
   if (to === 'adapter' && ['shared', 'site', 'template'].includes(from))

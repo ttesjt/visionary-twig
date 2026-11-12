@@ -38,6 +38,7 @@ function fixture(context) {
     'scripts/lib/dev-server/server.mjs',
     'scripts/test-e2e.mjs',
     'scripts/lib/processes.mjs',
+    'scripts/lib/workspace-discovery.mjs',
     'scripts/lib/workspace-layers.mjs',
     'scripts/lib/runner-options.mjs',
     'tooling/workspace-apps.ts',

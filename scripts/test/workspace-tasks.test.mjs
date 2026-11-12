@@ -24,10 +24,12 @@ function fixture(t, { hosts = true, prepared = true } = {}) {
   };
   for (const file of [
     'scripts/run-workspace.mjs',
+    'scripts/workspace/package-tasks.mjs',
     'scripts/workspace/tasks.mjs',
     'scripts/workspace/options.mjs',
     'scripts/workspace/packages.mjs',
     'scripts/workspace/targets.mjs',
+    'scripts/lib/workspace-discovery.mjs',
     'scripts/lib/workspace-layers.mjs',
     'scripts/lib/processes.mjs',
     'tooling/workspace-apps.ts',
