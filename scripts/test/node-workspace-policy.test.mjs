@@ -155,3 +155,27 @@ test('feature and public entry checks follow the source behind an aliased build 
   assert.match(errors, /feature access must use a declared public entry.+#internal/u);
   assert.match(errors, /pure entry reaches Node:.+#internal.+node:fs/u);
 });
+
+test('built checks require the exact runtime file for a local package import', (context) => {
+  const { root, write, library } = fixture(context);
+  library('consumer', {
+    imports: {
+      '#value': { types: './types/value.d.ts', default: './dist/value.js' },
+    },
+  });
+  write('packages/consumer/src/index.ts', "export { value } from '#value';");
+  write('packages/consumer/src/value.ts', 'export const value = 1;');
+  write('packages/consumer/types/value.d.ts', 'export declare const value: number;');
+  write('packages/consumer/dist/index.js', "export { value } from '#value';");
+  // A directory and a source projection are both insufficient at runtime.
+  write('packages/consumer/dist/value.js/placeholder.txt', '');
+
+  assert.deepEqual(checkNodeWorkspace(root, { checkExports: false }), []);
+  const expected = /missing package import runtime file: \.\/dist\/value\.js; .+\(via #value\)/u;
+  assert.match(checkNodeWorkspace(root).join('\n'), expected);
+  rmSync(path.join(root, 'packages/consumer/dist/value.js'), { recursive: true });
+  assert.match(checkNodeWorkspace(root).join('\n'), expected);
+
+  write('packages/consumer/dist/value.js', 'export const value = 1;');
+  assert.deepEqual(checkNodeWorkspace(root), []);
+});

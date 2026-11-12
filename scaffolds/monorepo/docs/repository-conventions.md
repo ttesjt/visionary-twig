@@ -197,6 +197,9 @@ paths, canonical symlinks and normal workspace public source exports and follow
 shared helpers to reject indirect back-edges. Internal tests may access their own
 scope; external tests consume the public API.
 
+The built check requires the exact local runtime files for referenced package
+imports aliases. Source-only checks allow those files to be absent before build.
+
 This is source analysis, not a full module loader. Missing modules remain the
 responsibility of TypeScript/package checks. Computed imports, custom conditional
 export selection, framework-specific loaders, arbitrary file/network I/O and runtime

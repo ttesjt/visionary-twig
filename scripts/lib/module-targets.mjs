@@ -58,7 +58,7 @@ export function contains(directory, file) {
   return relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative);
 }
 
-/** Resolve local targets relative to the manifest and accept an unbuilt dist path. */
+/** Resolve a local target and keep its on-disk file separate from any source projection. */
 export function localPackageImport(directory, target) {
   if (!target.startsWith('./')) return undefined;
   try {
@@ -80,7 +80,7 @@ export function localPackageImport(directory, target) {
     const source = fromDist ? (projected() ?? direct) : (direct ?? projected());
     const physical = source && realpathSync(source);
     if (physical && !contains(root, physical)) return undefined;
-    return { source: physical };
+    return { source: physical, fileExists: direct !== undefined };
   } catch {
     return undefined;
   }

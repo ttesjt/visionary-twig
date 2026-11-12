@@ -18,7 +18,9 @@ declared dependencies and public workspace paths. After build it checks the
 export targets on disk. Package-local `#` aliases use the workspace's
 `package.json` imports map. Local targets stay inside that package, and external
 targets follow the same dependency and public export checks for every declared
-condition. The `workspaceFeatures` and `workspaceEntrypoints`
+condition. For referenced aliases, the built check requires the exact local
+runtime files. The source check permits outputs that have yet to be built.
+The `workspaceFeatures` and `workspaceEntrypoints`
 declarations opt into [feature and entry checks](feature-boundaries.md).
 Use review and tests for behavior, runtime compatibility and decisions that
 depend on the package's purpose.
