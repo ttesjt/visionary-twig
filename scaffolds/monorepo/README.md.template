@@ -1,42 +1,59 @@
 # {{projectName}}
 
-This is your independent pnpm monorepo. Application source and defaults are yours
-to edit; the source template repository is not needed to run this project.
+This pnpm workspace holds frontend apps and the packages they share.
 
-## Start here
+**Coding agents:** Start with [AGENTS.md](AGENTS.md) for workspace rules and
+verification, then use the [documentation index](docs/README.md) to find the
+guide for your task.
+
+## Setup
+
+Use a supported Node.js version and the pinned pnpm version in
+[package.json](package.json). CI uses the Node.js version in
+[.node-version](.node-version).
+
+### Run the default app
+
+If the workspace has an app, run these commands from the repository root:
+
+```sh
+pnpm bootstrap
+pnpm dev
+```
+
+`pnpm bootstrap` installs dependencies from the lockfile and prepares app
+resources, including any local overrides. Open the URL printed by `pnpm dev`.
+To run a different app, find its ID with `pnpm apps:list` and pass it to
+`pnpm dev` using `--app`.
+
+### Set up a bare workspace
+
+If you generated the workspace without an app, install and build its shared
+packages from the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm bootstrap --source default
-pnpm apps:list
-pnpm dev --app <app-name>
-pnpm build --all
-pnpm validate
+pnpm build:packages
 ```
 
-A bare workspace has no app to start. Its shared packages still build and validate.
-To add an app, run this from the template source repository:
+The [app addition guide](docs/commands.md#add-apps-and-dependencies) explains how
+to add an app from the template source checkout.
 
-```sh
-pnpm template:clone --target <this-project-directory> --name web
-pnpm template:clone --target <this-project-directory> --name editor --template studio
-```
+## Build and verify
 
-The app name is required. The default app template is plain-next. These operations
-preserve existing apps/packages and create one separate commit per added app.
+Run `pnpm build --all` to build the apps, or run `pnpm validate` for workspace
+checks, tests, and builds.
 
 ## Own the project
 
-- Edit pages in `apps/<name>`/src/app and starter declarations in src/site.
-- Edit tracked resource defaults or use the app's ignored .local overrides; then
-  prepare explicitly with pnpm app:prepare --app <name>.
-- Starter mechanisms live in src/infra. You may replace them when needed.
-- packages/shared contains neutral capabilities. packages/site and
-  packages/adapters contain optional domain and service/runtime implementations.
-- Each app README explains its examples and which example routes can be removed.
+- Each app's README shows where to edit pages, resources, and configuration, and
+  how to remove its examples. Its `src/site` holds editable starter declarations
+  and `src/infra` holds the mechanisms they configure.
+- After changing resource inputs, run `pnpm app:prepare --all` at the root.
+- `packages/shared` holds reusable capabilities. `packages/site` and
+  `packages/adapters` hold optional domain and service integrations.
 
-Start with the [task-based documentation index](docs/README.md).
-See [commands](docs/commands.md), [development](docs/development.md),
-[architecture](docs/architecture.md), [package conventions](docs/package-conventions.md),
-[code standards](docs/code-standards.md), [monorepo standards](docs/monorepo-standards.md)
-and [repository conventions](docs/repository-conventions.md).
+See the [command reference](docs/commands.md) for app selection and resource
+preparation, and the [architecture guide](docs/architecture.md) for ownership.
+The [code standards](docs/code-standards.md) and
+[monorepo standards](docs/monorepo-standards.md) cover changes to code and packages.

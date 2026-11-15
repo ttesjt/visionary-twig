@@ -1,18 +1,30 @@
 # {{projectName}}
 
-This pnpm workspace contains TypeScript packages for Node.js. Use the Node version
-in `.node-version` and pnpm version in `package.json`.
+This pnpm workspace contains TypeScript packages for Node.js.
+
+**Coding agents:** Start with [AGENTS.md](AGENTS.md) for workspace rules and
+verification, then use the [documentation index](docs/README.md) to find the
+guide for your task.
+
+## Setup
+
+Use a supported Node.js version and the pinned pnpm version in
+[package.json](package.json). CI uses the Node.js version in
+[.node-version](.node-version).
+
+Run these commands from the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm build
 pnpm test
-pnpm validate
 ```
 
-The starter library lives in `packages/example-library`. Edit its greeting and
-run `pnpm dev` to rebuild on changes. Packages consume each other by package name
-through public exports.
+## Develop a package
 
-See the [workspace guides](docs/README.md) to add a package or change the shared
-tooling.
+The starter library lives in `packages/example-library`. Edit its greeting and
+run `pnpm dev` to rebuild on changes. Run `pnpm validate` for workspace checks,
+builds, and tests.
+
+See the [package development guide](docs/development.md) to add another package
+or consume its public exports from the workspace.
