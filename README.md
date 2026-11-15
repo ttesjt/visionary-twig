@@ -1,88 +1,118 @@
 # Visionary Twig
 
-This source repository maintains reusable framework packages, application templates,
-optional site and provider adapters, and the tools that generate independent pnpm
-workspaces. It contains no consuming applications. Generated projects own their
-source, configuration, dependencies and development history.
+A ready-to-use frontend monorepo with shared tooling, coding standards, and
+website templates built with Next.js. A separate preset starts a standalone
+TypeScript workspace for Node.js.
 
 ![visionary-twig. A curious bird watches twigs come together into a nest.](.github/assets/visionary-twig.png)
 
-## Prepare and verify the source
+## Contents
 
-Use Node `>=24.15.0 <25` and pnpm `10.28.0`.
+- [About](#about)
+- [Getting started](#getting-started)
+- [Usage](#usage)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
+## About
+
+A coding agent can start a web project quickly. It takes longer to build a
+codebase that people can understand, extend, and maintain as it grows.
+Clear package boundaries, consistent ways to implement common features, and
+automated checks all take time to establish. Those decisions are reusable across
+projects. This project gives you that foundation in a pnpm monorepo, so you can spend more time building the site and creating its content.
+
+Visionary Twig includes a scalable monorepo structure, documented package boundaries, coding standards, shared build and test commands,
+and CI.
+
+Other than the infrastructures, the repository also ships Next.js templates on top of the shared foundation.
+The web starter lets you customize text, settings, and sample content in JSON.
+An optional Studio project provides local visual editing and preview.
+
+### Built with
+
+- TypeScript and pnpm workspaces
+- Next.js and React in the supplied templates, with Puck in Studio
+- Vitest for unit and integration tests, with Playwright for browser tests
+
+## Getting started
+
+### Prerequisites
+
+- **Node.js 24.15 or newer within the 24.x line.** The workspace supports
+  `>=24.15.0 <25`; the locked DOM test dependencies set the minimum for Node 24.
+  CI uses the version in [`.node-version`](.node-version). [Install Node.js](https://nodejs.org/en/download).
+- **pnpm 10.28.0.** The workspace enforces the version in
+  [`package.json`](package.json) so local installs, generated workspaces and CI
+  use the same package manager. [Install pnpm](https://pnpm.io/10.x/installation).
+- **Git with a configured name and email.** Generation creates commits in the
+  new repository. [Install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+  and [configure your Git identity](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup#_your_identity).
+
+### Create a web app
+
+From a checkout of this repository, run:
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm repo:clone --output ../my-project --name @example/frontend
+cd ../my-project
+pnpm dev --app web
+```
+
+Generation installs the new workspace, prepares the default resources and
+validates it. Open the URL printed by the dev command. Start with the generated
+root README and `apps/web/README.md` to take over the site.
+
+## Usage
+
+Run these commands from the template repository:
+
+| I want to…                                             | Command                                                                      |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| Create a Next.js workspace with an app in `apps/web`   | `pnpm repo:clone --output ../my-project`                                     |
+| Create a frontend workspace with no apps               | `pnpm repo:clone --output ../bare --bare`                                    |
+| Create a TypeScript workspace with one Node library    | `pnpm repo:clone --preset node --output ../tools --name @example/tools`      |
+| Add Studio to an existing generated frontend workspace | `pnpm template:clone --target ../my-project --name editor --template studio` |
+
+Generated workspaces run independently of this checkout and include their own
+README, `AGENTS.md`, task-based docs, CI and lockfile. Each app is added as a
+separate commit. The generator preserves existing app and package source.
+See the [workspace creation and extension guide](docs/template-repository/using-template.md)
+and [available templates](packages/templates/README.md).
+
+## Documentation
+
+Start with the [task-based documentation index](docs/README.md).
+
+- **Develop a generated project.** Use that project's root README and
+  `docs/README.md`, then the README in the app or package you want to change.
+- **Work with a coding agent.** Start at the repository's `AGENTS.md` for
+  ownership, code standards and verification. [Source repository agent guide](AGENTS.md).
+- **Understand the framework.** Learn what lives in shared packages, site
+  packages, adapters and templates. [Architecture guide](docs/template-repository/architecture.md).
+- **Use text, app config or content.** Learn how resources are prepared and
+  loaded. [Resource initialization](docs/common/resource-initialization.md).
+
+## Contributing
+
+Work from the template repository root:
+
+```sh
 pnpm bootstrap --include-templates --source default
 pnpm validate
-pnpm test:templates
 ```
 
-The app templates run directly from their source directories for maintenance:
-
-```sh
-pnpm dev --app template-plain-next
-pnpm dev --app template-studio
-```
-
-`validate` builds the libraries, checks prepared inputs, formatting, lint, types
-and behavior tests, then builds the source templates. `test:templates` additionally
-checks their browser behavior and independently generated projects.
-
-## Generate an independent project
-
-```sh
-pnpm repo:clone --output ../my-project --name @example/frontend
-pnpm repo:clone --output ../bare --bare
-pnpm repo:clone --preset node --output ../tools --name @example/tools
-pnpm template:clone --target ../my-project --name editor --template studio
-```
-
-Frontend generation creates an external pnpm monorepo with all neutral shared packages.
-Default mode adds plain-next in apps/web; --bare creates only the framework and
-empty app/site/adapter layers. Add more apps with template:clone. Selected optional
-packages follow their real dependency closure. Existing source is never overwritten;
-each app task is a separate commit after the framework baseline. Targets carry their
-own manifests, standards, guides, tools, CI and lockfile. Templates, source history,
-private inputs and source-maintenance tools stay here.
-
-The Node preset creates a TypeScript monorepo with one Node library under
-`packages/example-library`, a Node build and test lifecycle, and its own CI and
-workspace guides. See the
-[generation contract](docs/template-repository/generation.md).
-
-## Ownership
-
-| Location                          | Purpose                                                                   |
-| --------------------------------- | ------------------------------------------------------------------------- |
-| `packages/shared`                 | Neutral contracts, runtime mechanisms, components and styles              |
-| `packages/templates/plain-next`   | Next.js starter with prepared Text, AppConfig and Content                 |
-| `packages/templates/studio`       | Editor starter built on the same resource foundation                      |
-| `packages/templates/node-library` | Inactive, copyable Node library scaffold                                  |
-| `packages/site`                   | Optional domain contracts, presentation and styles                        |
-| `packages/adapters`               | Optional concrete service and runtime implementations                     |
-| `scripts` and `tooling`           | Shared workspace operations and source-repository generation/verification |
-
-Shared and template packages do not depend on concrete adapters or site packages.
-Site packages consume neutral contracts; adapters implement them. Generated apps
-are responsible for choosing and connecting concrete implementations.
-
-## Maintained contracts
-
-Start with the [task-based documentation index](docs/README.md). Contributors follow
-[the source workflow](docs/template-repository/contributing.md),
-[verification guidance](docs/template-repository/verification.md) and
-[documentation standards](docs/common/documentation-standards.md).
-
-- [Template contract and generation](packages/templates/README.md)
-- [Workspace commands](docs/template-repository/commands.md) and [development ports](docs/template-repository/development.md)
-- [Architecture](docs/template-repository/architecture.md) and [package conventions](docs/template-repository/package-conventions.md)
-- [Code standards](docs/common/code-standards.md), [frontend standards](docs/common/frontend-code-standards.md), [monorepo standards](docs/common/monorepo-standards.md) and [repository conventions](docs/template-repository/repository-conventions.md)
-- [Resource initialization](docs/common/resource-initialization.md), [resource model](docs/common/resource-model.md) and [Provider contracts](docs/template-repository/providers.md)
-- [Text](docs/common/text-catalog.md), [AppConfig](docs/common/app-config.md) and [private local inputs](docs/common/content-profiles.md)
+Use `pnpm dev --app template-plain-next` or `pnpm dev --app template-studio`
+to run a source template. Install Chromium with `pnpm exec playwright install chromium`
+for `pnpm test:templates`. [Contributor workflow](docs/template-repository/contributing.md) ·
+[Verification guide](docs/template-repository/verification.md).
 
 ## License
 
 Framework and template sources are available under the [MIT License](LICENSE).
 Dependencies retain their respective licenses. Generated workspaces include this
 license for the framework and template code they receive.
+
+README structure inspired by [Best-README-Template](https://github.com/othneildrew/Best-README-Template).
