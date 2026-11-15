@@ -1,10 +1,10 @@
 {
   "license": "MIT",
-  "name": "@frontend/workspace-template",
+  "name": "@frontend/visionary-twig",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Reusable frontend framework and application templates",
+  "description": "Visionary Twig frontend framework and application templates",
   "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=24.15.0 <25",

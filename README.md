@@ -1,9 +1,11 @@
-# Frontend framework and templates
+# Visionary Twig
 
 This source repository maintains reusable framework packages, application templates,
 optional site and provider adapters, and the tools that generate independent pnpm
 workspaces. It contains no consuming applications. Generated projects own their
 source, configuration, dependencies and development history.
+
+![visionary-twig. A curious bird watches twigs come together into a nest.](.github/assets/visionary-twig.png)
 
 ## Prepare and verify the source
 
