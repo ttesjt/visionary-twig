@@ -46,12 +46,23 @@ checks, tests, and builds.
 
 ## Own the project
 
+You own the package source in this workspace and can add or edit packages.
+
+- `packages/site` is the shared area for this site's domain logic, components,
+  queries, and styles. You can create site-specific packages here and edit the
+  ones already in the workspace.
+- `packages/shared` holds reusable foundations. Keep changes focused and check
+  how they affect the apps and packages that rely on them.
+- `packages/adapters` holds concrete service implementations. Apps choose and
+  configure them, and several templates can use the same adapter.
 - Each app's README shows where to edit pages, resources, and configuration, and
   how to remove its examples. Its `src/site` holds editable starter declarations
   and `src/infra` holds the mechanisms they configure.
 - After changing resource inputs, run `pnpm app:prepare --all` at the root.
-- `packages/shared` holds reusable capabilities. `packages/site` and
-  `packages/adapters` hold optional domain and service integrations.
+
+Future templates can reuse your local `shared` and `adapters` packages. Changes
+to their public interfaces or behavior can block an import or break the new app.
+Review the tradeoffs before editing either layer. [Template import compatibility](docs/architecture.md#compatibility-when-importing-templates).
 
 See the [command reference](docs/commands.md) for app selection and resource
 preparation, and the [architecture guide](docs/architecture.md) for ownership.

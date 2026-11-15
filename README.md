@@ -30,6 +30,16 @@ Other than the infrastructures, the repository also ships Next.js templates on t
 The web starter lets you customize text, settings, and sample content in JSON.
 An optional Studio project provides local visual editing and preview.
 
+### Why a monorepo?
+
+Some code can be reused across apps and still needs to evolve with the site.
+Domain components, styles, and service integrations often fall into this
+category. Visionary Twig ships these building blocks as editable workspace
+packages. Each package has a clear responsibility and public interface, and you
+can change its implementation alongside the apps that use it. You can ship both
+changes in one commit, without waiting for an external package to support your
+use case or publish a release.
+
 ### Built with
 
 - TypeScript and pnpm workspaces

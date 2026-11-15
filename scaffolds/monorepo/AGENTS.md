@@ -5,6 +5,13 @@ apps own runnable hosts, actual content and external integrations. Shared packag
 own neutral capabilities; site packages own domain behavior; adapters implement
 neutral interfaces. Shared/site packages must not depend on concrete adapters.
 
+`packages/site` is the shared area for website-specific code. It can contain new
+site packages and edits to existing ones. `packages/shared` and `packages/adapters`
+are also editable. Keep their public contracts and expected behavior stable by
+default, since later templates may reuse the local packages. Before changing
+either layer, check current consumers and explain any compatibility cost for
+future imports. [Template import compatibility](docs/architecture.md#compatibility-when-importing-templates).
+
 Use docs/README.md to find the task owner. Follow docs/documentation-standards.md
 when writing or moving guides.
 

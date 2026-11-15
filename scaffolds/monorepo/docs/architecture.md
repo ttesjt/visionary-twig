@@ -4,11 +4,17 @@ This independent monorepo contains user-owned applications, neutral shared
 capabilities and optional domain/service extensions. It does not depend on a source
 template checkout, its Git history or external engineering records.
 
-- apps owns deployable hosts, routes, content, environment choices and composition.
-- packages/shared owns neutral contracts, components, styles and mechanisms.
-- packages/site owns optional domain models/queries/presentation using shared ports.
-- packages/adapters owns optional concrete runtime/provider implementations.
-- Root scripts/tooling owns discovery, installation policy, builds and checks.
+You own the source in all three package directories. Workspace dependencies let
+you change a package and update its consumers together, without publishing a
+new package version first.
+
+- `apps` holds deployable hosts, routes, content, environment choices and composition.
+- `packages/site` is the shared area for this site's domain models, queries,
+  components and styles. It can hold new site-specific packages and changes to
+  existing packages.
+- `packages/shared` holds neutral contracts, components, styles and mechanisms.
+- `packages/adapters` holds concrete runtime and provider implementations.
+- Root scripts and tooling handle discovery, installation policy, builds and checks.
 
 Shared does not depend on site/apps/adapters. Site does not depend on concrete
 adapters. Adapters do not depend on app/site internals. Apps create integrations
@@ -33,3 +39,19 @@ Studio document/session contracts, editor rendering and neutral persistence port
 remain separate. A starter's in-memory adapters are examples, not authenticated
 production storage. Choose integrations deliberately; ordinary install/prepare/build
 never deploys, migrates cloud data or grants editing access.
+
+## Compatibility when importing templates
+
+When adding an app, the generator reuses existing workspace packages whose
+delivery identity and public manifest contracts match. The new app then uses
+your local implementation of each reused package.
+
+Keep changes to `packages/shared` and `packages/adapters` deliberate. Future
+templates may rely on the same exports, behavior, or configuration. A manifest
+incompatibility can stop an import. A behavior change can pass the manifest check
+and still break a newly imported app at build time or runtime.
+
+Before changing either layer, check which current apps and packages depend on
+it and whether future imports may need adaptation. Keep existing public contracts
+where practical. If you choose a breaking change, document what later templates
+will need to adapt and verify the affected consumers.
