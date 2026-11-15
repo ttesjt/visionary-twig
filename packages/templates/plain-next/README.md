@@ -45,7 +45,7 @@ Retained capabilities:
   AppConfig switch defaults to off. The root Layout applies the switch together
   with the site's permission hook. See [Enabling tracking](template/README.md#enabling-tracking)
   for the endpoint and consent setup.
-- Localized 404 and page-error recovery through Next's standard route conventions.
+- Localized HTML 404 responses for unknown page URLs and Next page-error recovery.
   A root failure uses an independent English fallback without resource Providers
   or dictionary requests. See [Page errors and recovery](template/README.md#page-errors-and-recovery).
 - Shared TypeScript, lint, Vitest, Playwright and root development tooling.

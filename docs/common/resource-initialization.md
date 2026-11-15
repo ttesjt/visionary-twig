@@ -590,21 +590,24 @@ scope plan to select their required parts.
 transaction. A region can retry without discarding unrelated global readers.
 Expected BFF/form failures remain in their business components.
 
-The plain-next host separately uses Next's route conventions: localized
-`[locale]/not-found.tsx` handles absent pages; `[locale]/error.tsx` retries a failed
-page segment. Both consume the already-ready global `main` dictionary. Failures
+The plain-next host uses `app/global-not-found.tsx` for unmatched page URLs.
+It loads the resolved locale's `main` dictionary on the server and returns HTML
+with status 404. Proxy supplies the locale, and regular pages keep their
+existing SSR and static generation. For matched routes, localized
+`[locale]/not-found.tsx` handles explicit `notFound()` calls and
+`[locale]/error.tsx` retries a failed page segment. Those two segment fallbacks
+consume the already-ready global `main` dictionary. Failures
 in the root Layout, Provider or server preparation reach `app/global-error.tsx`,
 which supplies its own HTML, default styles and synchronous English text from
 `src/site/startup-text.ts`. It neither consumes Providers nor fetches dictionaries.
 Reload retries the whole root initialization. Home is a native link. UI diagnostics
 contain only a safe Next digest, never the raw thrown value.
 
-These are host composition decisions, not resource-runtime error categories.
-The dynamic locale root's custom 404 and global fallback are reconstructed by
-the installed Next client runtime and require JavaScript. This leaves normal
-SSR/SSG unchanged. Direct unknown-page requests return 404; streamed errors may
-retain an already-sent 200 response. Production verification uses disposable
-clone-only fault injection to test these Next behaviors and recovery paths.
+The installed Next version can reconstruct the segment `notFound()` and fatal
+global-error fallbacks in the browser. Streamed errors may retain an already-sent
+200 response. Production verification uses disposable clone-only fault injection
+to test error recovery. The template's browser suite also checks unmatched page
+URLs with JavaScript disabled.
 
 ## Feature boundaries in the resource implementation
 

@@ -222,37 +222,38 @@ For SSR snapshots, language switching, lazy loading and retry behavior see the [
 
 | Failure                                                           | Owner                            | Recovery                                                                                  |
 | ----------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------- |
-| An unknown page or explicit `notFound()`                          | `src/app/[locale]/not-found.tsx` | A real 404 response for ordinary direct visits and a native homepage link.                |
+| An unknown page URL                                               | `src/app/global-not-found.tsx`   | Localized HTML with HTTP 404 and a homepage link that works without JavaScript.           |
+| A matched page calls `notFound()`                                 | `src/app/[locale]/not-found.tsx` | Localized recovery through Next's segment fallback.                                       |
 | A page's server preparation or render fails                       | `src/app/[locale]/error.tsx`     | Next's route `retry` fetches and renders the segment again; Home leaves the failed route. |
 | A root Layout, global Provider or root resource preparation fails | `src/app/global-error.tsx`       | A standalone HTML document with Reload and Home.                                          |
 | A client resource request, validation or reader publication fails | The nearest `ResourceBoundary`   | Retry that resource region, retaining its existing behavior and cache.                    |
 | An expected form or BFF failure                                   | Its example component            | Keep the user's input and show the modeled error.                                         |
 
-Ordinary 404 and page-error labels are the `status.*` keys in each locale's
-`main.json`. Edit and prepare those as usual. The global fallback deliberately
+404 and page-error labels are the `status.*` keys in each locale's
+`main.json`. Edit and prepare those as usual. The fatal global-error fallback
 uses the small synchronous `GLOBAL_ERROR_TEXT` declaration in
 `src/site/startup-text.ts`: it must work when main Text cannot load. It uses
 English immediately, without fetching a translation or switching after render.
 Resource startup labels remain in the same site entry.
 
 The `src/infra/errors/` presentation accepts ready text and native recovery
-links. It does not load resources. The global entry supplies its own HTML, title
-and default styles so it does not depend on the failed Layout. Only a safe Next
+links. It does not load resources. The global entries supply their own HTML,
+titles and styles because they render outside the locale Layout. Only a safe Next
 error digest is displayed as a reference; raw messages, stacks and request values
 are never rendered in these views. Server diagnostics remain in server logs.
 
-Keep `[locale]/[...unmatched]/page.tsx` for unknown page paths and
-`[locale]/not-found/page.tsx` as the explicit `/not-found` target for invalid
-language rewrites in Proxy. The Proxy clears invalid language input and returns
-404 instead of redirecting to a successful page. APIs and versioned resource
-routes retain their own HTTP/JSON error protocols.
+Next's experimental `globalNotFound` convention handles unmatched URLs at the
+routing layer. The 404 document reads the locale resolved by Proxy. Regular pages
+still get their locale from the route segment and retain their existing SSR and
+static generation. Keep `/not-found` unmatched
+under each locale. Proxy rewrites invalid language requests to that path under the
+default locale and returns 404. APIs and versioned resource routes keep their own
+HTTP/JSON error protocols.
 
-With this dynamic locale root, the installed Next version reconstructs the
-custom 404 and fatal global-error interface in the browser. HTTP 404/500 semantics
-still apply, but those custom interfaces require JavaScript. Regular pages retain
-their existing SSR and static generation. An error after streaming has started,
-including a metadata failure, can retain HTTP 200. Segment errors cannot catch
-errors in their own Layout; event-handler and async callback failures also need
+The installed Next version can render the segment `notFound()` and fatal
+global-error fallbacks through its browser runtime. Once a response has started
+streaming, Next can no longer change its HTTP status. Segment errors cannot catch
+errors in their own Layout. Event-handler and async callback failures need
 explicit handling.
 
 Production verification injects faults only into a disposable generated project,

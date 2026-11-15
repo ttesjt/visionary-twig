@@ -3,6 +3,8 @@ import { defineScope } from '../infra/define-scope';
 export const RESOURCE_SCOPES = Object.freeze({
   layout: defineScope({ id: 'layout', text: ['main'], config: ['app'], content: ['base'] }),
   metadata: defineScope({ id: 'metadata', text: ['main'], config: [], content: [] }),
+  // The default main catalog is small. If it grows, give the 404 its own text namespace.
+  notFound: defineScope({ id: 'not-found', text: ['main'], config: [], content: [] }),
   textDemo: defineScope({ id: 'text-demo', text: ['demo'], config: [], content: [] }),
   contentDemo: defineScope({
     id: 'content-demo',
