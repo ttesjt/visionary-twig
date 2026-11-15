@@ -39,6 +39,17 @@ light/dark policies, resource/default/custom behavior and page/root recovery.
 Verification refuses to overwrite preexisting local custom inputs. Respect that
 refusal; use a separate checkout rather than resetting another developer's inputs.
 
+## GitHub Actions
+
+The Validate workflow runs the quick profile on pushes to main and pull requests
+targeting main. It installs from the frozen lockfile, checks source workspace
+rules, and checks formatting.
+
+To run the full profile on GitHub, open Actions, select Validate, choose
+Run workflow, and select full. It prepares the default inputs, runs pnpm validate,
+verifies an independent Node workspace, and runs the Playwright template suite.
+Use the commands in this guide for local verification before merging.
+
 ## Independent generated projects
 
 Run `pnpm test:node-clone` to generate the Node preset and verify both commits

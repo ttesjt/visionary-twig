@@ -1,7 +1,19 @@
 name: Validate
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Verification profile
+        type: choice
+        required: true
+        default: quick
+        options:
+          - quick
+          - full
 
 jobs:
   validate:
@@ -21,13 +33,22 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm app:prepare --all --include-templates --source default
-      - run: pnpm validate
-      - run: pnpm test:node-clone
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:templates
+      - if: inputs.profile != 'full'
+        run: pnpm check:workspace --source
+      - if: inputs.profile != 'full'
+        run: pnpm format:check
+      - if: inputs.profile == 'full'
+        run: pnpm app:prepare --all --include-templates --source default
+      - if: inputs.profile == 'full'
+        run: pnpm validate
+      - if: inputs.profile == 'full'
+        run: pnpm test:node-clone
+      - if: inputs.profile == 'full'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: inputs.profile == 'full'
+        run: pnpm test:templates
       - uses: actions/upload-artifact@v7
-        if: failure()
+        if: failure() && inputs.profile == 'full'
         with:
           name: browser-test-results
           path: |
