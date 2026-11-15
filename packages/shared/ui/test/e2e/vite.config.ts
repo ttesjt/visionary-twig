@@ -14,15 +14,20 @@ export default defineConfig({
   plugins: [
     {
       name: 'header-fixture-styles',
-      transformIndexHtml: () =>
-        styles.map((entry) => ({
+      transformIndexHtml: (_, { originalUrl, path }) => {
+        const url = new URL(originalUrl ?? path, 'http://localhost');
+        const entries = url.searchParams.has('mono')
+          ? [...styles, '@frontend/styles/themes/mono.css']
+          : styles;
+        return entries.map((entry) => ({
           tag: 'link',
           attrs: {
             rel: 'stylesheet',
             href: '/@fs/' + require.resolve(entry),
           },
           injectTo: 'head' as const,
-        })),
+        }));
+      },
     },
   ],
 });

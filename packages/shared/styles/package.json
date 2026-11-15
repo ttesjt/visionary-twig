@@ -6,6 +6,7 @@
   "description": "Optional global visual tokens, themes and semantic component styles",
   "exports": {
     "./default.css": "./src/default.css",
+    "./themes/mono.css": "./src/themes/mono.css",
     "./tokens.css": "./src/tokens.css",
     "./base.css": "./src/base.css",
     "./components.css": "./src/components.css",

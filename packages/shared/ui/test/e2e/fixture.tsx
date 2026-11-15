@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { HeaderExtensionProvider, HeaderExtension } from '@frontend/ui/web-shell/header-extension';
 import { SiteHeader } from '@frontend/ui/web-shell/header';
 import { SiteFrame } from '@frontend/ui/web-shell';
+import { Button } from '@frontend/ui';
 
 function Fixture() {
   const [visible, setVisible] = useState(false);
@@ -62,6 +63,8 @@ function LayoutFixture({ params }: { readonly params: URLSearchParams }) {
         />
       }
     >
+      <h1>Example page</h1>
+      <Button>Example action</Button>
       {Array.from({ length: 64 }, (_, index) => (
         <p key={index}>Section {index + 1}</p>
       ))}

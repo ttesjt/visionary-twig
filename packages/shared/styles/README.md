@@ -45,6 +45,24 @@ second palette. CSS imports remain host-owned; there is no theme Provider.
 controls use the default components entry. The optional `web-shell.css` entry
 provides theme-aware frame, navigation and header extension appearance.
 
+## Mono preset
+
+Add the preset to the application's global CSS entry.
+
+```ts
+import '@frontend/styles/default.css';
+import '@frontend/styles/themes/mono.css';
+```
+
+Mono supplies a grayscale palette, a sans-serif font stack beginning with Inter,
+and compact control corners. It uses the existing
+`data-theme="light|dark|system"` color policy, including the browser preference
+when the attribute is omitted.
+
+Importing the stylesheet enables Mono by default. To switch at runtime, set
+`data-preset="mono"` on `<html>` for Mono or `data-preset="neutral"` for the
+foundation appearance. Applications can use the same tokens in their own layouts.
+
 ## Studio appearance
 
 `studio-shell.css` and `studio.css` share a scoped tool palette and control
