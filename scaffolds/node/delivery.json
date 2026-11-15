@@ -1,7 +1,6 @@
 {
   "version": 1,
   "files": [
-    "LICENSE",
     ".node-version",
     ".prettierrc",
     "tsconfig.base.json",
@@ -25,6 +24,7 @@
   ],
   "directories": [],
   "configurations": {
+    "scaffolds/LICENSE-MIT-0": "LICENSE",
     "scaffolds/node/.gitignore": ".gitignore",
     "scaffolds/node/.prettierignore": ".prettierignore",
     "scaffolds/node/eslint.config.js": "eslint.config.js",

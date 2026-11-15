@@ -1,7 +1,6 @@
 {
   "version": 1,
   "files": [
-    "LICENSE",
     ".node-version",
     ".gitignore",
     ".prettierignore",
@@ -94,6 +93,7 @@
     "scaffolds/monorepo/docs/README.md": "docs/README.md"
   },
   "configurations": {
+    "scaffolds/LICENSE-MIT-0": "LICENSE",
     "scaffolds/monorepo/eslint.config.js": "eslint.config.js",
     "scaffolds/monorepo/apps/README.md": "apps/README.md",
     "scaffolds/monorepo/packages/site/README.md": "packages/site/README.md",

@@ -127,6 +127,11 @@ README. Package docs/licenses travel with their selected package. Links are mapp
 through the same source/destination plan and checked in target coordinates. Existing
 user docs are not synchronized on each app addition.
 
+Both workspace presets copy the [scaffold's MIT-0 license](../../scaffolds/LICENSE-MIT-0)
+to the generated root `LICENSE` and declare MIT-0 in the root manifest. Workspace owners can
+choose their project's license. App addition preserves the target's root license
+choice. Third-party notices and license files travel with their owning packages.
+
 Verify real public bare/default/renamed/Studio flows, repeated app addition, conflict
 refusals, hooks/rollback/custom preservation, per-stage frozen installation, and
 source-hidden preparation/development/build. Source pnpm validate covers policy and

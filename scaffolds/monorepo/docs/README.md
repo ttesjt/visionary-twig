@@ -31,5 +31,5 @@ to rendered behavior. Validate does not install, prepare inputs or run browsers.
 Use [commands](commands.md) for the explicit workflow. Preserve .local overrides;
 keep plans, logs and temporary review evidence outside production source.
 
-Framework and template code comes with the root MIT LICENSE. Preserve that notice
-for code you reuse; dependency packages retain their respective licenses.
+See the [workspace licensing guide](../README.md#license) for the starter license
+and your project's licensing choices.

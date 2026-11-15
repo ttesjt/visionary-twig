@@ -36,5 +36,5 @@ owning package's public contract.
 - Temporary plans, progress and review evidence stay in the external references
   workspace. They are neither a second API manual nor an installation dependency.
 
-The root [MIT license](../LICENSE) covers framework/template sources; dependencies
-retain their own licenses.
+For the source repository and generated workspace licenses, see
+[licensing in the root README](../README.md#license).

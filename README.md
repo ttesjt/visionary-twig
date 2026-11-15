@@ -111,8 +111,13 @@ for `pnpm test:templates`. [Contributor workflow](docs/template-repository/contr
 
 ## License
 
-Framework and template sources are available under the [MIT License](LICENSE).
-Dependencies retain their respective licenses. Generated workspaces include this
-license for the framework and template code they receive.
+The source repository is available under the [MIT License](LICENSE). We also
+offer our own code, documentation, and assets delivered by the workspace and
+template generators under [MIT No Attribution (MIT-0)](scaffolds/LICENSE-MIT-0).
+
+Generated workspaces start with MIT-0. You can replace or remove the default
+license, choose your own copyright notice, or keep your project private.
+Attribution to Visionary Twig is optional under MIT-0. Third-party code and
+assets retain their own licenses.
 
 README structure inspired by [Best-README-Template](https://github.com/othneildrew/Best-README-Template).

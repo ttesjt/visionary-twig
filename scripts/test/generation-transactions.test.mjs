@@ -74,12 +74,23 @@ test('bare clone has exactly one independent commit with no remotes', () => {
   assert.equal(git(base, ['remote']), '');
   clean(base);
 });
-test('app addition creates one own commit and preserves ignored data and existing README', async (context) => {
+test('app addition creates one own commit and preserves ignored data, README and license choice', async (context) => {
   const folder = target(context);
   const custom = path.join(folder, '.local/personal.json');
   mkdirSync(path.dirname(custom));
   writeFileSync(custom, 'private fixture');
   const readme = readFileSync(path.join(folder, 'README.md'));
+  const licenseFile = path.join(folder, 'LICENSE');
+  const manifestFile = path.join(folder, 'package.json');
+  const manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
+  const license = 'Copyright (c) Example Project. All rights reserved.\n';
+  writeFileSync(licenseFile, license);
+  writeFileSync(
+    manifestFile,
+    JSON.stringify({ ...manifest, license: 'UNLICENSED' }, null, 2) + '\n'
+  );
+  git(folder, ['add', 'LICENSE', 'package.json']);
+  git(folder, ['commit', '-m', 'chore: set project license']);
   const before = head(folder);
   await appendTemplate(source, folder, { appName: 'web' }, { run: noCommands });
   assert.equal(git(folder, ['rev-list', '--count', before + '..HEAD']).trim(), '1');
@@ -89,6 +100,8 @@ test('app addition creates one own commit and preserves ignored data and existin
   );
   assert.equal(readFileSync(custom, 'utf8'), 'private fixture');
   assert.deepEqual(readFileSync(path.join(folder, 'README.md')), readme);
+  assert.equal(readFileSync(licenseFile, 'utf8'), license);
+  assert.equal(JSON.parse(readFileSync(manifestFile, 'utf8')).license, 'UNLICENSED');
   const changed = git(folder, ['diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD'])
     .trim()
     .split('\n');

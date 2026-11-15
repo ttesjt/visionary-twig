@@ -57,3 +57,11 @@ See the [command reference](docs/commands.md) for app selection and resource
 preparation, and the [architecture guide](docs/architecture.md) for ownership.
 The [code standards](docs/code-standards.md) and
 [monorepo standards](docs/monorepo-standards.md) cover changes to code and packages.
+
+## License
+
+Original materials from Visionary Twig are available under
+[MIT-0](https://spdx.org/licenses/MIT-0.html).
+You can replace or remove the root `LICENSE` and update the `license` field in
+`package.json` to reflect your choice. Attribution to Visionary Twig is optional.
+Third-party code and assets retain their own licenses.

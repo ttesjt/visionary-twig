@@ -28,3 +28,11 @@ builds, and tests.
 
 See the [package development guide](docs/development.md) to add another package
 or consume its public exports from the workspace.
+
+## License
+
+Original materials from Visionary Twig are available under
+[MIT-0](https://spdx.org/licenses/MIT-0.html).
+You can replace or remove the root `LICENSE` and update the `license` field in
+`package.json` to reflect your choice. Attribution to Visionary Twig is optional.
+Third-party code and assets retain their own licenses.

@@ -56,6 +56,8 @@ test('Node delivery initializes two commits without frontend tools or seeded bro
   assert.equal(git(target, ['remote']), '');
   assert.equal(git(target, ['status', '--porcelain']), '');
   assert.equal(readWorkspaceRecord(target).preset, 'node');
+  assert.equal(JSON.parse(read('package.json')).license, 'MIT-0');
+  assert.equal(read('LICENSE'), readFileSync(path.join(source, 'scaffolds/LICENSE-MIT-0'), 'utf8'));
   assert.deepEqual(parse(read('pnpm-workspace.yaml')).packages, ['packages/*']);
   assert.equal(
     JSON.parse(read('packages/example-library/package.json')).name,
