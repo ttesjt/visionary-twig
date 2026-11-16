@@ -16,7 +16,7 @@ test('source repository has templates without consuming apps or in-place creatio
     discoverTemplateApps(root)
       .map((app) => app.id)
       .sort(),
-    ['template-plain-next', 'template-studio']
+    ['template-plain-next', 'template-portfolio', 'template-studio']
   );
   for (const file of [
     'playwright.config.ts',
@@ -47,10 +47,11 @@ test('template planning treats provenance as metadata and works without Git on P
   const entries = JSON.parse(result.stdout);
   assert.deepEqual(
     entries.map(({ id }) => id),
-    ['plain-next', 'studio']
+    ['plain-next', 'studio', 'portfolio']
   );
   for (const { id, origin } of entries) {
-    assert.equal(origin.path, 'packages/templates/' + id);
+    const originId = id === 'portfolio' ? 'plain-next' : id;
+    assert.equal(origin.path, 'packages/templates/' + originId);
     assert.match(origin.commit, /^[a-f0-9]{40}$/u);
     assert.equal(existsSync(path.join(root, origin.path, 'package.json')), true);
   }

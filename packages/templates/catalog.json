@@ -27,6 +27,15 @@
         "commit": "fc2fcbbf439665051c282e916c09baf0262f16dd",
         "path": "packages/templates/studio"
       }
+    },
+    {
+      "id": "portfolio",
+      "kind": "next-app",
+      "destination": "apps/portfolio",
+      "origin": {
+        "commit": "3a655f1d4d761d3feb9b19e76faa52ab2e3a0e1b",
+        "path": "packages/templates/plain-next"
+      }
     }
   ]
 }
