@@ -45,7 +45,9 @@
     "@frontend/portfolio": "workspace:*",
     "@frontend/content-blocks": "workspace:*",
     "@frontend/storage": "workspace:*",
-    "@frontend/ui-document": "workspace:*"
+    "@frontend/ui-document": "workspace:*",
+    "@frontend/contact": "workspace:*",
+    "@frontend/email": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "catalog:",

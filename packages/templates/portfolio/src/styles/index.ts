@@ -5,3 +5,5 @@ import '@frontend/portfolio/default.css';
 import './site.css';
 import '@frontend/content-blocks/default.css';
 import './projects/default.css';
+import '@frontend/contact/default.css';
+import './contact/default.css';

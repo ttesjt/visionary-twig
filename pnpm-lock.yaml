@@ -788,9 +788,15 @@ importers:
 
   packages/templates/portfolio:
     dependencies:
+      '@frontend/contact':
+        specifier: workspace:*
+        version: link:../../site/contact
       '@frontend/content-blocks':
         specifier: workspace:*
         version: link:../../shared/content-blocks
+      '@frontend/email':
+        specifier: workspace:*
+        version: link:../../shared/email
       '@frontend/event-tracking':
         specifier: workspace:*
         version: link:../../shared/event-tracking

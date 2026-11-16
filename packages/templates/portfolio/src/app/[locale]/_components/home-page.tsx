@@ -20,6 +20,9 @@ export function HomeContent({ locale }: { readonly locale: TextLocale }) {
       <Link href={localeHref(SITE_ROUTES.projects, text.locale)}>
         {text.getText('main', 'home.browseProjects')}
       </Link>
+      <Link href={localeHref(SITE_ROUTES.contact, text.locale)}>
+        {text.getText('main', 'navigation.contact')}
+      </Link>
       <HomeProjects>
         <ProjectBrowser pathname={SITE_ROUTES.home} locale={locale} titleAs="h3" />
       </HomeProjects>
