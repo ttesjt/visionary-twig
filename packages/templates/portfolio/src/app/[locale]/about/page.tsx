@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { localeHref } from '../../../infra/resources/routing';
 import { resourceRouteLocale, serverText } from '../../../infra/resources/server';
 import { siteMetadata } from '../../../site/metadata';
 import { RESOURCE_SCOPES } from '../../../site/resource-scopes';
@@ -16,9 +18,15 @@ export default async function Page({ params }: PageProps) {
   const locale = await resourceRouteLocale(params);
   const text = await serverText(locale, RESOURCE_SCOPES.metadata);
   return (
-    <div className="ui-portfolio-page">
+    <div className="ui-portfolio-page ui-portfolio-about">
       <h1>{text.getText('main', 'about.title')}</h1>
-      <AboutSummary />
+      <div className="ui-portfolio-about-body">
+        <AboutSummary />
+        <p>{text.getText('main', 'about.projectNotes')}</p>
+        <Link href={localeHref(SITE_ROUTES.projects, locale)}>
+          {text.getText('main', 'home.browseProjects')}
+        </Link>
+      </div>
     </div>
   );
 }
