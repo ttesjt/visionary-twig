@@ -1,0 +1,85 @@
+@layer ui-components {
+  .ui-project-grid,
+  .ui-project-card-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1rem;
+  }
+
+  .ui-project-card {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--ui-color-line, currentColor);
+    border-radius: var(--ui-radius-control, 0.5rem);
+    background: var(--ui-color-surface, Canvas);
+  }
+
+  .ui-project-card-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--ui-radius-control, 0.5rem);
+  }
+
+  .ui-project-card-title,
+  .ui-project-card-summary {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ui-project-card-summary,
+  .ui-project-grid-empty {
+    color: var(--ui-color-muted, currentColor);
+  }
+
+  .ui-project-pin {
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    margin-inline-start: 0.4em;
+    color: var(--ui-color-muted, currentColor);
+    vertical-align: baseline;
+  }
+
+  .ui-project-badge,
+  .ui-project-badge-image {
+    display: inline-block;
+    margin-inline-end: 0.45em;
+    vertical-align: middle;
+  }
+
+  .ui-project-badge {
+    padding: 0.125rem 0.35rem;
+    border: 1px solid var(--ui-color-line, currentColor);
+    border-radius: var(--ui-radius-control, 0.25rem);
+    color: var(--ui-color-muted, currentColor);
+    font-size: 0.65em;
+    font-weight: 600;
+  }
+
+  .ui-project-badge-image {
+    border-radius: var(--ui-radius-control, 0.25rem);
+    object-fit: contain;
+  }
+
+  .ui-project-card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+
+  .ui-project-category-filter {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}

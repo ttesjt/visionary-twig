@@ -1,7 +1,7 @@
 {
   "name": "@frontend/portfolio",
   "version": "0.1.0",
-  "description": "Portfolio project contracts and SQL services",
+  "description": "Portfolio project contracts, queries and presentation",
   "private": true,
   "type": "module",
   "workspaceKind": "react-library",
@@ -25,12 +25,24 @@
     "./server": {
       "types": "./dist/projects/server.d.ts",
       "import": "./dist/projects/server.js"
-    }
+    },
+    "./ui": {
+      "types": "./dist/projects/ui.d.ts",
+      "import": "./dist/projects/ui.js"
+    },
+    "./render": {
+      "types": "./dist/projects/render.d.ts",
+      "import": "./dist/projects/render.js"
+    },
+    "./default.css": "./src/styles/default.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/styles"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "engines": {
     "node": ">=24.15.0 <25"
   },
@@ -53,13 +65,19 @@
   },
   "dependencies": {
     "@frontend/content-blocks": "workspace:*",
+    "@frontend/puck-adapter": "workspace:*",
     "@frontend/storage": "workspace:*",
     "@frontend/text-catalog": "workspace:*",
     "@frontend/ui-document": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -79,7 +97,9 @@
         "contracts.ts",
         "pagination.ts",
         "identity.ts",
-        "server.ts"
+        "server.ts",
+        "ui.ts",
+        "render.ts"
       ],
       "shared": [
         "pagination.ts",
@@ -93,13 +113,15 @@
     "src/projects/catalog": {
       "public": [
         "contracts.ts",
-        "server.ts"
+        "server.ts",
+        "ui.ts"
       ]
     },
     "src/projects/pages": {
       "public": [
         "contracts.ts",
-        "server.ts"
+        "server.ts",
+        "render.ts"
       ]
     }
   }

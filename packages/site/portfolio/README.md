@@ -40,5 +40,22 @@ context so the renderer can resolve them. An invalid published document keeps
 the readable summary and provides a `PortfolioDataError` for server diagnostics.
 Storage failures and corrupt summary rows still surface to the host.
 
+## Present projects
+
 `@frontend/portfolio/identity` exposes the ID, slug, locale and media-key
-schemas for validating host-owned data inputs.
+schemas independently of catalog queries. Hosts can use them when validating
+file-based project inputs.
+
+`@frontend/portfolio/ui` exports `ProjectCard`, `ProjectGrid` and the controlled
+`ProjectCategoryFilter`. The host supplies links and cover URLs, translated UI
+labels, and the filter selection callback. Cover data provides a storage key and
+localized alternative text. The grid shows the supplied empty message when there
+are no projects. Import `@frontend/portfolio/default.css` for optional default card,
+grid and filter styles powered by the shared theme tokens.
+
+Use `projectPageRegistry` from `@frontend/portfolio/render` for reads that will
+use the included `ProjectPageContent`. It selects the same document registry as
+the shared Puck renderer. On a `ready` result, pass the returned page to
+`ProjectPageContent`. Its rendering supports stored variables and bindings as
+well as the publication context. The host can render metadata on its own for a
+`summary-only` result and handle `not-found` with its route's response.
