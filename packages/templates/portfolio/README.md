@@ -31,3 +31,18 @@ The import preserves existing authored rows and objects. Configure
 
 Prepared JSON remains app-owned under `content/default`; `.local` storage is
 private. The data command does not copy source-repository databases into apps.
+
+## Browse SQL projects
+
+`/projects` uses the injected data port and read-only BFF. Category and page are
+stored in the URL; repeated selection preserves the current page, changing the
+category resets it, and browser history restores both values. Page capacity uses
+`projects.pageSize` in AppConfig. Categories and results recover independently.
+
+List responses carry the source identity that produced them. A newer SSR seed
+supersedes an earlier browser attempt. Pending regions display Skeletons;
+transport, validation and source errors retain their identity and offer retry.
+
+`/projects/[slug]` renders the stored Puck document and context with sharing
+metadata, inline chapter anchors, and explicit unpublished/invalid-detail states.
+Media is served only when referenced by a current published record, cover or badge.

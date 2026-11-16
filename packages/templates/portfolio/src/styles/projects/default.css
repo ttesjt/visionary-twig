@@ -1,0 +1,92 @@
+@layer ui-components {
+  .ui-portfolio-projects,
+  .ui-project-page-content {
+    display: grid;
+    gap: 1rem;
+  }
+}
+
+@layer ui-components {
+  .ui-mono-project-filters,
+  .ui-mono-project-categories,
+  .ui-mono-project-arrow,
+  .ui-mono-project-pagination-info {
+    display: none;
+  }
+}
+
+@layer ui-components {
+  .ui-portfolio-project-cover {
+    position: relative;
+    aspect-ratio: 1.54;
+  }
+
+  .ui-portfolio-project-cover[data-empty] {
+    display: none;
+  }
+
+  .ui-portfolio-project-cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ui-portfolio-project-info {
+    display: grid;
+    gap: 0.375rem;
+  }
+
+  .ui-portfolio-skeleton-filters,
+  .ui-portfolio-skeleton-cover,
+  .ui-portfolio-skeleton-title,
+  .ui-portfolio-skeleton-summary {
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-surface-raised);
+    animation: portfolio-skeleton 1.6s ease-in-out infinite alternate;
+  }
+
+  .ui-portfolio-skeleton-filters {
+    width: min(12rem, 100%);
+    height: 2.5rem;
+    margin-block-end: 1.5rem;
+  }
+
+  .ui-portfolio-skeleton-cover {
+    aspect-ratio: 1.54;
+  }
+
+  .ui-portfolio-skeleton-title,
+  .ui-portfolio-skeleton-summary {
+    width: 48%;
+    height: 1.25rem;
+    margin-block-start: 0.75rem;
+  }
+
+  .ui-portfolio-skeleton-summary {
+    width: 72%;
+    height: 0.75rem;
+  }
+
+  @keyframes portfolio-skeleton {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0.58;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-portfolio-loading
+      :is(
+        .ui-portfolio-skeleton-filters,
+        .ui-portfolio-skeleton-cover,
+        .ui-portfolio-skeleton-title,
+        .ui-portfolio-skeleton-summary
+      ) {
+      animation: none;
+    }
+  }
+}

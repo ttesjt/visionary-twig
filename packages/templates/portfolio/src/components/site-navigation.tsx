@@ -11,6 +11,7 @@ import { ThemePicker } from './theme-picker';
 const navigation = [
   { href: SITE_ROUTES.home, key: 'navigation.home' },
   { href: SITE_ROUTES.about, key: 'navigation.about' },
+  { href: SITE_ROUTES.projects, key: 'navigation.projects' },
 ] as const;
 
 export function SiteNavigation() {
