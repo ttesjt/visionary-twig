@@ -46,3 +46,12 @@ transport, validation and source errors retain their identity and offer retry.
 `/projects/[slug]` renders the stored Puck document and context with sharing
 metadata, inline chapter anchors, and explicit unpublished/invalid-detail states.
 Media is served only when referenced by a current published record, cover or badge.
+
+## Contact
+
+The Contact page uses the reusable form and shared server validation. The host
+injects an EmailSender; local delivery writes to the configured disposable
+outbox, while a generated host can opt into the Cloudflare sender. Configure
+`PORTFOLIO_CONTACT_FROM`, `PORTFOLIO_CONTACT_TO`, and the allowed origin before
+production use. Platform links are configured by `contact.links` in AppConfig.
+The handler bounds request size, validates fields and reports typed delivery errors.

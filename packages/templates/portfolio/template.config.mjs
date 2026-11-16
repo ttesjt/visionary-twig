@@ -4,6 +4,7 @@ export default {
     'README.md': 'template/README.md',
     'src/integrations/portfolio/runtime.ts': 'template/host/portfolio-runtime.ts.template',
     'src/integrations/portfolio/worker.ts': 'template/host/portfolio-worker.ts.template',
+    'src/integrations/contact/sender.ts': 'template/host/contact-sender.ts.template',
     'scripts/data-setup.ts': 'template/host/data-setup.ts.template',
     'src/site/project-data.ts': 'template/host/project-data.ts.template',
   },

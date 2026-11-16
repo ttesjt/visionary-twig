@@ -1,3 +1,5 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import path from 'node:path';
 import { expect } from '@playwright/test';
 import { test } from './fixtures/portfolio';
 import { PROJECT_DEMO_ENABLED } from '../../src/site/project-data';
@@ -53,4 +55,46 @@ test('restores category and page URLs with the neutral controls', async ({ page 
   await page.goForward();
   await page.reload();
   await expect(page.getByRole('link', { name: 'Color Index', exact: true })).toBeVisible();
+});
+test('validates the contact form, displays platform links and records one email in the local outbox', async ({
+  page,
+  request,
+  baseURL,
+}) => {
+  if (!baseURL) throw new Error('Browser base URL is required.');
+  const outbox = process.env.PORTFOLIO_CONTACT_OUTBOX;
+  if (!outbox) throw new Error('Run this suite with pnpm test:e2e.');
+  await page.goto('/contact');
+  const platforms = page.getByRole('navigation', { name: 'Platform links' });
+  await expect(platforms.getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+    'href',
+    'https://github.com/'
+  );
+  const submit = page.getByRole('button', { name: 'Send message' });
+  await submit.click();
+  await expect(page.getByText('Enter a valid email address.')).toBeVisible();
+
+  const rejected = await request.post('/api/contact?locale=en', {
+    headers: { origin: new URL(baseURL).origin },
+    data: { email: 'invalid-address', message: 'Invalid input' },
+  });
+  expect(rejected.status()).toBe(422);
+
+  await page.getByRole('textbox', { name: 'Email' }).fill('visitor@example.test');
+  await page.getByRole('textbox', { name: 'Message' }).fill('A sample note.');
+  await submit.click();
+  await expect(page.getByRole('status')).toHaveText('Message accepted.');
+  await expect(page.getByRole('textbox', { name: 'Message' })).toBeEmpty();
+  const messages = readdirSync(outbox).filter((file) => file.endsWith('.json'));
+  expect(messages).toHaveLength(1);
+  const [filename] = messages;
+  if (!filename) throw new Error('Missing sample message.');
+  const email: unknown = JSON.parse(readFileSync(path.join(outbox, filename), 'utf8'));
+  expect(email).toMatchObject({
+    from: 'portfolio@example.test',
+    to: 'outbox@example.test',
+    replyTo: 'visitor@example.test',
+    subject: 'Portfolio contact message',
+    text: 'Email: visitor@example.test\n\nMessage:\nA sample note.',
+  });
 });

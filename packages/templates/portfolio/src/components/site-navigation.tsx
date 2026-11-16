@@ -12,6 +12,7 @@ const navigation = [
   { href: SITE_ROUTES.home, key: 'navigation.home' },
   { href: SITE_ROUTES.about, key: 'navigation.about' },
   { href: SITE_ROUTES.projects, key: 'navigation.projects' },
+  { href: SITE_ROUTES.contact, key: 'navigation.contact' },
 ] as const;
 
 export function SiteNavigation() {

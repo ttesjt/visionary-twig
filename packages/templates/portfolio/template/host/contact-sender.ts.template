@@ -1,0 +1,22 @@
+import 'server-only';
+
+import type { EmailSender } from '@frontend/email';
+import { readServerEnvironment } from '../../infra/environment/server';
+import { z } from 'zod';
+import { createOutboxSender } from './outbox';
+
+const cloudEmailSchema = z.object({
+  CLOUDFLARE_ACCOUNT_ID: z.string().min(1),
+  CLOUDFLARE_EMAIL_API_TOKEN: z.string().min(1),
+});
+
+export async function resolveContactSender(): Promise<EmailSender> {
+  if (process.env.PORTFOLIO_CONTACT_DELIVERY !== 'cloudflare')
+    return createOutboxSender(process.env.PORTFOLIO_CONTACT_OUTBOX);
+  const environment = readServerEnvironment(cloudEmailSchema);
+  const { createCloudflareEmailSender } = await import('@frontend/cloudflare/email');
+  return createCloudflareEmailSender({
+    accountId: environment.CLOUDFLARE_ACCOUNT_ID,
+    apiToken: environment.CLOUDFLARE_EMAIL_API_TOKEN,
+  });
+}
