@@ -86,7 +86,7 @@ test('source templates are independent apps without changing normal app discover
     json(path.join(sourceRoot, 'packages/templates/catalog.json'))
       .templates.map((entry) => entry.id)
       .sort(),
-    ['node-library', 'plain-next', 'studio']
+    ['node-library', 'plain-next', 'portfolio', 'studio']
   );
   const originalApps = discoverApps(sourceRoot).map((app) => app.id);
   const sources = discoverTemplateApps(sourceRoot);
@@ -143,6 +143,7 @@ test('full clone uses template hooks and supports renamed scope and app director
   const destination = path.join(temporary(context), 'project');
   await createTemplateProject(sourceRoot, destination, {
     name: '@review/starter',
+    templates: ['plain-next', 'studio'],
     appNames: { studio: 'editor' },
   });
   assert.deepEqual(

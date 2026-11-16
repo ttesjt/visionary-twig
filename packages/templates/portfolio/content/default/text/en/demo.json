@@ -1,0 +1,8 @@
+{
+  "title": "Ready to explore.",
+  "description": "This page reads complete text resources synchronously.",
+  "greeting": "Hello, {name}.",
+  "actions.confirm": "Continue",
+  "works.paper-study.title": "Paper Study",
+  "works.folded-light.title": "Folded Light"
+}
