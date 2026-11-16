@@ -26,8 +26,7 @@
     "app:prepare": "node ../../../scripts/prepare-app.mjs --kind app --app template-portfolio",
     "app:check": "node ../../../scripts/prepare-app.mjs --kind app --app template-portfolio --check",
     "content:prepare": "node ../../../scripts/prepare-app.mjs --kind content --app template-portfolio",
-    "content:check": "node ../../../scripts/prepare-app.mjs --kind content --app template-portfolio --check",
-    "demo:upstream": "node scripts/examples/mock-upstream.ts"
+    "content:check": "node ../../../scripts/prepare-app.mjs --kind content --app template-portfolio --check"
   },
   "dependencies": {
     "@frontend/ui": "workspace:*",
@@ -42,7 +41,11 @@
     "@frontend/text-catalog": "workspace:*",
     "server-only": "catalog:",
     "@frontend/prepared-data": "workspace:*",
-    "next-themes": "catalog:"
+    "next-themes": "catalog:",
+    "@frontend/portfolio": "workspace:*",
+    "@frontend/content-blocks": "workspace:*",
+    "@frontend/storage": "workspace:*",
+    "@frontend/ui-document": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "catalog:",
@@ -65,7 +68,7 @@
     "hostname": "127.0.0.1",
     "testHook": "test/environment.mjs"
   },
-  "description": "Next.js starter with prepared Text, AppConfig and Content resources",
+  "description": "Next.js portfolio starter with prepared site resources",
   "workspaceTextResources": true,
   "workspaceAppConfig": true,
   "workspaceFeatures": {
@@ -78,7 +81,8 @@
         "text/client.ts",
         "routing.ts",
         "http/json.ts",
-        "http/text.ts"
+        "http/text.ts",
+        "content-text.ts"
       ],
       "shared": [
         "preparation/prepared.ts",

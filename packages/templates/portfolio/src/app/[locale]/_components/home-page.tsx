@@ -1,44 +1,22 @@
 'use client';
-import { localeHref } from '../../../infra/resources/routing';
 import Link from 'next/link';
-import { ThemePicker } from '../../../components/theme-picker';
-import { useText, useAppConfig, useContent } from '../../../infra/resources/client';
+import { useAppConfig, useText } from '../../../infra/resources/client';
+import { localeHref } from '../../../infra/resources/routing';
+import { SITE_ROUTES } from '../../../site/routes';
 export function HomeContent() {
   const text = useText();
-  const config = useAppConfig().get('app');
-  const base = useContent().get('base');
+  const { home } = useAppConfig().get('app');
   return (
-    <main className="example-page example-sections">
-      <header className="example-header example-controls">
-        <p>{text.getText('main', 'home.brand')}</p>
-        <ThemePicker />
-      </header>
-      <div className="example-flow">
-        <h1 className="example-title">{text.getText('main', 'home.title')}</h1>
-        {config.home.showIntroduction && (
-          <p className="example-description">{text.getText('main', 'home.description')}</p>
-        )}
-        <nav className="example-flow">
-          <Link href={localeHref('/examples/event-tracking', text.locale)}>
-            {text.getText('main', 'examples.tracking')}
-          </Link>
-          <Link href={localeHref('/examples/remote-settings', text.locale)}>
-            {text.getText('main', 'examples.remoteSettings')}
-          </Link>
-          <Link href={localeHref('/examples/text', text.locale)}>
-            {text.getText('main', 'examples.text')}
-          </Link>
-          <Link href={localeHref('/examples/content', text.locale)}>
-            {text.getText('main', 'content.open', { collection: base.collection })}
-          </Link>
-          <Link href={localeHref('/examples/layout', text.locale)}>
-            {text.getText('main', 'layout.title')}
-          </Link>
-          <Link href={localeHref('/examples/api', text.locale)}>
-            {text.getText('main', 'api.title')}
-          </Link>
-        </nav>
-      </div>
-    </main>
+    <div className="ui-portfolio-page">
+      <h1>
+        {text.getText('main', 'home.title') +
+          (text.locale === 'zh' ? '' : ' ') +
+          text.getText('main', 'home.titleEnd')}
+      </h1>
+      {home.showIntroduction && <p>{text.getText('main', 'home.description')}</p>}
+      <Link href={localeHref(SITE_ROUTES.about, text.locale)}>
+        {text.getText('main', 'navigation.about')}
+      </Link>
+    </div>
   );
 }

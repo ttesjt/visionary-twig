@@ -6,18 +6,20 @@ export interface PageStatusText {
 
 /** Ready-to-display values only. This view also renders outside resource Providers. */
 export function PageStatusView({
+  as: Element = 'main',
   text,
   homeHref,
   action,
   reference,
 }: {
+  readonly as?: 'div' | 'main';
   readonly text: PageStatusText;
   readonly homeHref: string;
   readonly action?: { readonly label: string; readonly run: () => void } | undefined;
   readonly reference?: { readonly label: string; readonly digest: string } | undefined;
 }) {
   return (
-    <main className="ui-page-status">
+    <Element className="ui-page-status">
       <h1>{text.title}</h1>
       <p className="ui-page-status-description">{text.description}</p>
       {reference && (
@@ -33,6 +35,6 @@ export function PageStatusView({
         )}
         <a href={homeHref}>{text.home}</a>
       </div>
-    </main>
+    </Element>
   );
 }

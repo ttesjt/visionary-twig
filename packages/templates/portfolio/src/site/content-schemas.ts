@@ -1,17 +1,16 @@
 import { z } from 'zod';
 import { contentTextReferenceSchema } from '../infra/content-text-reference.ts';
-export const contentSchemas = {
-  base: z.strictObject({ collection: z.string().min(1) }),
-  catalog: z.strictObject({
-    works: z.array(
-      z.strictObject({
-        id: z.string(),
-        title: z.union([z.string(), contentTextReferenceSchema]),
-        year: z.number().int(),
-      })
-    ),
+import { projectFileSchemas } from '../features/projects/files/index.ts';
+
+const visibleText = z.string().trim().min(1);
+
+export const baseContentSchemas = {
+  base: z.strictObject({
+    displayName: visibleText,
+    about: z.union([visibleText, contentTextReferenceSchema]).optional(),
   }),
-  'making-notes': z.strictObject({
-    entries: z.array(z.strictObject({ workId: z.string(), technique: z.string() })),
-  }),
+};
+export const contentSchemas: typeof baseContentSchemas & typeof projectFileSchemas = {
+  ...baseContentSchemas,
+  ...projectFileSchemas,
 };

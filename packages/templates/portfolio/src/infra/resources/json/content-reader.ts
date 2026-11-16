@@ -1,6 +1,6 @@
 import type { z } from 'zod';
 import type { JsonReadView, JsonSchemas } from '@frontend/prepared-data/resource';
-import { contentTextReferenceSchema } from '../../content-text-reference';
+import { contentTextReferenceSchema } from '../../content-text-reference.ts';
 
 interface ContentTextLookup {
   getText(namespace: string, key: string): string;
@@ -18,7 +18,7 @@ type Resolved<T> = T extends object
     : ResolvedFields<T>
   : T;
 
-interface ContentReadView<R extends JsonSchemas> extends JsonReadView<R> {
+export interface ContentReadView<R extends JsonSchemas> extends JsonReadView<R> {
   getResolved<N extends keyof R & string>(
     namespace: N,
     options: { readonly text: ContentTextLookup }

@@ -16,3 +16,4 @@ export { RESOURCE_STARTUP_TEXT } from '../../site/startup-text';
 export { jsonDefinition } from './json/registry';
 
 export { planResourceScope } from './planning/scope-plan';
+export { createContentReader } from './json/content-reader';

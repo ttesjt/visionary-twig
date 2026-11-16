@@ -1,0 +1,10 @@
+/** App-owned project files. Add page declarations when publishing a full write-up. */
+export const PROJECT_FILE_INPUT_DIRECTORY = 'content/default/data/project-files';
+export const PROJECT_PUBLIC_DIRECTORY = 'public';
+export const PROJECT_TEXT_NAMESPACES = [] as const;
+export const PROJECT_TEXT_DEFAULT_DIRECTORIES: Record<string, string> = {};
+export const PROJECT_FILE_PAGES: readonly {
+  slug: string; namespace: `project-${string}`; filename: string;
+}[] = [];
+
+export const PROJECT_DEMO_ENABLED = false;

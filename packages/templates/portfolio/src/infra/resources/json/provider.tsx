@@ -6,31 +6,12 @@ import {
   JsonResource,
   type JsonReadView,
   type JsonSchemas,
-  type JsonResourceInput,
 } from '@frontend/prepared-data/resource';
 import { type ResourcePlan, type PreparedResources } from '@frontend/resource-runtime';
 import type { ResourceScopeDefinition } from '../../../site/resource-scopes';
 import { configSchemas, contentSchemas, jsonPlan, type JsonKind } from './registry';
 import { createContentReader } from './content-reader';
-function known<R extends JsonSchemas>(schemas: R, name: string): name is keyof R & string {
-  return Object.hasOwn(schemas, name);
-}
-function resource<R extends JsonSchemas>(
-  schemas: R,
-  kind: JsonKind,
-  prepared: PreparedResources,
-  plan: ResourcePlan
-): JsonResource<R> {
-  if (prepared.planKey !== plan.key || prepared.resources.length !== plan.resources.length)
-    throw new Error('JSON preparation plan mismatch.');
-  const inputs: JsonResourceInput<R>[] = plan.resources.map((definition) => {
-    const name = definition.id.slice(kind.length + 1);
-    const entry = prepared.resources.find((value) => value.key === definition.key);
-    if (!known(schemas, name) || !entry) throw new Error('Missing JSON namespace: ' + name);
-    return { namespace: name, version: definition.version, value: entry.value };
-  });
-  return new JsonResource(schemas, inputs);
-}
+import { createPreparedJsonResource } from './resource';
 export function createJsonProvider<R extends JsonSchemas, S, V extends JsonReadView<R>>(
   kind: JsonKind,
   schemas: R,
@@ -38,7 +19,7 @@ export function createJsonProvider<R extends JsonSchemas, S, V extends JsonReadV
   readerFor: (raw: JsonReadView<R>) => V
 ) {
   const build = (data: PreparedResources, plan: ResourcePlan) =>
-    resource(schemas, kind, data, plan);
+    createPreparedJsonResource(schemas, kind, data, plan);
   const view = (local: JsonResource<R>, parent: V | undefined) =>
     readerFor(local.createView(parent));
   const binding = createResourceProvider<S, JsonResource<R>, V>(

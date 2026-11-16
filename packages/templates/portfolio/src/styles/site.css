@@ -1,0 +1,119 @@
+@layer ui-components {
+  .ui-portfolio-frame > .ui-site-skip-link {
+    position: fixed;
+    z-index: 11;
+    color: var(--ui-color-ink);
+    background: var(--ui-color-canvas);
+  }
+
+  .ui-portfolio-header {
+    border-bottom: 1px solid var(--ui-color-line);
+  }
+
+  .ui-portfolio-header-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding: 1rem clamp(1rem, 4vw, 3rem);
+  }
+
+  .ui-portfolio-header nav,
+  .ui-portfolio-controls,
+  .ui-portfolio-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    align-items: center;
+  }
+
+  .ui-portfolio-brand,
+  .ui-portfolio-header [aria-current='page'] {
+    font-weight: 650;
+  }
+
+  .ui-portfolio-page {
+    display: grid;
+    gap: 1rem;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: clamp(1.5rem, 7vw, 5rem) clamp(1rem, 4vw, 3rem);
+  }
+
+  .ui-portfolio-page :is(h1, p) {
+    margin: 0;
+  }
+
+  .ui-portfolio-page > p {
+    max-width: 65ch;
+  }
+}
+
+@layer ui-components {
+  .ui-portfolio-hero-copy,
+  .ui-portfolio-about-body,
+  .ui-portfolio-page-heading {
+    display: grid;
+    justify-items: start;
+    align-content: start;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .ui-portfolio-lead {
+    max-inline-size: 55ch;
+  }
+
+  .ui-portfolio-hero-image,
+  .ui-mono-home-work,
+  .ui-mono-home-link,
+  .ui-mono-footer,
+  .ui-mono-eyebrow {
+    display: none;
+  }
+}
+
+@layer ui-components {
+  .ui-portfolio-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .ui-portfolio-settings {
+    position: relative;
+  }
+
+  .ui-portfolio-settings summary {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .ui-portfolio-settings summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ui-portfolio-settings-panel {
+    position: absolute;
+    z-index: 2;
+    inset: calc(100% + 0.5rem) 0 auto auto;
+    display: grid;
+    gap: 1rem;
+    inline-size: min(13rem, calc(100vw - 2rem));
+    padding: 1rem;
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-surface);
+  }
+}

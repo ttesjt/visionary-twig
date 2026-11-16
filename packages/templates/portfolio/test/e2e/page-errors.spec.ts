@@ -1,8 +1,14 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from './fixtures/portfolio';
 
 const messages = {
-  en: { title: 'Page not found', home: '/', label: 'Back to home', welcome: 'Welcome.' },
-  zh: { title: '找不到页面', home: '/?lang=zh', label: '返回首页', welcome: '欢迎。' },
+  en: {
+    title: 'Page not found',
+    home: '/',
+    label: 'Back to home',
+    welcome: 'Small projects, made with care.',
+  },
+  zh: { title: '找不到页面', home: '/?lang=zh', label: '返回首页', welcome: '用心做的小项目。' },
 } as const;
 
 const routes = [

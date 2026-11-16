@@ -29,7 +29,8 @@
     "config/**/*.ts",
     "content-resources.config.ts",
     "content/**/*.ts",
-    "scripts/examples/**/*.ts"
+    "scripts/examples/**/*.ts",
+    "template/test/**/*"
   ],
   "exclude": ["node_modules", ".next/cache"]
 }

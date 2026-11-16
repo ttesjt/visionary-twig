@@ -1,3 +1,6 @@
 {
-  "collection": "Field Notes"
+  "displayName": "Portfolio",
+  "about": {
+    "$text": { "namespace": "main", "key": "about.description" }
+  }
 }

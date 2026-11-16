@@ -1,3 +1,4 @@
+import { PROJECT_TEXT_DEFAULT_DIRECTORIES } from './src/site/project-data.ts';
 import type { TextResourceConfiguration } from '@frontend/text-catalog/resource/node';
 import {
   TEXT_LOCALES,
@@ -12,4 +13,5 @@ export default {
   missingKeys: 'inherit-reference',
   locales: TEXT_LOCALES,
   namespaces: TEXT_NAMESPACES,
+  defaultDirectories: PROJECT_TEXT_DEFAULT_DIRECTORIES,
 } satisfies TextResourceConfiguration;

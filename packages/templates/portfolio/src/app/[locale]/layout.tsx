@@ -9,9 +9,8 @@ import { TEXT_LOCALES } from '../../infra/resources/index';
 import type { ReactNode } from 'react';
 import { resolveThemePreference } from '@frontend/ui/theme';
 import { getThemePolicy } from '../../site/theme-policy';
-import '@frontend/ui/default.css';
-import '@frontend/styles/default.css';
-import '@frontend/styles/example.css';
+import '../../styles/index';
+import { PortfolioFrame } from '../../components/portfolio-frame';
 
 export async function generateMetadata({
   params,
@@ -40,7 +39,7 @@ export default async function RootLayout({
         <ThemeProvider policy={policy}>
           <ResourceLayout initialLocale={locale} initialSnapshots={initialSnapshots}>
             <TrackingInitialization />
-            {children}
+            <PortfolioFrame>{children}</PortfolioFrame>
           </ResourceLayout>
         </ThemeProvider>
       </body>
