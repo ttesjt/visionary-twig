@@ -788,15 +788,24 @@ importers:
 
   packages/templates/portfolio:
     dependencies:
+      '@frontend/content-blocks':
+        specifier: workspace:*
+        version: link:../../shared/content-blocks
       '@frontend/event-tracking':
         specifier: workspace:*
         version: link:../../shared/event-tracking
+      '@frontend/portfolio':
+        specifier: workspace:*
+        version: link:../../site/portfolio
       '@frontend/prepared-data':
         specifier: workspace:*
         version: link:../../shared/prepared-data
       '@frontend/resource-runtime':
         specifier: workspace:*
         version: link:../../shared/resource-runtime
+      '@frontend/storage':
+        specifier: workspace:*
+        version: link:../../shared/storage
       '@frontend/styles':
         specifier: workspace:*
         version: link:../../shared/styles
@@ -806,6 +815,9 @@ importers:
       '@frontend/ui':
         specifier: workspace:*
         version: link:../../shared/ui
+      '@frontend/ui-document':
+        specifier: workspace:*
+        version: link:../../shared/ui-document
       next:
         specifier: 'catalog:'
         version: 16.4.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)

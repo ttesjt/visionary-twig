@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from './fixtures/portfolio';
 import { THEME_STORAGE_KEY } from '../../src/site/theme';
 import { holdHydration, hydrationErrors, THEME_CANVAS } from './fixtures/theme';
 
@@ -45,7 +46,9 @@ test.describe('selectable theme', () => {
         const held = await holdHydration(page);
         try {
           await page.goto('/', { waitUntil: 'commit' });
-          await expect(page.getByRole('heading', { name: 'Welcome.', exact: true })).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Small projects, made with care.', exact: true })
+          ).toBeVisible();
           const picker = page.getByRole('combobox', { name: 'Theme', exact: true });
           await expect(picker).toBeDisabled();
           await expect(picker).toHaveValue('');

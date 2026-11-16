@@ -9,6 +9,9 @@ import { planResourceScope } from '../planning/scope-plan';
 import { splitScopeSnapshot, type ScopeSnapshots } from '../planning/snapshots';
 import type { ResourceKind } from '../constants/kinds';
 import type { ResourceScopeDefinition } from '../../../site/resource-scopes';
+import { contentSchemas } from '../../../site/content-schemas';
+import { createPreparedJsonResource } from '../json/resource';
+import { createContentReader, type ContentReadView } from '../json/content-reader';
 // Primitive cache keys deduplicate Layout/Page/metadata reads within this server request.
 const read = cache((kind: ResourceKind, url: string) =>
   kind === 'text' ? readGeneratedText(url) : readGeneratedJsonURL(url)
@@ -43,4 +46,22 @@ export async function serverText(
     part.plan,
     options
   ).createView(locale);
+}
+
+/** The server and browser restore the same validated Content snapshot and Text-reference reader. */
+export async function serverContent(
+  scope: ResourceScopeDefinition,
+  locale?: TextLocale
+): Promise<ContentReadView<typeof contentSchemas>> {
+  const part = planResourceScope(scope, locale).parts.find((value) => value.kind === 'content');
+  const snapshot = (await prepareScopeResources(scope, locale)).content;
+  if (!part || !snapshot) throw new Error('Scope has no Content resources.');
+  return createContentReader(
+    createPreparedJsonResource(
+      contentSchemas,
+      'content',
+      restoreResourceSnapshot(part.plan, snapshot),
+      part.plan
+    ).createView()
+  );
 }

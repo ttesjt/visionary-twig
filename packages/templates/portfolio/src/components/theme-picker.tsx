@@ -9,7 +9,7 @@ export function ThemePicker() {
   const { preference, isFixed, setPreference } = useThemePreference();
   if (isFixed) return null;
   return (
-    <label className="example-theme-picker">
+    <label className="ui-portfolio-picker">
       <span>{text.getText('main', 'theme.label')}</span>
       <select
         value={preference ?? ''}

@@ -1,0 +1,287 @@
+{
+  "categories": [
+    {
+      "id": "web",
+      "label": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.category.web"
+        }
+      }
+    },
+    {
+      "id": "tools",
+      "label": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.category.tools"
+        }
+      }
+    }
+  ],
+  "projects": [
+    {
+      "id": "field-notes",
+      "slug": "field-notes",
+      "pinned": true,
+      "badge": {
+        "type": "text",
+        "label": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.field-notes.badge"
+          }
+        }
+      },
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.field-notes.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.field-notes.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/lake.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.field-notes.alt"
+          }
+        },
+        "sources": {
+          "display": {
+            "objectKey": "samples/portfolio/lake.jpg",
+            "width": 960,
+            "height": 640
+          },
+          "thumbnail": {
+            "objectKey": "samples/portfolio/lake-thumbnail.jpg",
+            "width": 420,
+            "height": 280
+          }
+        }
+      },
+      "categoryIds": ["web"],
+      "links": [],
+      "sortOrder": 0
+    },
+    {
+      "id": "color-index",
+      "slug": "color-index",
+      "pinned": false,
+      "badge": {
+        "type": "image",
+        "objectKey": "samples/portfolio/color-index-badge.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.color-index.badge"
+          }
+        }
+      },
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.color-index.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.color-index.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/color-index.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.color-index.alt"
+          }
+        }
+      },
+      "categoryIds": ["tools"],
+      "links": [],
+      "sortOrder": 1
+    },
+    {
+      "id": "reading-room",
+      "slug": "reading-room",
+      "pinned": false,
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.reading-room.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.reading-room.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/worktable.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.reading-room.alt"
+          }
+        }
+      },
+      "categoryIds": ["web"],
+      "links": [],
+      "sortOrder": 2
+    },
+    {
+      "id": "pocket-atlas",
+      "slug": "pocket-atlas",
+      "pinned": false,
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.pocket-atlas.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.pocket-atlas.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/lake.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.pocket-atlas.alt"
+          }
+        }
+      },
+      "categoryIds": ["web"],
+      "links": [],
+      "sortOrder": 3
+    },
+    {
+      "id": "type-studio",
+      "slug": "type-studio",
+      "pinned": false,
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.type-studio.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.type-studio.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/worktable.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.type-studio.alt"
+          }
+        }
+      },
+      "categoryIds": ["tools"],
+      "links": [],
+      "sortOrder": 4
+    },
+    {
+      "id": "quiet-hours",
+      "slug": "quiet-hours",
+      "pinned": false,
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.quiet-hours.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.quiet-hours.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/lake.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.quiet-hours.alt"
+          }
+        }
+      },
+      "categoryIds": ["web"],
+      "links": [],
+      "sortOrder": 5
+    },
+    {
+      "id": "paper-trail",
+      "slug": "paper-trail",
+      "pinned": false,
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.paper-trail.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.paper-trail.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/worktable.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.paper-trail.alt"
+          }
+        }
+      },
+      "categoryIds": ["web"],
+      "links": [],
+      "sortOrder": 6
+    },
+    {
+      "id": "pattern-lab",
+      "slug": "pattern-lab",
+      "pinned": false,
+      "title": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.pattern-lab.title"
+        }
+      },
+      "summary": {
+        "$text": {
+          "namespace": "projects-demo",
+          "key": "fileProjects.pattern-lab.summary"
+        }
+      },
+      "cover": {
+        "objectKey": "samples/portfolio/color-index.jpg",
+        "alt": {
+          "$text": {
+            "namespace": "projects-demo",
+            "key": "fileProjects.pattern-lab.alt"
+          }
+        }
+      },
+      "categoryIds": ["tools"],
+      "links": [],
+      "sortOrder": 7
+    }
+  ]
+}

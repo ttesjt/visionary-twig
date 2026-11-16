@@ -7,6 +7,7 @@ export default function NotFound() {
   const text = useText();
   return (
     <PageStatusView
+      as="div"
       homeHref={localeHref('/', text.locale)}
       text={{
         title: text.getText('main', 'status.notFound.title'),

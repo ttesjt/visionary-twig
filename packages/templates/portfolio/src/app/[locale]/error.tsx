@@ -15,6 +15,7 @@ export default function PageError({
   const digest = errorDigest(error);
   return (
     <PageStatusView
+      as="div"
       homeHref={localeHref('/', text.locale)}
       text={{
         title: text.getText('main', 'status.error.title'),
