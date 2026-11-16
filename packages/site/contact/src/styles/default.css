@@ -1,0 +1,42 @@
+@layer ui-components {
+  .ui-contact-form,
+  .ui-contact-form-fields,
+  .ui-contact-field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .ui-contact-form-fields {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    gap: 1rem;
+  }
+
+  .ui-contact-field :is(input, textarea) {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--ui-color-line, currentColor);
+    border-radius: var(--ui-radius-control, 0.5rem);
+    background: var(--ui-color-surface, Canvas);
+    color: var(--ui-color-ink, CanvasText);
+    font: inherit;
+  }
+
+  .ui-contact-field textarea {
+    min-height: 7rem;
+    resize: vertical;
+  }
+
+  .ui-contact-submit,
+  .ui-contact-cancel {
+    justify-self: start;
+  }
+
+  .ui-contact-error,
+  .ui-contact-status {
+    margin: 0;
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "extends": "../../../tsconfig.react.json",
+  "include": ["src/**/*", "test/**/*", "vitest.config.ts", "src/**/*.json"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,86 @@
+{
+  "name": "@frontend/contact",
+  "version": "0.1.0",
+  "description": "Reusable contact forms, validation and plain-text email submission",
+  "private": true,
+  "type": "module",
+  "workspaceKind": "react-library",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./contracts": {
+      "types": "./dist/contact/contracts.d.ts",
+      "import": "./dist/contact/contracts.js"
+    },
+    "./server": {
+      "types": "./dist/contact/server.d.ts",
+      "import": "./dist/contact/server.js"
+    },
+    "./ui": {
+      "types": "./dist/contact/ui.d.ts",
+      "import": "./dist/contact/ui.js"
+    },
+    "./default.css": "./src/styles/default.css"
+  },
+  "files": [
+    "dist",
+    "src/styles"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rm -rf dist coverage *.tsbuildinfo",
+    "dev": "tsc --build tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@frontend/email": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "workspaceEntrypoints": {
+    ".": "pure",
+    "./contracts": "pure",
+    "./server": "pure",
+    "./ui": "client"
+  },
+  "workspaceFeatures": {
+    "src/contact": {
+      "public": [
+        "contracts.ts",
+        "server.ts",
+        "ui.ts"
+      ]
+    }
+  }
+}
