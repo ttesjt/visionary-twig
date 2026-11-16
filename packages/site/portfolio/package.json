@@ -1,0 +1,106 @@
+{
+  "name": "@frontend/portfolio",
+  "version": "0.1.0",
+  "description": "Portfolio project contracts and SQL services",
+  "private": true,
+  "type": "module",
+  "workspaceKind": "react-library",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./contracts": {
+      "types": "./dist/projects/contracts.d.ts",
+      "import": "./dist/projects/contracts.js"
+    },
+    "./pagination": {
+      "types": "./dist/projects/pagination.d.ts",
+      "import": "./dist/projects/pagination.js"
+    },
+    "./identity": {
+      "types": "./dist/projects/identity.d.ts",
+      "import": "./dist/projects/identity.js"
+    },
+    "./server": {
+      "types": "./dist/projects/server.d.ts",
+      "import": "./dist/projects/server.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rm -rf dist coverage *.tsbuildinfo",
+    "dev": "tsc --build tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@frontend/content-blocks": "workspace:*",
+    "@frontend/storage": "workspace:*",
+    "@frontend/text-catalog": "workspace:*",
+    "@frontend/ui-document": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "workspaceEntrypoints": {
+    ".": "pure",
+    "./contracts": "pure",
+    "./pagination": "pure",
+    "./identity": "pure",
+    "./server": "pure"
+  },
+  "workspaceFeatures": {
+    "src/projects": {
+      "public": [
+        "contracts.ts",
+        "pagination.ts",
+        "identity.ts",
+        "server.ts"
+      ],
+      "shared": [
+        "pagination.ts",
+        "identity.ts",
+        "schemas/project-id.ts",
+        "schemas/locale.ts",
+        "schemas/media-key.ts",
+        "data-error.ts"
+      ]
+    },
+    "src/projects/catalog": {
+      "public": [
+        "contracts.ts",
+        "server.ts"
+      ]
+    },
+    "src/projects/pages": {
+      "public": [
+        "contracts.ts",
+        "server.ts"
+      ]
+    }
+  }
+}
