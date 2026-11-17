@@ -41,14 +41,24 @@ refusal; use a separate checkout rather than resetting another developer's input
 
 ## GitHub Actions
 
-The Validate workflow runs the quick profile on pushes to main and pull requests
-targeting main. It installs from the frozen lockfile, checks source workspace
-rules, and checks formatting.
+Pushes to `main` and pull requests targeting `main` run **Standard** under the
+required `validate` check. In Actions, select **Validate**, then **Run workflow**
+to choose any profile manually. Manual runs report their profile in the check
+name so they cannot replace the automatic check required for merging.
 
-To run the full profile on GitHub, open Actions, select Validate, choose
-Run workflow, and select full. It prepares the default inputs, runs pnpm validate,
-verifies an independent Node workspace, and runs the Playwright template suite.
-Use the commands in this guide for local verification before merging.
+| Profile  | Checks                                                                                                                  |
+| -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Quick    | Frozen installation, source workspace rules and formatting                                                              |
+| Standard | Quick checks plus lint and tests for changed workspaces, with library builds and default input preparation where needed |
+| Full     | Default input preparation, `pnpm validate`, independent Node workspace verification and the Playwright template suite   |
+
+Standard compares the checked-out PR merge result to its base commit, a push to
+its previous tip, and a manual run to the selected commit's first parent. It
+checks every workspace when the comparison is unavailable or shared configuration
+changes. Shared configuration includes root manifests, the lockfile, root build,
+lint and test configs, `tooling/` and GitHub workflows. When there are no workspace
+changes, the status check still reports the Quick checks. Full covers repo-level
+tooling tests, workspace dependents and independent clone verification.
 
 ## Independent generated projects
 
