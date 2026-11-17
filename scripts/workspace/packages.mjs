@@ -5,8 +5,8 @@ import { WORKSPACE_GROUPS } from '../lib/workspace-layers.mjs';
 import { DEPENDENCY_GROUPS, discoverWorkspaces } from '../lib/workspace-discovery.mjs';
 export const PACKAGE_GROUPS = WORKSPACE_GROUPS.filter((group) => group.location === 'packages');
 
-/** Build/watch only the dependency closure of the selected hosts. */
-export function dependencyFilters(root, apps) {
+/** Select the workspace libraries required by the targets. Tests can also build the target libraries. */
+export function dependencyFilters(root, targets, { includeTargets = false } = {}) {
   const packages = new Map(
     discoverWorkspaces(root, PACKAGE_GROUPS).map((entry) => [entry.manifest.name, entry])
   );
@@ -20,8 +20,14 @@ export function dependencyFilters(root, apps) {
         visit(entry.manifest);
       }
   }
-  for (const app of apps)
-    visit(JSON.parse(readFileSync(path.join(app.directory, 'package.json'), 'utf8')));
+  for (const target of targets) {
+    const manifest =
+      target.manifest ??
+      JSON.parse(readFileSync(path.join(target.directory, 'package.json'), 'utf8'));
+    const entry = packages.get(manifest.name);
+    if (includeTargets && entry) selected.add(entry.relative);
+    visit(manifest);
+  }
   return [...selected].flatMap((relative) => ['--filter', './' + relative]);
 }
 export function packageCommand(root, apps, action) {
