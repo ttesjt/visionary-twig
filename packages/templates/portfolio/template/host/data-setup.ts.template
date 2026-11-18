@@ -1,0 +1,93 @@
+import { readFile, mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
+import {
+  createFileObjectStorage,
+  createSqliteDatabase,
+  openNodeStorage,
+} from '@frontend/node-storage';
+import { migratePortfolio, setProjectPinned } from '@frontend/portfolio/server';
+import type { StorageConnection } from '@frontend/storage';
+import { readProjectDatasets, importProjectDatasets, projectMediaKeys } from '../src/features/projects/import.node.ts';
+import { PROJECT_PUBLIC_DIRECTORY } from '../src/site/project-data.ts';
+import { portfolioStoragePaths } from '../src/integrations/portfolio/storage-paths.ts';
+
+async function setupLocal(demo: boolean, local: boolean): Promise<void> {
+  // Explicit clone setup always owns its new app's default directory.
+  const paths = local ? portfolioStoragePaths() : portfolioStoragePaths(process.env.PORTFOLIO_LOCAL_DIR);
+  const datasets = demo ? readProjectDatasets(process.cwd()) : undefined;
+  if (datasets && !datasets.some(({ projects }) => projects.length > 0))
+    throw new Error('No demo inputs were delivered. Clone with --setup-with-demo.');
+  await mkdir(paths.mediaDirectory, { recursive: true });
+  const database = new DatabaseSync(paths.filename, { enableForeignKeyConstraints: true });
+  try {
+    const sql = createSqliteDatabase(database);
+    await migratePortfolio(sql);
+    if (datasets) {
+      const objects = createFileObjectStorage(paths.mediaDirectory);
+      const keys = new Set(datasets.flatMap(({ projects }) => projects.flatMap(projectMediaKeys)));
+      for (const key of keys) {
+        if (await objects.get(key)) continue;
+        await objects.put(key, {
+          bytes: await readFile(resolve(PROJECT_PUBLIC_DIRECTORY, key)),
+          contentType: 'image/jpeg',
+        });
+      }
+      await importProjectDatasets(sql, datasets);
+    }
+
+  } finally {
+    database.close();
+  }
+}
+
+async function openCloudStorage(): Promise<StorageConnection> {
+  const path = process.env.PORTFOLIO_WRANGLER_CONFIG;
+  if (!path) throw new Error('Set PORTFOLIO_WRANGLER_CONFIG for Cloudflare storage.');
+  const { openLocalCloudflareStorage } = await import('@frontend/cloudflare/local');
+  return openLocalCloudflareStorage(resolve(path), {
+    remoteBindings: true,
+  });
+}
+
+async function setupCloud(): Promise<void> {
+  const storage = await openCloudStorage();
+  try {
+    await migratePortfolio(storage.database);
+  } finally {
+    await storage.close();
+  }
+}
+
+async function updatePin(id: string, pinned: boolean, cloud: boolean): Promise<void> {
+  const storage = cloud
+    ? await openCloudStorage()
+    : openNodeStorage(portfolioStoragePaths(process.env.PORTFOLIO_LOCAL_DIR));
+  try {
+    await setProjectPinned(storage.database, id, pinned);
+  } finally {
+    await storage.close();
+  }
+}
+
+const args = process.argv.slice(2);
+const [action, id, target] = args;
+if (action === 'pin' || action === 'unpin') {
+  if (
+    !id ||
+    id.startsWith('--') ||
+    (target !== undefined && target !== '--cloudflare') ||
+    args.length > 3
+  )
+    throw new Error('Usage: pnpm data:' + action + ' <project-id> [--cloudflare]');
+  await updatePin(id, action === 'pin', target === '--cloudflare');
+  console.log(action === 'pin' ? 'Project pinned.' : 'Project unpinned.');
+} else {
+  const allowed = ['--local', '--with-demo', '--cloudflare'];
+  if (args.some((arg) => !allowed.includes(arg)) || new Set(args).size !== args.length ||
+      (args.includes('--cloudflare') && args.length !== 1))
+    throw new Error('Usage: pnpm data:setup [--local] [--with-demo] | --cloudflare');
+  if (args.includes('--cloudflare')) await setupCloud();
+  else await setupLocal(args.includes('--with-demo'), args.includes('--local'));
+  console.log('Portfolio data setup complete.');
+}

@@ -1,0 +1,16 @@
+import 'server-only';
+
+import { createCloudflareStorage, type CloudflareBindings } from '@frontend/cloudflare';
+import { createPortfolioData } from '../../features/projects/sql/data';
+import type { PortfolioData } from '../../features/projects/sql';
+
+/** Call with the actual bindings from the current Worker request. */
+export function createWorkerPortfolioData(
+  bindings: CloudflareBindings,
+  sourceId: string
+): PortfolioData {
+  return createPortfolioData(
+    () => Promise.resolve(sourceId),
+    () => Promise.resolve(createCloudflareStorage(bindings))
+  );
+}
