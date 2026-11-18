@@ -19,6 +19,17 @@ export interface InheritedTextKeys {
   readonly keys: readonly string[];
 }
 
+function defaultPath(config: ResolvedTextConfiguration, locale: string, namespace: string): string {
+  return (
+    (config.defaultDirectories[namespace] ?? 'content/default/text') +
+    '/' +
+    locale +
+    '/' +
+    namespace +
+    '.json'
+  );
+}
+
 export async function resolveLocaleDictionaries(
   config: ResolvedTextConfiguration,
   read: PreparedInputReader,
@@ -34,7 +45,7 @@ export async function resolveLocaleDictionaries(
   }
   const defaults = new Map<string, TextDictionary>();
   for (const namespace of [...config.namespaces].sort()) {
-    const relative = `content/default/text/${config.referenceLocale}/${namespace}.json`;
+    const relative = defaultPath(config, config.referenceLocale, namespace);
     const input = await read(relative);
     const contract = deriveTextContract(input);
     contracts[namespace] = contract;
@@ -44,7 +55,7 @@ export async function resolveLocaleDictionaries(
   // Each tracked default is validated before custom can override it.
   for (const locale of [...config.locales].sort())
     for (const namespace of [...config.namespaces].sort()) {
-      const relative = `content/default/text/${locale}/${namespace}.json`;
+      const relative = defaultPath(config, locale, namespace);
       if (defaults.has(relative)) continue;
       try {
         defaults.set(relative, parseInput(locale, namespace, await read(relative)));
@@ -62,7 +73,7 @@ export async function resolveLocaleDictionaries(
     for (const namespace of [...config.namespaces].sort()) {
       try {
         dictionaries[namespace] = await resolvePreparedJson(snapshotRead, source, {
-          defaults: `content/default/text/${locale}/${namespace}.json`,
+          defaults: defaultPath(config, locale, namespace),
           custom: `.local/content/text/${locale}/${namespace}.json`,
           parse: (value) => parseInput(locale, namespace, value),
         });

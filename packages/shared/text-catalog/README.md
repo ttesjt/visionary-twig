@@ -174,3 +174,12 @@ scale without replacing the pure text contracts.
 Namespace Text preparation derives server-imports.ts from the same manifest that declares languages and namespaces. Hosts bind those files to their resource URL definitions in a server-only entry. Adding a namespace or language updates literal imports during text:prepare, with the same atomic replacement and freshness checks.
 
 Flat namespace dictionaries accept empty strings for optional display text. Keys remain nonempty and every value must be a string. Applications validate required display text and relationships to configuration during preparation.
+
+A namespace can declare an alternative default directory through
+`defaultDirectories: { demo: 'template/demo/text' }` in its Text resource
+configuration. The preparer reads `<directory>/<locale>/<namespace>.json`.
+Undeclared namespaces and paths outside the app are rejected. Namespaces without
+an override use `content/default/text`. Custom inputs keep their ordinary
+`.local/content/text/<locale>/<namespace>.json` paths, including contract
+validation, fallback and freshness checks. This supports source-only template
+dictionaries while generated applications use ordinary authored defaults.

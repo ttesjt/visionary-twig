@@ -287,3 +287,27 @@ it('strict mode rejects missing tracked keys even when the target custom fills t
       greeting: '你好 {name}',
     });
   }));
+
+it('prepares a namespace from its declared default directory with custom overrides and freshness', async () =>
+  fixture(async (app, write, read) => {
+    const config = { ...configuration, defaultDirectories: { demo: 'template/demo/text' } };
+    for (const locale of configuration.locales)
+      await write('template/demo/text/' + locale + '/demo.json', { title: locale + ' source' });
+    const definition = textResourcesDefinition(config);
+    await prepareData(app, definition, 'default');
+    expect(await read('.generated/text/en/demo.json')).toEqual({ title: 'en source' });
+    expect(await read('.generated/text/en/main.json')).toEqual({ 'home.title': 'en default' });
+    await write('.local/content/text/zh/demo.json', { title: 'custom demo' });
+    await prepareData(app, definition);
+    expect(await read('.generated/text/zh/demo.json')).toEqual({ title: 'custom demo' });
+    await write('template/demo/text/en/demo.json', { title: 'changed' });
+    await expect(checkPrepared(app, definition)).rejects.toThrow(/stale/);
+    for (const directories of [
+      { absent: 'template/demo' },
+      { demo: '../escape' },
+      { demo: '/absolute' },
+    ])
+      expect(() =>
+        textResourcesDefinition({ ...configuration, defaultDirectories: directories })
+      ).toThrow();
+  }));
