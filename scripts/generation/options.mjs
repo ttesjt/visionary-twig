@@ -21,17 +21,20 @@ export function generationOptions(args, kind) {
     '--list',
     '--offline',
     '--no-verify',
-    ...(!library ? ['--browser'] : []),
+    ...(!library ? ['--browser', '--setup', '--setup-with-demo'] : []),
     ...(repository && !library ? ['--bare'] : []),
   ];
   const raw = parseOptions(args, { values, flags });
   if (raw['--help'] || raw['--list']) return { help: !!raw['--help'], list: !!raw['--list'] };
+  if (raw['--setup'] && raw['--setup-with-demo'])
+    throw new Error('--setup and --setup-with-demo are mutually exclusive.');
+  const setup = raw['--setup-with-demo'] ? 'demo' : raw['--setup'] ? 'empty' : undefined;
   const preset = raw['--preset'] ?? FRONTEND_PRESET;
   if (![FRONTEND_PRESET, NODE_PRESET].includes(preset))
     throw new Error('Unknown workspace preset: ' + preset);
   if (
     preset === NODE_PRESET &&
-    (raw['--bare'] || raw['--template'] || raw['--app-name'] || raw['--browser'])
+    (raw['--bare'] || raw['--template'] || raw['--app-name'] || raw['--browser'] || setup)
   )
     throw new Error(
       '--preset node cannot be combined with --bare, --template, --app-name or --browser.'
@@ -47,7 +50,7 @@ export function generationOptions(args, kind) {
     throw new Error(
       'Specify --name <app-name>; there is no default app name when adding a template.'
     );
-  if (raw['--bare'] && (raw['--template'] || raw['--app-name'] || raw['--browser']))
+  if (raw['--bare'] && (raw['--template'] || raw['--app-name'] || raw['--browser'] || setup))
     throw new Error('--bare cannot be combined with --template, --app-name or --browser.');
   if (raw['--browser'] && raw['--no-verify']) throw new Error('--browser requires verification.');
   const appName = repository ? (raw['--app-name'] ?? DEFAULT_APP_NAME) : raw['--name'];
@@ -61,6 +64,7 @@ export function generationOptions(args, kind) {
       raw['--template'] ??
       (library || preset === NODE_PRESET ? DEFAULT_LIBRARY_TEMPLATE : DEFAULT_APP_TEMPLATE),
     ...(library ? { kind: 'library' } : {}),
+    ...(setup ? { setup } : {}),
     bare: !!raw['--bare'],
     offline: !!raw['--offline'],
     verify: !raw['--no-verify'],

@@ -8,12 +8,13 @@ export async function runTargetCommand(root, args) {
   });
   if (code !== 0) throw new Error('Target command failed (' + code + '): pnpm ' + args.join(' '));
 }
-export async function qualifyWorkspace(root, options, run = runTargetCommand) {
+export async function qualifyWorkspace(root, options, run = runTargetCommand, initialize) {
   const offline = options.offline ? ['--offline'] : [];
   await run(root, ['install', '--no-frozen-lockfile', ...offline], options);
   await run(root, ['install', '--frozen-lockfile', ...offline], options);
   if (options.preset !== NODE_PRESET)
     await run(root, ['app:prepare', '--all', '--source', 'default'], options);
+  if (initialize) await initialize();
   if (options.verify !== false) await run(root, ['validate'], options);
   if (options.browser) {
     await run(root, ['test:e2e', '--all'], options);

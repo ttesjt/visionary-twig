@@ -9,7 +9,7 @@ try {
   const options = generationOptions(process.argv.slice(2), 'repository');
   if (options.help)
     console.log(
-      'pnpm repo:clone --output <new-directory> [--preset frontend|node] [--bare | --template <id> --app-name <name>] [--name @scope/project] [--offline] [--no-verify] [--browser]\nDefault: independent monorepo plus plain-next in apps/web. The Node preset starts with one Node library. Each template has its own commit.'
+      'pnpm repo:clone --output <new-directory> [--preset frontend|node] [--bare | --template <id> --app-name <name>] [--name @scope/project] [--offline] [--no-verify] [--browser] [--setup | --setup-with-demo]\nDefault: independent monorepo plus plain-next in apps/web. The Node preset starts with one Node library. Each template has its own commit.'
     );
   else if (options.list) {
     for (const entry of await readTemplateCatalog(root))

@@ -27,6 +27,8 @@ export async function cloneRepository(
   { run = runTargetCommand } = {}
 ) {
   const node = options.preset === NODE_PRESET;
+  if (options.setup && (node || options.bare || options.kind === 'library'))
+    throw new Error('Setup requires a selected app template.');
   const kind = options.kind ?? (node ? 'library' : 'app');
   const template =
     options.template ?? (kind === 'library' ? DEFAULT_LIBRARY_TEMPLATE : DEFAULT_APP_TEMPLATE);
@@ -36,6 +38,7 @@ export async function cloneRepository(
     const check = await planProject(source, {
       name: options.name,
       templates: [template],
+      setup: options.setup,
       preset: options.preset,
       ...(kind === 'app' ? { appNames: { [template]: appName } } : {}),
     });

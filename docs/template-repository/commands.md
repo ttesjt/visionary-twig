@@ -101,3 +101,8 @@ Internal validation phases remain composed in `scripts/workspace/tasks.mjs`.
 Validation never installs, prepares inputs, runs browsers or accesses cloud data.
 Standalone type/test checks remain self-sufficient. Each generated project owns
 its own lockfile and lifecycle; source template maintenance is not copied into it.
+
+Data-bearing templates optionally support `--setup` and `--setup-with-demo`
+on both clone commands. The first initializes local storage; the second also
+delivers and imports the template's demo inputs. Templates declare support and
+commands through the [generation contract](generation.md#optional-local-setup).

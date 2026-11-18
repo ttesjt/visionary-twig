@@ -18,17 +18,18 @@ export async function materializePackages(
   const names = Object.entries(plan.mapping.packages);
   for (const entry of [...packages, ...templates]) {
     const target = inside(destination, entry.destination);
+    const replacements = { ...entry.config?.files, ...entry.setup?.files };
     copySource(entry.source, target, [
       'template.config.mjs',
       'template',
       'README.md',
-      ...Object.keys(entry.config?.files ?? {}),
+      ...Object.keys(replacements),
     ]);
     const readme =
-      entry.config?.files?.['README.md'] ??
+      replacements['README.md'] ??
       (existsSync(path.join(entry.source, 'README.md')) ? 'README.md' : undefined);
     if (readme) copySource(inside(entry.source, readme), path.join(target, 'README.md'));
-    for (const [name, source] of Object.entries(entry.config?.files ?? {}))
+    for (const [name, source] of Object.entries(replacements))
       if (name !== 'README.md') copySource(inside(entry.source, source), inside(target, name));
     rewritePackageNames(target, names);
   }
