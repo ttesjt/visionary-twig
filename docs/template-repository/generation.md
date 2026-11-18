@@ -148,3 +148,29 @@ and public-artifact verification. New foundations check all delivered guides;
 addition checks only incoming package/app documentation against the complete target.
 Existing user guides are neither rewritten nor required to be complete before a
 new app can be added. Documentation does not add packages outside the delivery plan.
+
+## Optional local setup
+
+Data-bearing app templates can declare `setup` in `template.config.mjs`.
+Both `repo:clone` and `template:clone` accept `--setup` or
+`--setup-with-demo`. The flags are mutually exclusive and require a selected app
+that declares the requested capability. Bare and Node clones reject them.
+Normal generation keeps its installation, resource preparation and validation.
+
+A setup declaration contains a pnpm `command` argument array and fresh local
+`outputs` directories under the new app's `.local/`. Optional `demo` declares
+its own command and a `files` map from app-relative destinations to source files
+under `template/`. Selected demo files replace declared generated defaults
+during assembly. They become portable, tracked application inputs. The
+`template/` directory itself is always excluded.
+
+The generator installs and prepares the isolated candidate, builds libraries,
+then executes the selected command before validation. After publishing the app
+files, it bootstraps the final target and executes the command there too. Commands
+must be repeatable, local, and write only to declared output directories.
+Candidate databases are disposable and never substitute for final initialization.
+
+An existing destination or setup output is rejected. Local output files are
+journaled for rollback alongside the generated source transaction. Setup or
+commit failure does not produce an app commit. A successful app initialization
+still produces one responsibility-scoped commit, including selected demo inputs.

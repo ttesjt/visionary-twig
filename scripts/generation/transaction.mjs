@@ -36,7 +36,7 @@ export function lockTarget(root) {
     rmSync(lock);
   };
 }
-function rollback(root, entries) {
+export function rollbackFiles(root, entries, { pruneEmptyParents = true } = {}) {
   const errors = [];
   for (const entry of [...entries].reverse()) {
     try {
@@ -52,6 +52,7 @@ function rollback(root, entries) {
       errors.push(error);
     }
   }
+  if (!pruneEmptyParents) return errors;
   for (const entry of entries.filter((item) => !item.before)) {
     let folder = path.dirname(path.join(root, entry.relative));
     while (folder !== root) {
@@ -131,7 +132,7 @@ export async function publishCandidate(root, candidate, head, paths, message, fi
         cause,
       });
     if (stagedByTask) gitPathspec(root, ['reset', '--quiet', 'HEAD'], paths);
-    const errors = rollback(root, applied);
+    const errors = rollbackFiles(root, applied);
     if (errors.length)
       throw new AggregateError(
         [cause, ...errors],

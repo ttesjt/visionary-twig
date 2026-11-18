@@ -1,3 +1,4 @@
+import { setupTemplate } from './setup.mjs';
 import { mkdtempSync, rmSync, lstatSync, rmdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -27,6 +28,7 @@ export async function appendTemplate(source, target, options, { run = runTargetC
   let scratch;
   let newDirectory;
   let startedTargetInitialization = false;
+  let rollbackSetup;
   try {
     const { plan, newPackages, record } = await planTemplateAddition(source, target, options);
     scratch = mkdtempSync(path.join(tmpdir(), 'template-add-'));
@@ -49,7 +51,18 @@ export async function appendTemplate(source, target, options, { run = runTargetC
       'pnpm-workspace.yaml',
       WORKSPACE_RECORD,
     ]);
-    await qualifyWorkspace(candidate, { ...options, preset: plan.preset }, run);
+    const selection = plan.templates[0];
+    await qualifyWorkspace(
+      candidate,
+      { ...options, preset: plan.preset },
+      run,
+      selection.setup
+        ? async () => {
+            await run(candidate, ['build:packages'], options);
+            await setupTemplate(candidate, selection, options, run);
+          }
+        : undefined
+    );
     const paths = changedPaths(candidate);
     const rootFiles = new Set([
       'package.json',
@@ -63,7 +76,6 @@ export async function appendTemplate(source, target, options, { run = runTargetC
         !incoming.some((entry) => file.startsWith(entry.destination + '/'))
       )
         throw new Error('Qualification changed preexisting source; refusing publication: ' + file);
-    const selection = plan.templates[0];
     newDirectory = path.join(target, selection.destination);
     assertNewDestination(newDirectory);
     const commit = await publishCandidate(
@@ -88,10 +100,12 @@ export async function appendTemplate(source, target, options, { run = runTargetC
             : ['install', '--frozen-lockfile', ...(options.offline ? ['--offline'] : [])],
           options
         );
+        rollbackSetup = await setupTemplate(target, selection, options, run);
       }
     );
     return { commit, plan };
   } catch (error) {
+    if (rollbackSetup && git(target, ['rev-parse', 'HEAD']).trim() === head) rollbackSetup();
     // Only disposable outputs under the new app belong to this failed task. User .local is never removed.
     if (
       startedTargetInitialization &&

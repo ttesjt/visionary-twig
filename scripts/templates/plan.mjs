@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { readTemplateCatalog } from './catalog.mjs';
+import { selectTemplateSetup } from './setup.mjs';
 import { readAvailablePackages, packageClosure } from './packages.mjs';
 import {
   packageScope,
@@ -52,6 +53,7 @@ export async function planProject(root, options = {}) {
         : entry.destination;
     return {
       ...entry,
+      setup: selectTemplateSetup(entry, options.setup),
       destination,
       appId: path.basename(destination),
       packageName: scope + '/' + path.basename(destination),

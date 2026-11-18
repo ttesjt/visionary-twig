@@ -46,6 +46,7 @@ export async function planTemplateAddition(source, target, options) {
     name: record.projectName,
     preset: record.preset,
     templates: [options.template ?? DEFAULT_APP_TEMPLATE],
+    setup: options.setup,
     ...(kind === 'app'
       ? { appNames: { [options.template ?? DEFAULT_APP_TEMPLATE]: options.appName } }
       : {}),

@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { inside, readJson } from './files.mjs';
+import { validateTemplateSetup } from './setup.mjs';
 
 const CATALOG_VERSION = 1;
 import { TEMPLATE_ID_PATTERN as ID } from './identities.mjs';
@@ -53,6 +54,7 @@ export async function readTemplateCatalog(root) {
         new Set(config.packages).size !== config.packages.length)
     )
       throw new Error('Invalid template delivery packages.');
+    validateTemplateSetup(source, config.setup);
     entries.push({ ...entry, type, destination, source, manifest, config });
   }
   return entries;

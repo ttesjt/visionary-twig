@@ -8,7 +8,7 @@ try {
   const options = generationOptions(process.argv.slice(2), 'template');
   if (options.help)
     console.log(
-      'pnpm template:clone --target <existing-monorepo> --name <app-name> [--template <id>] [--offline] [--no-verify] [--browser]\nDefault template: plain-next. Existing source is never overwritten; one commit includes the app and its required additions.'
+      'pnpm template:clone --target <existing-monorepo> --name <app-name> [--template <id>] [--offline] [--no-verify] [--browser] [--setup | --setup-with-demo]\nDefault template: plain-next. Existing source is never overwritten; one commit includes the app and its required additions.'
     );
   else if (options.list) {
     for (const entry of await readTemplateCatalog(root))
