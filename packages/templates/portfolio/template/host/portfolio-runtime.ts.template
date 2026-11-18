@@ -1,0 +1,52 @@
+import 'server-only';
+
+import { resolve } from 'node:path';
+import type { StorageConnection } from '@frontend/storage';
+import { z } from 'zod';
+import { readServerEnvironment } from '../../infra/environment/server';
+import { portfolioStoragePaths } from './storage-paths';
+import { createNodePortfolioSource } from './node-source';
+import { createPortfolioData } from '../../features/projects/sql/data';
+
+const environmentSchema = z.object({
+  PORTFOLIO_DATA_SOURCE: z.enum(['local', 'cloudflare']).default('local'),
+  PORTFOLIO_LOCAL_DIR: z.string().min(1).optional(),
+  PORTFOLIO_WRANGLER_CONFIG: z.string().min(1).optional(),
+});
+
+const source = createNodePortfolioSource({
+  configuration: () => {
+    const environment = readServerEnvironment(environmentSchema);
+    if (environment.PORTFOLIO_DATA_SOURCE === 'local') {
+      return {
+        kind: 'local',
+        paths: portfolioStoragePaths(environment.PORTFOLIO_LOCAL_DIR),
+      } as const;
+    }
+    const config = environment.PORTFOLIO_WRANGLER_CONFIG;
+    if (!config) throw new Error('Set PORTFOLIO_WRANGLER_CONFIG for Cloudflare storage.');
+    return { kind: 'cloudflare', configPath: resolve(config) } as const;
+  },
+  async openLocal(paths) {
+    const { openNodeStorage } = await import('@frontend/node-storage');
+    return openNodeStorage(paths);
+  },
+  async openCloud(configPath) {
+    const { openLocalCloudflareStorage } = await import('@frontend/cloudflare/local');
+    return openLocalCloudflareStorage(configPath, { remoteBindings: true });
+  },
+});
+
+let connection: Promise<StorageConnection> | undefined;
+export const portfolioData = createPortfolioData(
+  async () => (await source()).id,
+  () => {
+    connection ??= source()
+      .then((snapshot) => snapshot.open())
+      .catch((error: unknown) => {
+        connection = undefined;
+        throw error;
+      });
+    return connection;
+  }
+);
