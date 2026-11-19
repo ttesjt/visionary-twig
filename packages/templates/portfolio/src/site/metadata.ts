@@ -1,8 +1,7 @@
 import 'server-only';
 import type { Metadata } from 'next';
-import type { ProjectSummary } from '@frontend/portfolio/contracts';
 import { prepareMetadata, type MetadataDefinition } from '../infra/metadata/server';
-import { buildMetadata, metadataPathSchema, type MetadataInput } from '../infra/metadata';
+import { metadataPathSchema, type MetadataInput } from '../infra/metadata';
 import { readServerEnvironment } from '../infra/environment/server';
 import { serverText } from '../infra/resources/server';
 import { readSiteAppConfig } from './app-config.server';
@@ -15,7 +14,7 @@ export interface SiteMetadataContext {
   /** Supply only on a page, never guess a child route in Root Layout. */
   readonly pathname?: string;
 }
-const OPEN_GRAPH_LOCALES = { en: 'en_US', zh: 'zh_CN' } satisfies Record<TextLocale, string>;
+export const OPEN_GRAPH_LOCALES = { en: 'en_US', zh: 'zh_CN' } satisfies Record<TextLocale, string>;
 
 /** This source owns namespace/key mappings. Rename or replace resources here. */
 async function loadSiteMetadata({ locale, pathname }: SiteMetadataContext): Promise<MetadataInput> {
@@ -71,34 +70,5 @@ export function siteMetadata(
   return prepareMetadata(metadataDefinition, {
     locale,
     ...(pathname === undefined ? {} : { pathname }),
-  });
-}
-
-export function projectMetadata(
-  project: ProjectSummary,
-  routeLocale: TextLocale,
-  links: { readonly pathname: string; readonly coverUrl?: string | undefined }
-): Metadata {
-  const { SITE_URL: origin } = readServerEnvironment(metadataEnvironmentSchema);
-  const locale = TEXT_LOCALES.find((language) => language === project.locale) ?? routeLocale;
-  const cover = project.cover;
-  const display = cover?.sources?.display;
-  return buildMetadata({
-    title: project.title,
-    description: project.summary,
-    openGraphLocale: OPEN_GRAPH_LOCALES[locale],
-    ...(origin && {
-      origin,
-      canonicalPath: '/' + locale + metadataPathSchema.parse(links.pathname),
-    }),
-    ...(origin &&
-      cover &&
-      links.coverUrl && {
-        image: {
-          src: new URL(links.coverUrl, origin).href,
-          alt: cover.alt,
-          ...(display && { width: display.width, height: display.height }),
-        },
-      }),
   });
 }

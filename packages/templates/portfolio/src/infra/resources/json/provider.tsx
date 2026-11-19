@@ -11,7 +11,7 @@ import { type ResourcePlan, type PreparedResources } from '@frontend/resource-ru
 import type { ResourceScopeDefinition } from '../../../site/resource-scopes';
 import { configSchemas, contentSchemas, jsonPlan, type JsonKind } from './registry';
 import { createContentReader } from './content-reader';
-import { createPreparedJsonResource } from './resource';
+import { createPreparedJsonResource } from '@frontend/resource-runtime/json';
 export function createJsonProvider<R extends JsonSchemas, S, V extends JsonReadView<R>>(
   kind: JsonKind,
   schemas: R,

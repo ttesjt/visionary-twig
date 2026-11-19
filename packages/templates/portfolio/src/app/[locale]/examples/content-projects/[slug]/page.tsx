@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { resourceRouteLocale } from '../../../../../infra/resources/server';
-import { projectMetadata } from '../../../../../site/metadata';
+import { projectMetadata } from '../../../../../features/projects/server';
 import { projectFilePath, projectFileMedia } from '../../../../../features/projects/files';
 import {
   fileProjectCatalog,

@@ -48,6 +48,20 @@ catalogs and pages. SQL import consumes those same validated values. Puck bindin
 and context are preserved; SQL media URLs use the authorized BFF. Client bundles
 receive declarations and prepared resource identities, never the demo payload.
 
+## Foundation ownership
+
+`src/infra` follows the Plain Next foundation. Portable JSON snapshot restoration and Content Text references come from shared packages;
+Next/generated-resource adapters remain here. `src/site` owns the site's schemas,
+resource declarations, style imports and thin composition such as metadata and
+`readSiteAppConfig`. Project-specific sharing metadata belongs to `features/projects`.
+Adapter selection factories and permission hooks are valid site customization;
+a function does not automatically require another infrastructure layer.
+
+The source repository checks its own template infrastructure byte for byte.
+Generated apps are independent: this check is not delivered or enabled there.
+Keeping the boundary recognizable is a recommendation for easier upgrades, not
+a restriction on your project. Avoid wholesale replacement of site configuration.
+
 ## Remove the appearance preview
 
 The optional preview, its bootstrap/state and all related tests live in
