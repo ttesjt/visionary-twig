@@ -117,3 +117,12 @@ cause. Retry reruns publication with the retained complete result and does not
 revalidate or redownload those artifacts. A late transport-ready notification
 cannot clear that failure. Download failures retain their existing missing/failed
 request retry policy. The ordinary failure callback owns feedback for both phases.
+
+## Prepared JSON containers
+
+The pure `@frontend/resource-runtime/json` entry exports
+`createPreparedJsonResource(schemas, kind, prepared, plan)`. Plan IDs use
+`<kind>:<namespace>`. It checks plan membership and creates a typed, immutable
+JsonResource from already prepared artifacts. It does not download resources,
+select host schemas, convert raw input, or import React. Source transforms belong
+to preparation; snapshot restoration validates their output without repeating them.
