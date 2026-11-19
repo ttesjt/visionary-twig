@@ -184,3 +184,22 @@ The editor replaces the starter's demonstration pages. Its main Text dictionary,
 app configuration and base Content remain independently prepared through the
 same default/custom/generated workflow. Foundation tests cover the generic
 runtime; Studio tests cover its ownership rules, editor and isolated preview.
+
+## Foundation ownership
+
+`src/infra` follows the same Plain Next foundation as other Next starters.
+`src/site` owns schemas, resource declarations, metadata policy, permission hooks
+and thin composition. `createDemoScope` remains the editable adapter selection
+factory; adapter implementations stay with the demo workspace. Preview tracking
+keeps its request permission checks and error isolation; it is not a second
+resource-initialization system. Studio retains its noindex/nofollow metadata.
+
+Studio styling is selected through explicit stylesheet imports. There is no
+preset initialization, registry or browser preference in its infrastructure.
+Light/dark/system behavior is independent and remains supported. Optional style
+previews belong to a removable demo rather than the site/resource lifecycle.
+
+Source-template infrastructure equality is a repository maintainer rule. Generated
+apps are independent and do not receive this check. Keeping the boundary and
+site entry contracts recognizable is a recommendation for easier upgrades;
+customization is allowed, and site configuration should not be overwritten wholesale.

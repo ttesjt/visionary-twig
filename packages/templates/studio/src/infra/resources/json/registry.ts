@@ -40,8 +40,9 @@ export function jsonDefinition(kind: JsonKind, namespace: string): ResourceDefin
   };
 }
 export function jsonPlan(kind: JsonKind, scope: ResourceScopeDefinition): ResourcePlan {
+  const namespaces: readonly string[] = scope[kind];
   return createResourcePlan(
-    scope[kind].map((namespace) => jsonDefinition(kind, namespace)),
+    namespaces.map((namespace) => jsonDefinition(kind, namespace)),
     { scope: scope.id, kind }
   );
 }

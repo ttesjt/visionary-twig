@@ -1,12 +1,10 @@
 import 'server-only';
 import type { Metadata } from 'next';
-import { JsonResource } from '@frontend/prepared-data/resource';
 import { prepareMetadata, type MetadataDefinition } from '../infra/metadata/server';
 import { metadataPathSchema, type MetadataInput } from '../infra/metadata';
 import { readServerEnvironment } from '../infra/environment/server';
-import { jsonDefinition } from '../infra/resources';
-import { readGeneratedJsonURL, serverText } from '../infra/resources/server';
-import { configSchemas } from './config-schema';
+import { serverText } from '../infra/resources/server';
+import { readSiteAppConfig } from './app-config.server';
 import { metadataEnvironmentSchema } from './environment';
 import { RESOURCE_SCOPES } from './resource-scopes';
 import { DEFAULT_TEXT_LOCALE, TEXT_LOCALES, type TextLocale } from './text';
@@ -22,20 +20,14 @@ const OPEN_GRAPH_LOCALES = { en: 'en_US', zh: 'zh_CN' };
 async function loadSiteMetadata({ locale, pathname }: SiteMetadataContext): Promise<MetadataInput> {
   if (pathname !== undefined) metadataPathSchema.parse(pathname);
   const { SITE_URL: origin } = readServerEnvironment(metadataEnvironmentSchema);
-  const definition = jsonDefinition('config', 'app');
-  const [text, raw] = await Promise.all([
+  const [text, config] = await Promise.all([
     serverText(locale, RESOURCE_SCOPES.metadata, {
       onMissing(namespace, key, language) {
         throw new Error(`Missing metadata text: ${namespace}.${key} (${language}).`);
       },
     }),
-    readGeneratedJsonURL(definition.url),
+    readSiteAppConfig(),
   ]);
-  const config = new JsonResource(configSchemas, [
-    { namespace: 'app', version: definition.version, value: raw },
-  ])
-    .createView()
-    .get('app');
   const localizedPath = (language: TextLocale) =>
     '/' + language + (pathname === '/' ? '' : pathname);
   return {
