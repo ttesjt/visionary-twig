@@ -39,7 +39,7 @@ export function ProjectCards({
                   sizes={coverSizes}
                 />
               )}
-              <span className="ui-mono-project-arrow" aria-hidden="true">
+              <span className="ui-project-cover-arrow" aria-hidden="true">
                 ↗
               </span>
             </div>

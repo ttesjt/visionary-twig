@@ -29,7 +29,7 @@ export function ProjectPagination({
   const { page, category } = location;
   return (
     <div className="ui-portfolio-project-pagination">
-      <p className="ui-mono-project-pagination-info">
+      <p className="ui-project-pagination-info">
         {text.getText('main', 'projects.page', { page: String(page).padStart(2, '0') })}
       </p>
       <div className="ui-portfolio-actions">

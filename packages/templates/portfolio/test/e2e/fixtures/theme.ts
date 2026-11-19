@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 
 const HYDRATION_SCRIPTS = '**/_next/static/**/*.js';
 const PAINT_MARKER = 'theme-first-contentful-paint';
-export const THEME_CANVAS = { light: 'rgb(250, 250, 250)', dark: 'rgb(17, 17, 17)' } as const;
+export const THEME_CANVAS = { light: 'rgb(250, 250, 249)', dark: 'rgb(20, 20, 20)' } as const;
 
 /** Hold external runtime chunks while allowing the library's early inline script and SSR HTML. */
 export async function holdHydration(page: Page): Promise<{
@@ -50,9 +50,18 @@ export function hydrationErrors(page: Page): readonly string[] {
   page.on('console', (message) => {
     if (
       message.type() === 'error' &&
-      /hydrat|did not match|server rendered|Minified React error/i.test(message.text())
+      /hydrat|did not match|server rendered|Minified React error|Encountered a script tag/i.test(
+        message.text()
+      )
     )
       errors.push(message.text());
   });
   return errors;
+}
+
+export async function openPreferences(page: Page): Promise<void> {
+  const preferences = page.locator('.ui-portfolio-settings');
+  if ((await preferences.getAttribute('open')) === null) {
+    await preferences.locator('summary').click();
+  }
 }

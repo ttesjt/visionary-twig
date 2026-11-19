@@ -1,0 +1,58 @@
+@layer portfolio-mono {
+  :where(html:not([data-style-preview]), html[data-style-preview='mono']) {
+    .ui-portfolio-contact :is(.ui-contact-submit, .ui-contact-cancel) {
+      min-height: 2.5rem;
+      padding-inline: 0.875rem;
+      border: 1px solid var(--ui-color-line);
+      border-radius: var(--ui-radius-control);
+      background: var(--ui-color-canvas);
+      color: var(--ui-color-ink);
+      font-size: 0.8125rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .ui-portfolio-contact {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr);
+      gap: clamp(2rem, 8vw, 6rem);
+    }
+
+    .ui-portfolio-contact .ui-contact-field :is(input, textarea) {
+      border-color: var(--portfolio-control-line);
+      background: var(--ui-color-canvas);
+    }
+
+    .ui-portfolio-contact .ui-contact-submit {
+      margin-top: 0.5rem;
+      border-color: var(--ui-color-accent);
+      background: var(--ui-color-accent);
+      color: var(--ui-color-on-accent);
+    }
+
+    .ui-portfolio-contact .ui-contact-error {
+      color: light-dark(#9c2e23, #ffab9f);
+    }
+
+    .ui-portfolio-platforms h2 {
+      font-size: 1.25rem;
+    }
+
+    .ui-portfolio-contact-links {
+      gap: 0;
+    }
+
+    .ui-portfolio-contact-links a {
+      width: 100%;
+      padding-block: 0.75rem;
+      border-top: 1px solid var(--ui-color-line);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    :where(html:not([data-style-preview]), html[data-style-preview='mono']) {
+      .ui-portfolio-contact {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  }
+}

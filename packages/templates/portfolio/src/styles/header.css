@@ -1,0 +1,125 @@
+@layer portfolio-header {
+  :root:has(.ui-portfolio-header[data-layout='floating']) {
+    --portfolio-floating-header-inset: 0.75rem;
+    scroll-padding-block-start: 9rem;
+  }
+
+  .ui-portfolio-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ui-portfolio-brand > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-portfolio-brand-image {
+    display: block;
+    flex: none;
+    object-fit: contain;
+  }
+
+  .ui-portfolio-controls {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .ui-portfolio-picker {
+    --portfolio-select-padding-start: 0.75rem;
+    --portfolio-select-padding-end: 2.25rem;
+    display: grid;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 650;
+  }
+
+  .ui-portfolio-picker[data-compact] {
+    --portfolio-select-padding-start: 0.625rem;
+    --portfolio-select-padding-end: 1.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .ui-portfolio-select-control {
+    position: relative;
+    display: block;
+  }
+
+  .ui-portfolio-select-control::after {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: 0.875rem;
+    inline-size: 0.375rem;
+    block-size: 0.375rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+    content: '';
+  }
+
+  .ui-portfolio-select-control select {
+    appearance: none;
+    inline-size: 100%;
+    min-block-size: 2.5rem;
+    padding-block: 0.375rem;
+    padding-inline: var(--portfolio-select-padding-start) var(--portfolio-select-padding-end);
+    border: 1px solid var(--ui-color-line);
+    border-radius: var(--ui-radius-control);
+    background: var(--ui-color-canvas);
+    color: var(--ui-color-ink);
+    font: inherit;
+    text-overflow: ellipsis;
+  }
+
+  @media (forced-colors: active) {
+    .ui-portfolio-select-control::after {
+      display: none;
+    }
+
+    .ui-portfolio-select-control select {
+      appearance: auto;
+      padding-inline-end: 0.75rem;
+    }
+  }
+
+  .ui-portfolio-header[data-layout='floating'] {
+    position: sticky;
+    inset-block-start: var(--portfolio-floating-header-inset);
+    z-index: 10;
+    inline-size: min(75rem, calc(100% - 2 * var(--portfolio-floating-header-inset)));
+    margin-block-start: var(--portfolio-floating-header-inset);
+    margin-inline: auto;
+    border: 1px solid var(--ui-color-line);
+    border-radius: 1rem;
+    background: var(--portfolio-header-surface, var(--ui-color-surface));
+    box-shadow: 0 0.375rem 1.125rem rgb(0 0 0 / 10%);
+  }
+
+  .ui-portfolio-header[data-layout='floating'] .ui-portfolio-header-inner {
+    inline-size: 100%;
+    padding-inline: clamp(0.75rem, 3vw, 1.5rem);
+  }
+
+  @media (max-width: 48rem) {
+    .ui-portfolio-header-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.5rem;
+    }
+
+    .ui-portfolio-header nav {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      margin-inline: 0;
+    }
+
+    .ui-portfolio-controls {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+    }
+  }
+}

@@ -1,9 +1,14 @@
 import '@frontend/ui/default.css';
 import '@frontend/ui/web-shell.css';
 import '@frontend/styles/default.css';
+import '@frontend/styles/themes/mono.css';
 import '@frontend/portfolio/default.css';
-import './site.css';
-import '@frontend/content-blocks/default.css';
-import './projects/default.css';
 import '@frontend/contact/default.css';
+import '@frontend/content-blocks/default.css';
+import './site.css';
+import './mono.css';
+import './header.css';
+import './projects/default.css';
+import './projects/mono.css';
 import './contact/default.css';
+import './contact/mono.css';

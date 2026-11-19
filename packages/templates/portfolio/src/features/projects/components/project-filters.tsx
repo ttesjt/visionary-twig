@@ -48,7 +48,7 @@ export function ProjectFilters({
 
   return (
     <>
-      <div className="ui-neutral-project-filter">
+      <div className="ui-project-filter-menu">
         <ProjectCategoryFilter
           categories={categories}
           selectedCategoryId={active}
@@ -56,7 +56,7 @@ export function ProjectFilters({
           text={text}
         />
       </div>
-      <div ref={rail} className="ui-mono-project-filters" role="group" aria-label={text.label}>
+      <div ref={rail} className="ui-project-filter-rail" role="group" aria-label={text.label}>
         <a
           href={hrefForCategory(null)}
           aria-current={active === null ? 'page' : undefined}
