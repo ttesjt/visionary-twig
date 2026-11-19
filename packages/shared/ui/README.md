@@ -308,3 +308,12 @@ pnpm build:packages
 pnpm --filter @frontend/ui test web-shell
 pnpm --filter @frontend/ui exec playwright test --config test/e2e/playwright.config.ts
 ```
+
+## Styling and optional previews
+
+UI components do not own appearance-preset state, browser persistence or an
+appearance bootstrap. Hosts explicitly import default styles, an optional CSS
+preset, or their own CSS. No preset registry or HTML attribute is required.
+Runtime style previews belong to removable demos; the Portfolio template keeps
+its picker, bootstrap, state and tests in `src/demo/appearance`.
+Light/dark/system remains a separate supported theme capability.

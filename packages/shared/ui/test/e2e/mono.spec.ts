@@ -53,3 +53,13 @@ test('Neutral overrides the opted-in Mono appearance without changing the color 
   await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(20, 20, 20)');
   await expect(root).toHaveAttribute('data-theme', 'dark');
 });
+
+test('custom CSS tokens override imported Mono without a preset lifecycle', async ({ page }) => {
+  await page.goto('/?layout&mono');
+  await expect(page.locator('html')).not.toHaveAttribute('data-preset');
+  await expect(page.locator('html')).not.toHaveAttribute('data-style-preview');
+  await page.addStyleTag({
+    content: ':root { --my-site-canvas: #203040; --ui-color-canvas: var(--my-site-canvas); }',
+  });
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(32, 48, 64)');
+});
