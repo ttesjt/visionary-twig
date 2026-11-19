@@ -17,6 +17,10 @@
     "./react": {
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js"
+    },
+    "./json": {
+      "types": "./dist/json.d.ts",
+      "import": "./dist/json.js"
     }
   },
   "files": [
@@ -46,7 +50,8 @@
     "vitest": "catalog:",
     "react": "catalog:",
     "@types/react": "catalog:",
-    "@testing-library/react": "catalog:"
+    "@testing-library/react": "catalog:",
+    "zod": "catalog:"
   },
   "dependencies": {
     "@frontend/prepared-data": "workspace:*",
@@ -58,19 +63,22 @@
   "workspaceEntrypoints": {
     ".": "pure",
     "./http": "pure",
-    "./react": "client"
+    "./react": "client",
+    "./json": "pure"
   },
   "workspaceFeatures": {
     "src": {
       "public": [
         "index.ts",
         "http.ts",
-        "react.tsx"
+        "react.tsx",
+        "json.ts"
       ],
       "shared": [
         "index.ts",
         "http.ts",
-        "react.tsx"
+        "react.tsx",
+        "json.ts"
       ]
     }
   }
