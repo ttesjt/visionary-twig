@@ -21,6 +21,10 @@
     "./resource/node": {
       "types": "./dist/resource/node.d.ts",
       "import": "./dist/resource/node.js"
+    },
+    "./resource/content": {
+      "types": "./dist/resource/content.d.ts",
+      "import": "./dist/resource/content.js"
     }
   },
   "files": [
@@ -63,7 +67,8 @@
     ".": "pure",
     "./resource": "pure",
     "./resource/react": "client",
-    "./resource/node": "node"
+    "./resource/node": "node",
+    "./resource/content": "pure"
   },
   "workspaceFeatures": {
     "src": {
@@ -71,13 +76,15 @@
         "index.ts",
         "resource/index.ts",
         "resource/node.ts",
-        "resource/react.tsx"
+        "resource/react.tsx",
+        "resource/content.ts"
       ],
       "shared": [
         "index.ts",
         "resource/index.ts",
         "resource/node.ts",
-        "resource/react.tsx"
+        "resource/react.tsx",
+        "resource/content.ts"
       ]
     }
   }

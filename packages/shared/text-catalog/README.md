@@ -183,3 +183,17 @@ an override use `content/default/text`. Custom inputs keep their ordinary
 `.local/content/text/<locale>/<namespace>.json` paths, including contract
 validation, fallback and freshness checks. This supports source-only template
 dictionaries while generated applications use ordinary authored defaults.
+
+## Text references in Content
+
+The pure `@frontend/text-catalog/resource/content` entry defines explicit
+`{ $text: { namespace, key } }` references. `validateContentTextReferences`
+can be used as a Zod superRefine callback to check nested references during
+preparation without resolving them. `createContentReader(raw)` adds
+`getResolved(namespace, { text })` to a prepared JSON reader, including inherited
+namespaces. It resolves with the supplied synchronous Text reader and leaves
+raw snapshots unchanged. Literal strings remain literal. Malformed markers and
+lookup errors are surfaced; resolved arrays and objects remain immutable.
+
+These APIs work on Node and browsers without React, Next or an application
+registry. The host owns its content schemas, source preparation and resource plan.
