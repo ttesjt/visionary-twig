@@ -14,7 +14,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 const source = path.resolve(import.meta.dirname, '../..');
-function fixture(t, { hosts = true, prepared = true } = {}) {
+function fixture(t, { hosts = true, prepared = true, templatePolicy = false } = {}) {
   const root = mkdtempSync(path.join(tmpdir(), 'workspace-tasks-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const write = (file, value) => {
@@ -39,7 +39,10 @@ function fixture(t, { hosts = true, prepared = true } = {}) {
   }
   write('package.json', {
     type: 'module',
-    scripts: prepared ? { 'app:check': 'unused-fixture-command' } : {},
+    scripts: {
+      ...(prepared ? { 'app:check': 'unused-fixture-command' } : {}),
+      ...(templatePolicy ? { 'check:templates': 'source-only-fixture-command' } : {}),
+    },
   });
   write('packages/shared/library/package.json', { name: '@fixture/library' });
   if (hosts)
@@ -182,4 +185,15 @@ test('watch remains read-only to builds and conflicting flags fail before execut
   assert.equal(f.run(['test', '--watch']).status, 0);
   assert.equal(builds(f.calls()).length, 0);
   assert.ok(f.calls().at(-1).includes('test:watch'));
+});
+
+test('source-template validation is opt-in and fails before ordinary checks when configured', (t) => {
+  const f = fixture(t, { templatePolicy: true });
+  const result = f.run(['validate'], { FAIL_CONTAINS: 'check:templates' });
+  assert.equal(result.status, 23, result.stderr);
+  assert.deepEqual(f.calls().at(-1), ['check:templates']);
+  assert.equal(
+    f.calls().some((call) => call[0] === 'app:check'),
+    false
+  );
 });

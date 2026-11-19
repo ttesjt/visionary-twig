@@ -44,7 +44,8 @@
     "content:prepare": "node scripts/prepare-app.mjs --kind content",
     "content:check": "node scripts/prepare-app.mjs --kind content --check",
     "repo:clone": "node scripts/clone-repository.mjs",
-    "library:clone": "node scripts/clone-library.mjs"
+    "library:clone": "node scripts/clone-library.mjs",
+    "check:templates": "node scripts/check-template-foundation.mjs"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

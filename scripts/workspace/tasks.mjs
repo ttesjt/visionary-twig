@@ -15,6 +15,7 @@ export function workspaceTaskSteps(root, action, options = {}) {
     policy.beforeChecks = manifest.scripts?.['app:check']
       ? [['app:check', '--all', '--include-templates']]
       : [];
+    if (manifest.scripts?.['check:templates']) policy.beforeChecks.unshift(['check:templates']);
     policy.afterTests = apps.map((app) => ['--filter', appFilter(root, app), 'build']);
   }
   return packageTaskSteps(root, action === 'build:packages' ? 'build' : action, options, policy);

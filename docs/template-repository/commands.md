@@ -84,18 +84,19 @@ sources before temporarily exercising overrides.
 
 ## Checks and side effects
 
-| Command                                                               | Behavior                                                                                                                               |
-| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `build:packages`                                                      | Source-policy checks and all library builds                                                                                            |
-| `validate`                                                            | Library build once, prepared-input/export/format/lint/type checks, tooling/unit tests and source-template builds; no browser tests     |
-| `test:templates`                                                      | Source-template and independent-clone browser/default/custom/production acceptance; `--source-only` or `--clone-only` limits the phase |
-| `test:e2e:theme-policy`                                               | Fixed light/dark matrix for the actual consuming hosts in a generated project                                                          |
-| `test`, `test:tooling`, `test:watch`, `test:coverage`                 | Behavior tests; ordinary/coverage modes build libraries, tooling/watch expect existing outputs                                         |
-| `text:prepare/check`, `config:prepare/check`, `content:prepare/check` | Independent resource-kind operations with the same source/target policy                                                                |
-| `check:workspace`                                                     | Ownership/dependency/export checks; `--source` skips output checks                                                                     |
-| `typecheck`                                                           | Builds libraries, then checks tooling and workspace types                                                                              |
-| `format`, `lint`                                                      | Formatting and source checks; `format` and `lint --fix` edit source                                                                    |
-| `clean`                                                               | Removes build/test outputs, preserving local source content                                                                            |
+| Command                                                               | Behavior                                                                                                                                                       |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build:packages`                                                      | Source-policy checks and all library builds                                                                                                                    |
+| `validate`                                                            | Library build once, prepared-input/export/format/lint/type checks, tooling/unit tests and source-template builds; no browser tests                             |
+| `test:templates`                                                      | Source-template and independent-clone browser/default/custom/production acceptance; `--source-only` or `--clone-only` limits the phase                         |
+| `test:e2e:theme-policy`                                               | Fixed light/dark matrix for the actual consuming hosts in a generated project                                                                                  |
+| `test`, `test:tooling`, `test:watch`, `test:coverage`                 | Behavior tests; ordinary/coverage modes build libraries, tooling/watch expect existing outputs                                                                 |
+| `text:prepare/check`, `config:prepare/check`, `content:prepare/check` | Independent resource-kind operations with the same source/target policy                                                                                        |
+| `check:templates`                                                     | Source-only: exact Next-template infra equality, common site entries and preview isolation checks; included in source validate, absent from generated projects |
+| `check:workspace`                                                     | Ownership/dependency/export checks; `--source` skips output checks                                                                                             |
+| `typecheck`                                                           | Builds libraries, then checks tooling and workspace types                                                                                                      |
+| `format`, `lint`                                                      | Formatting and source checks; `format` and `lint --fix` edit source                                                                                            |
+| `clean`                                                               | Removes build/test outputs, preserving local source content                                                                                                    |
 
 Internal validation phases remain composed in `scripts/workspace/tasks.mjs`.
 Validation never installs, prepares inputs, runs browsers or accesses cloud data.
