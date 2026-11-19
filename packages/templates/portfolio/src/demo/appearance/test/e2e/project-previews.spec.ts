@@ -47,3 +47,34 @@ test('selects the larger cover for a single filtered card in Neutral', async ({ 
     .poll(() => image.evaluate((element) => (element as HTMLImageElement).currentSrc))
     .toContain('lake.jpg');
 });
+
+import { PROJECT_FILES_PATH } from '../../../../features/projects/files';
+import { openPreferences } from '../../../../../test/e2e/fixtures/theme';
+test('filters file projects through the Neutral preview without a collection API', async ({
+  page,
+}) => {
+  const databaseRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname.startsWith('/api/projects'))
+      databaseRequests.push(request.url());
+  });
+  await page.addInitScript(({ key, value }) => localStorage.setItem(key, value), {
+    key: APPEARANCE_STORAGE_KEY,
+    value: 'neutral',
+  });
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto(PROJECT_FILES_PATH + '?page=2');
+  await expect(page.getByRole('link', { name: 'Paper Trail', exact: true })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Category' }).selectOption('tools');
+  await expect(page).toHaveURL(PROJECT_FILES_PATH + '?category=tools');
+  await expect(page.getByRole('link', { name: 'Color Index', exact: true })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole('link', { name: 'Paper Trail', exact: true })).toBeVisible();
+  await page.goForward();
+  await page.reload();
+  await expect(page.getByRole('link', { name: 'Color Index', exact: true })).toBeVisible();
+  await openPreferences(page);
+  await page.getByRole('combobox', { name: 'Language' }).selectOption('zh');
+  await expect(page.getByRole('link', { name: '色彩索引', exact: true })).toBeVisible();
+  expect(databaseRequests).toEqual([]);
+});

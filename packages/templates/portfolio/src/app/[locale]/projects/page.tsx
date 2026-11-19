@@ -1,6 +1,9 @@
 import { Suspense } from 'react';
 import { SqlProjectList } from '../../../features/projects/sql/server';
 import type { ProjectSearchParameters } from '../../../features/projects';
+import Link from 'next/link';
+import { localeHref } from '../../../infra/resources/routing';
+import { PROJECT_FILES_PATH } from '../../../features/projects/files';
 import { resourceRouteLocale, serverText } from '../../../infra/resources/server';
 import { portfolioData } from '../../../integrations/portfolio/runtime';
 import { siteMetadata } from '../../../site/metadata';
@@ -25,6 +28,9 @@ export default async function Page({ params, searchParams }: PageProps) {
       <header className="ui-portfolio-page-heading">
         <h1>{text.getText('main', 'projects.title')}</h1>
         <p className="ui-portfolio-lead">{text.getText('main', 'projects.description')}</p>
+        <Link href={localeHref(PROJECT_FILES_PATH, locale)}>
+          {text.getText('main', 'fileProjects.example')}
+        </Link>
       </header>
       <Suspense
         fallback={<ProjectSkeleton label={text.getText('main', 'projects.loading')} showFilters />}
