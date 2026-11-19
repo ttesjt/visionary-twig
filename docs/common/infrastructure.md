@@ -80,3 +80,23 @@ cannot replace text/config. Targeted text/config preparation preserves and check
 existing extra artifacts. Apps own their schemas, source paths and server-only
 imports; root tooling does not know their domain or load the artifacts into any
 public Provider. Generated and local files remain excluded from app creation.
+
+## Starter ownership and independent customization
+
+Starters keep framework/generated-resource wiring in `src/infra` and editable
+schemas, resource declarations, metadata mapping, theme policy and thin
+site composition in `src/site`. Small adapter-selection factories and permission
+callbacks are valid site customization. Feature implementations belong to the
+owning feature; portable mechanics can be moved to shared capabilities.
+
+After generation, the project belongs to its user. Keeping these boundaries
+recognizable can reduce upgrade effort; changing them is allowed. Site updates
+should preserve user configuration and use focused migrations. Source-template
+byte-equality policy is not delivered or enabled in independent projects.
+
+Appearance styles can be selected by explicit CSS imports without a preset
+registry, runtime state or root attribute. An optional style preview should own
+its picker, browser persistence, early script and tests in a removable demo module.
+Core components and resource/data workflows should not depend on preview state.
+Light/dark/system is a separate theme concern. Existing shared default CSS uses
+public `--ui-*` tokens; users may bridge their own tokens or replace those styles.
