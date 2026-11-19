@@ -29,8 +29,9 @@ SQLite/files and D1/R2 adapters and an explicit data setup command.
 
 ## Demo ownership and local setup
 
-`template/demo/` owns the eight-project JSON index, one raw Puck document, its
-English/Chinese `projects-demo` Text namespace and public media. The source
+`template/demo/` owns the eight-project JSON index, one raw Puck document,
+global `projects-demo` and page-only `field-notes` Text namespaces, and public
+media. Both Text namespaces have English/Chinese dictionaries. The source
 preview declares these paths in `src/site/project-data.ts`. Source-fixture
 verification lives in `template/test/`. Both directories are excluded from
 ordinary generated apps.
@@ -39,7 +40,7 @@ The generated `project-data.ts` points at app-owned inputs. Normal generation
 delivers an empty index and no sample pages, dictionary or media. `--setup`
 also creates empty local storage. `--setup-with-demo` selects explicit file
 mappings into the app's `content/default/` and `public/`, registers the selected
-page and Text namespace, then creates and populates local storage in both the
+page and Text namespaces, then creates and populates local storage in both the
 candidate and the final target.
 
 `readProjectDatasets` composes the existing Content/Text readers into localized

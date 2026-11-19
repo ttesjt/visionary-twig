@@ -34,6 +34,6 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function Page({ params }: PageProps) {
-  const { project, snapshot } = await forRoute(params);
-  return <ContentProjectDetail slug={project.slug} initialSnapshot={snapshot} />;
+  const { project, snapshots } = await forRoute(params);
+  return <ContentProjectDetail slug={project.slug} initialSnapshots={snapshots} />;
 }

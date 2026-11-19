@@ -2,9 +2,10 @@
 
 import { projectFileScope } from '../resources';
 
-import type { ResourceSnapshot } from '@frontend/resource-runtime';
+import type { ScopeSnapshots } from '../../../../infra/resources';
 import {
   ContentProvider,
+  TextProvider,
   ResourceScope,
   useContent,
   useText,
@@ -37,19 +38,26 @@ function Detail({ slug }: { readonly slug: string }) {
 
 export function ContentProjectDetail({
   slug,
-  initialSnapshot,
+  initialSnapshots,
 }: {
   readonly slug: string;
-  readonly initialSnapshot?: ResourceSnapshot | undefined;
+  readonly initialSnapshots?: ScopeSnapshots | undefined;
 }) {
   const page = findProjectFilePage(slug);
   if (!page) return <Detail slug={slug} />;
   const scope = projectFileScope(page.namespace);
-  return (
-    <ContentProvider scope={scope} initialSnapshot={initialSnapshot}>
+  const content = (
+    <ContentProvider scope={scope} initialSnapshot={initialSnapshots?.content}>
       <ResourceScope scope={scope}>
         <Detail slug={slug} />
       </ResourceScope>
     </ContentProvider>
+  );
+  return scope.text.length ? (
+    <TextProvider scope={scope} initialSnapshot={initialSnapshots?.text}>
+      {content}
+    </TextProvider>
+  ) : (
+    content
   );
 }

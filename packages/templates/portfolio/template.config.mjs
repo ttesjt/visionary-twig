@@ -24,6 +24,10 @@ export default {
           'template/demo/content/default/text/en/projects-demo.json',
         'content/default/text/zh/projects-demo.json':
           'template/demo/content/default/text/zh/projects-demo.json',
+        'content/default/text/en/field-notes.json':
+          'template/demo/content/default/text/en/field-notes.json',
+        'content/default/text/zh/field-notes.json':
+          'template/demo/content/default/text/zh/field-notes.json',
         'public/samples/portfolio/README.md': 'template/demo/public/samples/portfolio/README.md',
         'public/samples/portfolio/color-index-badge.jpg':
           'template/demo/public/samples/portfolio/color-index-badge.jpg',
