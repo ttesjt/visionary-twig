@@ -1,68 +1,51 @@
 # Portfolio template
 
-A localized Portfolio foundation with Home and About, prepared site resources,
-and neutral project file contracts. Source preview inputs are fictional and
-live under `template/demo/`; ordinary generated apps use their own empty index.
+A localized Next.js starter with Home, About, Projects and Contact pages.
 
-Run `pnpm app:prepare --app template-portfolio --source default` from the source
-workspace, then `pnpm dev --app template-portfolio`.
+From the source workspace:
 
-Generate an independent app with
-`pnpm repo:clone --output ../portfolio-project --template portfolio --app-name portfolio`.
-See the [delivered README](template/README.md) for app-owned customization.
+```sh
+pnpm app:prepare --app template-portfolio --source default
+pnpm dev --app template-portfolio
+pnpm test:e2e --app template-portfolio
+```
 
-## Project storage setup
+Generate an independent workspace or add it to an existing one:
 
-The source workspace previews the prepared fictional project inputs without a
-concrete provider. Generated apps inject SQLite/files or Cloudflare D1/R2.
+```sh
+pnpm repo:clone --output ../portfolio-project --template portfolio --app-name portfolio
+pnpm template:clone --target ../my-project --name portfolio --template portfolio
+pnpm repo:clone --output ../portfolio-demo --template portfolio --app-name portfolio --setup-with-demo
+```
 
-Generation supports `--setup` for empty local storage and `--setup-with-demo`
-for the eight-project file inputs, translated dictionaries and local SQL import.
-Both flags are explicit and mutually exclusive. Existing target files are not
-replaced. The selected data command runs in the final generated app as well as
-in its disposable validation candidate.
+See the [delivered README](template/README.md) for site customization.
+The [feature guide](template/docs/feature-modules.md) explains page ownership,
+public module entries and cross-template transfer.
+The [project data guide](template/docs/project-data.md) explains both SQL-backed
+Projects and the project-file Content example, including how to keep one source.
 
-From a generated app directory, run `pnpm data:setup` for empty local storage,
-`pnpm data:setup --with-demo` to import delivered demo inputs, or
-`pnpm data:pin field-notes` / `pnpm data:unpin field-notes` to update a pin.
-The import preserves existing authored rows and objects. Configure
-`PORTFOLIO_DATA_SOURCE` and `PORTFOLIO_WRANGLER_CONFIG` for Cloudflare; use
-`pnpm data:setup --cloudflare` only when intentionally applying remote migrations.
+The source workspace previews fictional projects. The generated app adds the
+SQLite/files and D1/R2 adapters and an explicit data setup command.
 
-Prepared JSON remains app-owned under `content/default`; `.local` storage is
-private. The data command does not copy source-repository databases into apps.
+## Demo ownership and local setup
 
-## Browse SQL projects
+`template/demo/` owns the eight-project JSON index, one raw Puck document, its
+English/Chinese `projects-demo` Text namespace and public media. The source
+preview declares these paths in `src/site/project-data.ts`. Source-fixture
+verification lives in `template/test/`. Both directories are excluded from
+ordinary generated apps.
 
-`/projects` uses the injected data port and read-only BFF. Category and page are
-stored in the URL; repeated selection preserves the current page, changing the
-category resets it, and browser history restores both values. Page capacity uses
-`projects.pageSize` in AppConfig. Categories and results recover independently.
+The generated `project-data.ts` points at app-owned inputs. Normal generation
+delivers an empty index and no sample pages, dictionary or media. `--setup`
+also creates empty local storage. `--setup-with-demo` selects explicit file
+mappings into the app's `content/default/` and `public/`, registers the selected
+page and Text namespace, then creates and populates local storage in both the
+candidate and the final target.
 
-List responses carry the source identity that produced them. A newer SSR seed
-supersedes an earlier browser attempt. Pending regions display Skeletons;
-transport, validation and source errors retain their identity and offer retry.
-
-`/projects/[slug]` renders the stored Puck document and context with sharing
-metadata, inline chapter anchors, and explicit unpublished/invalid-detail states.
-Media is served only when referenced by a current published record, cover or badge.
-
-## Contact
-
-The Contact page uses the reusable form and shared server validation. The host
-injects an EmailSender; local delivery writes to the configured disposable
-outbox, while a generated host can opt into the Cloudflare sender. Configure
-`PORTFOLIO_CONTACT_FROM`, `PORTFOLIO_CONTACT_TO`, and the allowed origin before
-production use. Platform links are configured by `contact.links` in AppConfig.
-The handler bounds request size, validates fields and reports typed delivery errors.
-
-## Appearance and header
-
-Static Mono CSS and the optional Neutral/Mono preview are independent of
-light/dark/system. Header layout supports full-width and floating (default full
-width), an image brand, visible navigation configuration and a localized keyboard
-skip link. The preview lives entirely in src/demo/appearance; no application
-resource or component mounting depends on it.
+`readProjectDatasets` composes the existing Content/Text readers into localized
+catalogs and pages. SQL import consumes those same validated values. Puck bindings
+and context are preserved; SQL media URLs use the authorized BFF. Client bundles
+receive declarations and prepared resource identities, never the demo payload.
 
 ## Remove the appearance preview
 

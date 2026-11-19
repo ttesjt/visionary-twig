@@ -2,6 +2,8 @@ export default {
   type: 'app',
   files: {
     'README.md': 'template/README.md',
+    'docs/project-data.md': 'template/docs/project-data.md',
+    'docs/feature-modules.md': 'template/docs/feature-modules.md',
     'src/integrations/portfolio/runtime.ts': 'template/host/portfolio-runtime.ts.template',
     'src/integrations/portfolio/worker.ts': 'template/host/portfolio-worker.ts.template',
     'src/integrations/contact/sender.ts': 'template/host/contact-sender.ts.template',
