@@ -45,6 +45,7 @@
     "scripts/test/feature-shared-dependencies.test.mjs",
     "scripts/test/helpers/features.mjs",
     "scripts/test/inputless-bootstrap.test.mjs",
+    "scripts/test/playwright-discovery.test.mjs",
     "scripts/test/playwright-port.test.mjs",
     "scripts/test/preparation-concurrency.test.mjs",
     "scripts/test/preparation-options.test.mjs",

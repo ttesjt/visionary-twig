@@ -8,7 +8,9 @@ export function appPlaywrightConfig(root: string, id: string) {
   const app = selectApp(root, id);
   const { port, baseURL } = appAddress(app, process.env.PLAYWRIGHT_PORT);
   return {
-    testDir: path.join(app.directory, 'test/e2e'),
+    testDir: app.directory,
+    testMatch: '**/test/e2e/**/*.@(spec|test).?(c|m)[jt]s?(x)',
+    testIgnore: ['**/node_modules/**', '**/.next/**'],
     outputDir: path.join(root, 'test-results', id),
     fullyParallel: true,
     forbidOnly: Boolean(process.env.CI),
