@@ -53,6 +53,35 @@ test('renders file Puck details and sharing metadata, then switches language', a
   expect(errors).toEqual([]);
 });
 
+test('keeps page text out of global loading and hands off both locales without refetching', async ({
+  page,
+}) => {
+  const errors = hydrationErrors(page);
+  const textRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname.startsWith('/resources/text/'))
+      textRequests.push(request.url());
+  });
+  const response = await page.goto(PROJECT_FILES_PATH);
+  if (!response) throw new Error('Expected the file catalog response.');
+  expect(await response.text()).not.toContain('An illustrated field log');
+  expect(textRequests.some((url) => url.endsWith('/field-notes.json'))).toBe(false);
+
+  // A direct detail entry receives page dictionaries through SSR props, without a second fetch.
+  await page.goto(projectFilePath('field-notes'));
+  await expect(page.getByRole('heading', { name: 'An illustrated field log' })).toBeVisible();
+  await openPreferences(page);
+  expect(textRequests.some((url) => url.endsWith('/en/field-notes.json'))).toBe(false);
+  // The template's language selector performs a document navigation; both locales
+  // therefore arrive with complete global and page SSR snapshots.
+  await page.getByRole('combobox', { name: 'Language' }).selectOption('zh');
+  await expect(page.getByRole('heading', { name: '带插图的野外记录' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: '主导航' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '返回项目列表' })).toBeVisible();
+  expect(textRequests.filter((url) => url.endsWith('/field-notes.json'))).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
 test('serves the file list and a single Puck page with scripts disabled', async ({
   browser,
   baseURL,

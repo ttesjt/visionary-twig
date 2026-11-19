@@ -9,25 +9,29 @@ const input = (file: string) => ({
   custom: '.local/content/data/project-files/' + file,
 });
 
-type FileScope<N extends string> = Readonly<{
+type FileScope<N extends string, T extends string> = Readonly<{
   id: N;
-  text: readonly [];
+  text: readonly T[];
   config: readonly [];
   content: readonly [N];
 }>;
 
 // Preserve the declared namespace keys, including an empty registry in a clean clone.
-function pageScopes<N extends string>(pages: readonly { readonly namespace: N }[]) {
+function pageScopes<N extends string, T extends string = never>(
+  pages: readonly { readonly namespace: N; readonly textNamespaces?: readonly T[] }[]
+) {
   return Object.fromEntries(
-    pages.map(({ namespace }) => [
+    pages.map(({ namespace, textNamespaces = [] }) => [
       namespace,
-      defineScope({ id: namespace, text: [], config: [], content: [namespace] }),
+      defineScope({ id: namespace, text: textNamespaces, config: [], content: [namespace] }),
     ])
-  ) as { readonly [K in N]: FileScope<K> };
+  ) as { readonly [K in N]: FileScope<K, T> };
 }
 export const PROJECT_FILE_SCOPES = pageScopes(PROJECT_FILE_PAGES);
 
-export function projectFileScope(namespace: ProjectFileNamespace): FileScope<ProjectFileNamespace> {
+export function projectFileScope(
+  namespace: ProjectFileNamespace
+): (typeof PROJECT_FILE_SCOPES)[ProjectFileNamespace] {
   const scope = PROJECT_FILE_SCOPES[namespace];
   if (!scope) throw new Error('Unregistered project file scope: ' + namespace);
   return scope;

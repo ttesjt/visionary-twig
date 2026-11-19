@@ -21,6 +21,31 @@ import Page, {
 import { contentSchemas } from '../../src/site/content-schemas';
 import { RESOURCE_SCOPES } from '../../src/site/resource-scopes';
 import { projectFilePageSchema } from '../../src/features/projects/files/schemas';
+import { RESOURCE_STARTUP_TEXT } from '../../src/site/startup-text';
+
+it.each([
+  { locale: 'en', heading: 'An illustrated field log', chapters: 'Field log chapters' },
+  { locale: 'zh', heading: '带插图的野外记录', chapters: '野外记录目录' },
+] as const)(
+  'hands off independent global and page snapshots before the first $locale render',
+  async ({ locale, heading, chapters }) => {
+    const initialSnapshots = await prepareScopeResources(RESOURCE_SCOPES.layout, locale);
+    expect(JSON.stringify(initialSnapshots.text)).not.toContain('An illustrated field log');
+    expect(JSON.stringify(initialSnapshots.text)).not.toContain('带插图的野外记录');
+    const params = Promise.resolve({ locale, slug: PROJECT_FILE_PAGE.slug });
+    const children = await Page({ params });
+    const html = renderToStaticMarkup(
+      <ResourceLayout initialLocale={locale} initialSnapshots={initialSnapshots}>
+        {children}
+      </ResourceLayout>
+    );
+    expect(html).toContain(heading);
+    expect(html).toContain(chapters);
+    expect(html).not.toContain(RESOURCE_STARTUP_TEXT.pending);
+    expect(html).not.toContain('field-notes.heading');
+    if (locale === 'zh') expect(html).not.toContain('An illustrated field log');
+  }
+);
 
 vi.mock('server-only', () => ({}));
 vi.mock('../../src/infra/resources/server', async (original) => {
@@ -61,7 +86,9 @@ it.each([
       context: { ...raw.context, nested: [{ $text: { namespace: 'main', key: '' } }] },
     };
     const scope = RESOURCE_SCOPES[PROJECT_FILE_PAGE.namespace];
-    const plan = planResourceScope(scope).parts.find((part) => part.kind === 'content')?.plan;
+    const plan = planResourceScope(scope, locale).parts.find(
+      (part) => part.kind === 'content'
+    )?.plan;
     if (!plan) throw new Error('Expected the page Content plan.');
     const snapshot = await prepareResourcePlan(plan, () => Promise.resolve(damaged));
     const reader = createContentReader(
@@ -74,11 +101,10 @@ it.each([
       ]).createView()
     );
     const log = vi.spyOn(console, 'error').mockImplementation(() => {});
-    prepare.mockImplementation((requested, language) =>
-      requested === scope
-        ? Promise.resolve({ content: snapshot })
-        : originalPrepare(requested, language)
-    );
+    prepare.mockImplementation(async (requested, language) => {
+      const snapshots = await originalPrepare(requested, language);
+      return requested === scope ? { ...snapshots, content: snapshot } : snapshots;
+    });
     content.mockImplementation((requested, language) =>
       requested === scope ? Promise.resolve(reader) : originalContent(requested, language)
     );

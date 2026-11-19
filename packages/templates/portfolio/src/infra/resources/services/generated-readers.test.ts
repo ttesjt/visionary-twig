@@ -4,13 +4,20 @@ import { expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { readGeneratedText } from '../text/server';
 import { readGeneratedJsonURL } from '../json/server';
-import { textDefinition, DEFAULT_TEXT_LOCALE, TEXT_LOCALES, TEXT_NAMESPACES } from '../text';
+import {
+  textDefinition,
+  isTextNamespace,
+  DEFAULT_TEXT_LOCALE,
+  TEXT_LOCALES,
+  TEXT_NAMESPACES,
+} from '../text';
 import { jsonDefinition } from '../json/registry';
 import config from '../../../../.generated/config/resources.json';
 import content from '../../../../.generated/content/resources.json';
 it('resolves every prepared manifest entry through generated server imports', async () => {
   for (const locale of TEXT_LOCALES)
     for (const namespace of TEXT_NAMESPACES) {
+      if (!isTextNamespace(namespace)) throw new Error('Unprepared Text namespace.');
       const value = await readGeneratedText(textDefinition(namespace, locale).url);
       expect(value).toBeTypeOf('object');
     }

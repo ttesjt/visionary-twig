@@ -13,3 +13,4 @@ export {
   projectFileScope,
   PROJECT_FILE_LAYOUT_NAMESPACES,
 } from './resources.ts';
+export type { ProjectFilePageDefinition } from './types.ts';

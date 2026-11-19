@@ -8,8 +8,11 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { expect, it } from 'vitest';
 import { JsonResource } from '@frontend/prepared-data/resource';
+import { textResourcesDefinition } from '@frontend/text-catalog/resource/node';
 import { jsonResourcesDefinition } from '@frontend/prepared-data/resource/node';
 import configuration from '../../content-resources.config.ts';
+import textConfiguration from '../../text-resources.config.ts';
+import { TEXT_NAMESPACES } from '../../src/site/text';
 import { contentSchemas } from '../../src/site/content-schemas';
 import { RESOURCE_SCOPES } from '../../src/site/resource-scopes';
 import { PROJECT_FILE_INDEX } from '../../src/features/projects/files/constants';
@@ -28,6 +31,11 @@ async function readInput(file: string): Promise<unknown> {
 it('registers the index globally and the page independently with valid raw Puck bindings', async () => {
   expect(RESOURCE_SCOPES.layout.content).toContain(PROJECT_FILE_INDEX);
   expect(RESOURCE_SCOPES.layout.content).not.toContain(PROJECT_FILE_PAGE.namespace);
+  expect(RESOURCE_SCOPES.layout.text).not.toContain('field-notes');
+  expect(RESOURCE_SCOPES.metadata.text).not.toContain('field-notes');
+  expect(RESOURCE_SCOPES.notFound.text).not.toContain('field-notes');
+  expect(TEXT_NAMESPACES).toContain('field-notes');
+  expect(RESOURCE_SCOPES[PROJECT_FILE_PAGE.namespace].text).toEqual(['field-notes']);
   expect(RESOURCE_SCOPES[PROJECT_FILE_PAGE.namespace].content).toEqual([
     PROJECT_FILE_PAGE.namespace,
   ]);
@@ -38,6 +46,21 @@ it('registers the index globally and the page independently with valid raw Puck 
   expect(() =>
     projectFilePageSourceSchemaFor(PROJECT_FILE_PAGE.slug).parse({ document: {}, context: {} })
   ).toThrow();
+});
+
+it('prepares page text with per-file custom overrides and leaves defaults unchanged', async () => {
+  const definition = textResourcesDefinition(textConfiguration);
+  const customPath = '.local/content/text/en/field-notes.json';
+  const requests: string[] = [];
+  const custom = await definition.resolve(async (file, options) => {
+    requests.push(file);
+    if (file === customPath) return { heading: 'An authored field log' };
+    return options?.optional ? undefined : readInput(file);
+  }, 'auto');
+  expect(requests).toContain(customPath);
+  expect(custom).toHaveProperty('locales.en.field-notes.heading', 'An authored field log');
+  const defaults = await definition.resolve((file) => readInput(file), 'default');
+  expect(defaults).toHaveProperty('locales.en.field-notes.heading', 'An illustrated field log');
 });
 
 it('rejects duplicate projects, duplicate slugs and unknown categories during preparation', async () => {

@@ -139,44 +139,44 @@
     "publication": {
       "heading": {
         "$text": {
-          "namespace": "projects-demo",
-          "key": "fileProjects.field-notes.heading"
+          "namespace": "field-notes",
+          "key": "heading"
         }
       },
       "chapters": {
         "$text": {
-          "namespace": "projects-demo",
-          "key": "fileProjects.field-notes.chapters"
+          "namespace": "field-notes",
+          "key": "chapters"
         }
       },
       "progress": {
         "$text": {
-          "namespace": "projects-demo",
-          "key": "fileProjects.field-notes.progress"
+          "namespace": "field-notes",
+          "key": "progress"
         }
       },
       "overview": {
         "$text": {
-          "namespace": "projects-demo",
-          "key": "fileProjects.field-notes.overview"
+          "namespace": "field-notes",
+          "key": "overview"
         }
       },
       "study": {
         "$text": {
-          "namespace": "projects-demo",
-          "key": "fileProjects.field-notes.study"
+          "namespace": "field-notes",
+          "key": "study"
         }
       },
       "summary": {
         "$text": {
-          "namespace": "projects-demo",
-          "key": "fileProjects.field-notes.summary"
+          "namespace": "field-notes",
+          "key": "summary"
         }
       },
       "alt": {
         "$text": {
-          "namespace": "projects-demo",
-          "key": "fileProjects.field-notes.alt"
+          "namespace": "field-notes",
+          "key": "alt"
         }
       }
     }

@@ -23,8 +23,8 @@ from this app directory, then use the workspace's dev
 command with your app ID. Open `/examples/content-projects`. A database setup
 is required for the SQL routes.
 
-Edit `content/default/data/project-files/projects.json` for the index and
-`field-notes.json` for the sample Puck page. Private overrides go in
+Edit `content/default/data/project-files/projects.json` for the index. The
+optional demo also delivers `field-notes.json` for its Puck page. Private overrides go in
 `.local/content/data/project-files/` using the same filenames. Rerun
 `pnpm app:prepare` after edits. Generated files under `.generated/` are build
 outputs.
@@ -35,11 +35,13 @@ reuse it. `projects.pageSize` in AppConfig controls capacity for both sources.
 The list preserves category/page in its URL, so refreshes and shared links
 restore the selected view.
 
-Each Puck page has its own Content namespace. The route looks up its slug,
-prepares that scope on the server and passes the snapshot to a page
-ContentProvider. That reader inherits the global index. A missing client
-snapshot is loaded by ResourceScope before the detail appears. Only the
-requested page document is prepared.
+Each Puck page has its own Content namespace and may declare additional Text
+namespaces. The route looks up its slug and prepares that page's Content and
+Text together. Snapshots reach the page Providers before its first render.
+The Content reader inherits the global index; an optional page Text reader
+inherits the global site and catalog text. Missing client snapshots are loaded
+by the existing ResourceScope before the detail appears. Other project bodies
+and their dictionaries are not loaded by that page.
 
 Use explicit Text references for localized titles, summaries, alt text and
 context values. The file page keeps its raw document and bindings. Its context
@@ -60,14 +62,66 @@ unavailable. Server diagnostics retain the underlying error.
 2. Add referenced labels to the Text catalogs or provide plain strings.
 3. For a full write-up, add its JSON file and one declaration to
    `PROJECT_FILE_PAGES` in `src/site/project-data.ts`. The optional Field Notes
-   demo shows a complete declaration. Its slug, namespace and filename generate the schema registration,
-   input paths, identity check and detail scope.
+   demo shows a complete declaration. Its slug, namespace, filename and optional
+   `textNamespaces` generate the schema registration, input paths, identity check
+   and detail scope.
 4. Prepare resources and check both languages.
 
 The resource inputs and paths live in `resources.ts` and `constants.ts`.
 `preparation.ts` adds prepare-time document inspection. `catalog.ts` owns the
 normalized in-memory queries, and `pages.server.ts` prepares server detail
 snapshots. These are editable site declarations.
+
+### Optional page text
+
+Keep small shared UI and catalog labels in global Text. For a localized project
+body, declare its extra dictionaries once in the project's page registration:
+
+```ts
+{
+  slug: 'field-notes',
+  namespace: 'project-field-notes',
+  filename: 'field-notes.json',
+  textNamespaces: ['field-notes'],
+}
+```
+
+Provide flat string dictionaries at `content/default/text/en/field-notes.json`
+and `content/default/text/zh/field-notes.json`, for example
+`{ "heading": "An illustrated field log" }`. A Puck context value can reference
+`{ "$text": { "namespace": "field-notes", "key": "heading" } }`; the document's
+normal bindings then connect that value to a block property. `$text` references
+do not discover or download resources themselves.
+
+Page declarations automatically contribute to `TEXT_NAMESPACES`, which controls
+**preparation**, not eager loading. `PROJECT_TEXT_NAMESPACES` declares global
+project/catalog dictionaries used by Layout and metadata. Keep body-only
+dictionaries out of that list. No second page scope declaration is required.
+Use a new page namespace rather than redeclaring a namespace inherited from Layout.
+Several pages can reuse a dictionary, and one page can declare several dictionaries.
+
+After editing inputs, run `pnpm app:prepare`. Private per-file overrides use
+`.local/content/text/<locale>/<namespace>.json`; default/custom/auto selection
+and generated contracts remain unchanged. `PROJECT_TEXT_DEFAULT_DIRECTORIES`
+only overrides where defaults are found; generated demos use the normal
+`content/default/text/` location. Never edit `.generated/` to author content.
+When relocating text to a new namespace, move matching custom overrides and
+update the document's `$text` references together; obsolete keys fail preparation.
+
+Omit `textNamespaces` for a page containing plain strings or only inherited
+global text. Plain block properties and plain context/bindings work without an
+extra language JSON file or page TextProvider. This does not translate literal
+strings: provide localized Text references when translation is needed.
+
+SSR prepares both resource kinds concurrently and hands off both snapshots, so
+the browser does not fetch successful snapshots again. Without a snapshot,
+ResourceScope waits for all page requirements. The template's language selector
+navigates to a localized document and receives complete new SSR snapshots.
+The Text runtime also supports in-place locale selection: it prepares global
+and active page dictionaries before publishing the new language, keeping the
+previous complete view visible while loading. SQL demo import explicitly
+reads all prepared dictionaries, including page-only text, before storing its
+localized document/context. SQL runtime reads still need no page Text fetch.
 
 ## Use SQL
 
