@@ -2,11 +2,23 @@
 import { expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { readServerEnvironment, ServerEnvironmentError } from './server';
-import { exampleUpstreamEnvironmentSchema } from '../../site/environment';
+import { z } from 'zod';
+
+const testEnvironmentSchema = z.object({
+  EXAMPLE_UPSTREAM_URL: z.url().refine((value) => {
+    if (!URL.canParse(value)) return false;
+    const url = new URL(value);
+    return url.protocol === 'https:' && !url.username && !url.password;
+  }),
+  EXAMPLE_UPSTREAM_API_KEY: z
+    .string()
+    .min(1)
+    .refine((value) => !/[^a-z-]/u.test(value)),
+});
 
 it('reads only declared values and permits the process environment to contain other capabilities', () => {
   expect(
-    readServerEnvironment(exampleUpstreamEnvironmentSchema, {
+    readServerEnvironment(testEnvironmentSchema, {
       EXAMPLE_UPSTREAM_URL: 'https://service.example.test/recommendation',
       EXAMPLE_UPSTREAM_API_KEY: 'test-key',
       UNRELATED: 'value',
@@ -33,7 +45,7 @@ it('reports missing or malformed fields without retaining their values in diagno
     },
   ]) {
     try {
-      readServerEnvironment(exampleUpstreamEnvironmentSchema, environment);
+      readServerEnvironment(testEnvironmentSchema, environment);
       throw new Error('Expected invalid environment');
     } catch (error) {
       expect(error).toBeInstanceOf(ServerEnvironmentError);

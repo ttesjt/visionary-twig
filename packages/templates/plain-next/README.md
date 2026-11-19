@@ -286,3 +286,20 @@ preserves local overrides; default/custom are explicit source policies.
 JSON Providers prepare one immutable local container and reader candidate before
 publication. Only a changed parent recomposes the view; it does not reconstruct
 the local values. Runtime/ResourceBoundary own shared request/cache lifetimes.
+
+## Infrastructure and site customization
+
+`src/infra` contains the starter's framework wiring. `src/site` owns editable
+schemas, resource scopes, metadata mappings, theme policy and thin
+site composition such as `readSiteAppConfig`. Keep feature implementation in
+its owning page/feature or service integration. Small composition functions and
+permission hooks are valid site customization; splitting every function is unnecessary.
+
+Appearance is selected by explicit CSS imports. Default styles do not require a
+preset registry, browser script, localStorage or HTML preset attribute. Light/dark/
+system remains independent. Optional runtime style previews belong to a removable
+demo module rather than infrastructure or application resource initialization.
+
+After generation this is your independent project. Keeping the infrastructure
+boundary recognizable makes upstream changes easier to adopt; you may customize
+it. Source-template byte equality is a maintainer rule, not a clone validation rule.
