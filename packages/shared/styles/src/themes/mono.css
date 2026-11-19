@@ -1,8 +1,17 @@
 @layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example, ui-theme-presets;
 
 @layer ui-theme-presets {
-  :where(:root:not([data-preset]), :root[data-preset='mono']),
-  :where(:root:not([data-preset]), :root[data-preset='mono']) :where([data-theme]) {
+  :where(
+    :root:not([data-preset]):not([data-style-preview]),
+    :root[data-preset='mono']:not([data-style-preview]),
+    :root[data-style-preview='mono']
+  ),
+  :where(
+      :root:not([data-preset]):not([data-style-preview]),
+      :root[data-preset='mono']:not([data-style-preview]),
+      :root[data-style-preview='mono']
+    )
+    :where([data-theme]) {
     --ui-font-body: Inter, ui-sans-serif, system-ui, sans-serif;
     --ui-color-canvas: light-dark(#fafaf9, #141414);
     --ui-color-surface: light-dark(#fff, #1d1d1d);

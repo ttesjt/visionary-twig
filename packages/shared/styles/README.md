@@ -59,9 +59,14 @@ and compact control corners. It uses the existing
 `data-theme="light|dark|system"` color policy, including the browser preference
 when the attribute is omitted.
 
-Importing the stylesheet enables Mono by default. To switch at runtime, set
-`data-preset="mono"` on `<html>` for Mono or `data-preset="neutral"` for the
-foundation appearance. Applications can use the same tokens in their own layouts.
+Importing the stylesheet enables Mono without a Provider, browser script or root
+attribute. It only assigns public CSS tokens. Your own token names are unrestricted;
+map them to `--ui-*` when using the default component CSS, or replace that CSS.
+
+The template's removable preview can opt into `data-style-preview` to compare
+Mono and Neutral. This is an optional CSS preview hook, not a production lifecycle
+or resource dependency. The earlier CSS-only `data-preset` selector remains
+compatible; ordinary sites need neither attribute. Color mode is independent.
 
 ## Studio appearance
 
