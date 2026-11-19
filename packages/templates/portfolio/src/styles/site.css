@@ -65,11 +65,18 @@
     max-inline-size: 55ch;
   }
 
-  .ui-portfolio-hero-image,
-  .ui-mono-home-work,
-  .ui-mono-home-link,
-  .ui-mono-footer,
-  .ui-mono-eyebrow {
+  .ui-portfolio-hero-image {
+    display: block;
+    max-inline-size: 100%;
+    height: auto;
+  }
+  .ui-portfolio-home-work,
+  .ui-portfolio-footer {
+    display: grid;
+    gap: 1rem;
+  }
+  .ui-portfolio-work-link,
+  .ui-portfolio-eyebrow {
     display: none;
   }
 }

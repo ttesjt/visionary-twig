@@ -1,0 +1,236 @@
+@layer ui-layout-tokens, ui-theme-tokens, ui-base, ui-layout, ui-components, ui-example, ui-theme-presets, portfolio-mono;
+
+@layer portfolio-mono {
+  :where(html:not([data-style-preview]), html[data-style-preview='mono']) {
+    --portfolio-frame: 75rem;
+    --portfolio-gutter: clamp(1.125rem, 4vw, 3.25rem);
+    --portfolio-serif: Georgia, 'Times New Roman', serif;
+    --portfolio-header-surface: light-dark(rgb(250 250 249 / 94%), rgb(20 20 20 / 94%));
+    --portfolio-thumbnail: light-dark(#dededb, #363636);
+    --portfolio-control-line: light-dark(#878787, #858585);
+
+    scroll-padding-block-start: 8rem;
+
+    .ui-portfolio-header {
+      position: sticky;
+      z-index: 10;
+      inset-block-start: 0;
+      background: var(--portfolio-header-surface);
+      backdrop-filter: blur(12px);
+    }
+
+    .ui-portfolio-header-inner,
+    .ui-portfolio-page {
+      width: min(var(--portfolio-frame), calc(100% - 2 * var(--portfolio-gutter)));
+      max-width: none;
+      margin-inline: auto;
+      padding-inline: 0;
+    }
+
+    .ui-portfolio-header-inner {
+      min-height: 5.125rem;
+      gap: 0.5rem clamp(1rem, 3vw, 2.5rem);
+      padding-block: 0.75rem;
+    }
+
+    .ui-portfolio-brand {
+      display: inline-flex;
+      min-width: 0;
+      gap: 0.75rem;
+      align-items: center;
+      color: var(--ui-color-ink);
+      font-size: 1.125rem;
+      font-weight: 740;
+      letter-spacing: -0.035em;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .ui-portfolio-header nav {
+      gap: 0.25rem clamp(0.75rem, 2vw, 2rem);
+      margin-inline-start: auto;
+    }
+
+    .ui-portfolio-header nav a {
+      padding-block: 0.5rem;
+      border-block-end: 2px solid transparent;
+      color: var(--ui-color-ink);
+      font-size: 0.8125rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .ui-portfolio-header nav a[aria-current='page'] {
+      border-block-end-color: currentColor;
+    }
+
+    .ui-portfolio-settings summary {
+      border: 1px solid var(--ui-color-line);
+      border-radius: var(--ui-radius-control);
+      background: var(--ui-color-canvas);
+      color: var(--ui-color-ink);
+    }
+
+    .ui-portfolio-settings-panel {
+      box-shadow: 0 0.6rem 1.5rem rgb(0 0 0 / 10%);
+    }
+
+    .ui-portfolio-settings summary:hover,
+    .ui-portfolio-settings[open] summary:hover {
+      background: var(--ui-color-surface-raised);
+    }
+
+    .ui-portfolio-page {
+      gap: clamp(1.5rem, 4vw, 3.25rem);
+      padding-block: clamp(3rem, 8vw, 6rem);
+    }
+
+    .ui-portfolio-page h1 {
+      font-size: clamp(3rem, 6.4vw, 5.75rem);
+      font-weight: 620;
+      line-height: 1.055;
+      letter-spacing: -0.065em;
+      overflow-wrap: anywhere;
+    }
+
+    .ui-portfolio-lead {
+      max-width: 56ch;
+      color: var(--ui-color-muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .ui-portfolio-page-heading {
+      border-bottom: 1px solid var(--ui-color-line);
+      padding-bottom: 2rem;
+    }
+
+    .ui-portfolio-home {
+      padding-block-start: 0;
+    }
+
+    .ui-portfolio-hero {
+      padding-block: clamp(4rem, 8vw, 6.5rem) clamp(2.5rem, 4vw, 4rem);
+    }
+
+    .ui-portfolio-eyebrow {
+      display: block;
+      color: var(--ui-color-muted);
+      font-size: 0.6875rem;
+      font-weight: 680;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .ui-portfolio-eyebrow::before {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1px;
+      margin-inline-end: 0.75rem;
+      vertical-align: middle;
+      background: currentColor;
+      content: '';
+    }
+
+    .ui-portfolio-hero-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.32fr);
+      gap: clamp(1.5rem, 4vw, 3rem);
+      align-items: end;
+      margin-top: clamp(1.5rem, 3vw, 2.25rem);
+    }
+
+    .ui-portfolio-hero h1 em {
+      display: block;
+      font-family: var(--portfolio-serif);
+      font-weight: 400;
+      letter-spacing: -0.056em;
+    }
+
+    .ui-portfolio-hero-aside {
+      display: grid;
+      justify-items: start;
+      gap: 1.25rem;
+      padding-block-end: 0.35rem;
+    }
+
+    .ui-portfolio-work-link,
+    .ui-portfolio-footer a {
+      display: inline-flex;
+      gap: 0.65rem;
+      align-items: center;
+      padding-block-end: 0.25rem;
+      border-bottom: 1px solid currentColor;
+      color: var(--ui-color-ink);
+      font-size: 0.8125rem;
+      font-weight: 720;
+      text-decoration: none;
+    }
+
+    .ui-portfolio-home-actions {
+      display: none;
+    }
+
+    .ui-portfolio-hero-image {
+      display: block;
+      width: 100%;
+      max-height: 28rem;
+      height: auto;
+      margin-top: 2rem;
+      object-fit: cover;
+      filter: grayscale(1);
+    }
+
+    .ui-portfolio-home-work,
+    .ui-portfolio-footer {
+      display: grid;
+      min-width: 0;
+      gap: 1.5rem;
+      border-top: 1px solid var(--ui-color-line);
+      padding-block-start: 1.75rem;
+    }
+
+    .ui-portfolio-home-work h2,
+    .ui-portfolio-footer h2 {
+      margin: 0;
+      font-size: clamp(1.625rem, 3vw, 2.125rem);
+      font-weight: 650;
+      letter-spacing: -0.045em;
+    }
+
+    .ui-portfolio-footer {
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      justify-items: start;
+      margin-block-start: 1rem;
+    }
+
+    .ui-portfolio-about {
+      grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .ui-portfolio-about-body {
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--ui-color-line);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    :where(html:not([data-style-preview]), html[data-style-preview='mono']) {
+      .ui-portfolio-header-inner {
+        padding-block-end: 0.375rem;
+      }
+
+      .ui-portfolio-hero-body,
+      .ui-portfolio-footer,
+      .ui-portfolio-about {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .ui-portfolio-page h1 {
+        font-size: clamp(2.75rem, 10.5vw, 4.5rem);
+      }
+    }
+  }
+}

@@ -55,7 +55,7 @@ export function ProjectFilterView({
 export function ProjectCount({ count }: { readonly count: number }) {
   const text = useText();
   return (
-    <p className="ui-mono-project-pagination-info" aria-live="polite">
+    <p className="ui-project-pagination-info" aria-live="polite">
       {text.getText('main', 'projects.shown', { count })}
     </p>
   );
@@ -71,7 +71,7 @@ export function ProjectCategoryLabels({
   const labels = categories
     .filter(({ id }) => project.categoryIds.includes(id))
     .map(({ label }) => label);
-  return labels.length ? <p className="ui-mono-project-categories">{labels.join(' / ')}</p> : null;
+  return labels.length ? <p className="ui-project-category-labels">{labels.join(' / ')}</p> : null;
 }
 
 export function EmptyProjectState({

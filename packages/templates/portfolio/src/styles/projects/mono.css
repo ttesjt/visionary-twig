@@ -1,0 +1,256 @@
+@layer portfolio-mono {
+  :where(html:not([data-style-preview]), html[data-style-preview='mono']) {
+    .ui-project-card-summary {
+      max-width: 56ch;
+      color: var(--ui-color-muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .ui-project-category-labels,
+    .ui-project-pagination-info {
+      display: block;
+      color: var(--ui-color-muted);
+      font-size: 0.6875rem;
+      font-weight: 680;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .ui-project-filter-menu {
+      display: none;
+    }
+
+    .ui-portfolio-projects {
+      min-width: 0;
+      gap: 1.5rem;
+    }
+
+    .ui-portfolio-project-toolbar,
+    .ui-portfolio-project-pagination {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem 1.25rem;
+    }
+
+    .ui-project-filter-rail {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+      scroll-padding-inline: 0.25rem;
+    }
+
+    .ui-project-filter-rail a {
+      display: inline-flex;
+      align-items: center;
+      flex: none;
+      min-height: 2.375rem;
+      padding: 0.35rem 0.875rem;
+      border: 1px solid transparent;
+      border-radius: var(--ui-radius-control);
+      background: none;
+      color: var(--ui-color-muted);
+      font-size: 0.8125rem;
+      font-weight: 630;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .ui-project-filter-rail a:hover {
+      background: var(--ui-color-surface-raised);
+      color: var(--ui-color-ink);
+    }
+
+    .ui-project-filter-rail a[aria-current='page'] {
+      border-color: var(--ui-color-accent);
+      background: var(--ui-color-accent);
+      color: var(--ui-color-on-accent);
+    }
+
+    .ui-project-pagination-info {
+      flex: 0 0 auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ui-project-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: 2.75rem clamp(1.25rem, 3vw, 2rem);
+    }
+
+    .ui-project-card {
+      position: relative;
+      gap: 1rem;
+      padding: 0;
+      border: 0;
+      background: none;
+    }
+
+    .ui-portfolio-project-cover,
+    .ui-portfolio-skeleton-cover {
+      display: block;
+      overflow: hidden;
+      border: 1px solid var(--ui-color-line);
+      border-radius: var(--ui-radius-control);
+      background: var(--portfolio-thumbnail);
+    }
+
+    .ui-portfolio-project-cover[data-empty] {
+      display: block;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--ui-color-surface-raised),
+        var(--ui-color-surface-raised) 0.75rem,
+        var(--ui-color-surface) 0.75rem,
+        var(--ui-color-surface) 1.5rem
+      );
+    }
+
+    .ui-portfolio-project-cover img {
+      border-radius: 0;
+      filter: grayscale(1);
+      transition: transform 420ms ease;
+    }
+
+    .ui-project-card:is(:hover, :focus-within) .ui-portfolio-project-cover img {
+      transform: scale(1.045);
+    }
+
+    .ui-project-cover-arrow {
+      position: absolute;
+      inset: auto 0.875rem 0.875rem auto;
+      display: grid;
+      width: 2.5rem;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: var(--ui-radius-control);
+      background: var(--ui-color-canvas);
+      color: var(--ui-color-ink);
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+
+    .ui-project-card:is(:hover, :focus-within) .ui-project-cover-arrow {
+      opacity: 1;
+    }
+
+    .ui-project-card-title {
+      font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+      font-weight: 670;
+      line-height: 1.2;
+      letter-spacing: -0.04em;
+    }
+
+    .ui-project-card-title a {
+      color: var(--ui-color-ink);
+      text-decoration: none;
+    }
+
+    .ui-project-card-title a::after {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--ui-radius-control);
+      content: '';
+    }
+
+    .ui-project-card-title a:focus-visible {
+      outline: none;
+    }
+
+    .ui-project-card-title a:focus-visible::after {
+      outline: 2px solid var(--ui-color-focus);
+      outline-offset: 4px;
+    }
+
+    .ui-project-card-links a {
+      position: relative;
+      z-index: 1;
+    }
+
+    .ui-portfolio-project-pagination {
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--ui-color-line);
+    }
+
+    .ui-portfolio-project-pagination a,
+    .ui-portfolio-project-pagination button,
+    .ui-portfolio-project-error button {
+      min-height: 2.5rem;
+      padding-inline: 0.875rem;
+      border: 1px solid var(--ui-color-line);
+      border-radius: var(--ui-radius-control);
+      background: var(--ui-color-canvas);
+      color: var(--ui-color-ink);
+      font-size: 0.8125rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .ui-portfolio-project-pagination a {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .ui-portfolio-project-pagination a:hover,
+    .ui-portfolio-project-error button:hover {
+      background: var(--ui-color-surface-raised);
+    }
+
+    .ui-portfolio-project-pagination button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .ui-portfolio-project-error button {
+      margin-top: 0.75rem;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    :where(html:not([data-style-preview]), html[data-style-preview='mono']) {
+      .ui-project-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .ui-portfolio-project-toolbar {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .ui-project-filter-rail {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :where(html:not([data-style-preview]), html[data-style-preview='mono']) {
+      .ui-portfolio-project-cover img,
+      .ui-project-cover-arrow {
+        transition: none;
+      }
+
+      .ui-project-card:is(:hover, :focus-within) .ui-portfolio-project-cover img {
+        transform: none;
+      }
+    }
+  }
+
+  @media (hover: none) {
+    :where(html:not([data-style-preview]), html[data-style-preview='mono'])
+      .ui-project-cover-arrow {
+      opacity: 1;
+    }
+  }
+}

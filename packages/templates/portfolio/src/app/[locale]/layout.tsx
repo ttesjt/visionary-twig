@@ -9,6 +9,7 @@ import { TEXT_LOCALES } from '../../infra/resources/index';
 import type { ReactNode } from 'react';
 import { resolveThemePreference } from '@frontend/ui/theme';
 import { getThemePolicy } from '../../site/theme-policy';
+import { AppearanceDemoBootstrap, AppearanceDemoPicker } from '../../demo/appearance';
 import '../../styles/index';
 import { PortfolioFrame } from '../../components/portfolio-frame';
 
@@ -35,11 +36,16 @@ export default async function RootLayout({
   const initialSnapshots = await prepareScopeResources(RESOURCE_SCOPES.layout, locale);
   return (
     <html lang={locale} data-theme={resolveThemePreference(policy)} suppressHydrationWarning>
+      <head>
+        <AppearanceDemoBootstrap />
+      </head>
       <body>
         <ThemeProvider policy={policy}>
           <ResourceLayout initialLocale={locale} initialSnapshots={initialSnapshots}>
             <TrackingInitialization />
-            <PortfolioFrame>{children}</PortfolioFrame>
+            <PortfolioFrame preferenceExtensions={<AppearanceDemoPicker />}>
+              {children}
+            </PortfolioFrame>
           </ResourceLayout>
         </ThemeProvider>
       </body>

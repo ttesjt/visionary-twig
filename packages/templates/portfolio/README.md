@@ -55,3 +55,27 @@ outbox, while a generated host can opt into the Cloudflare sender. Configure
 `PORTFOLIO_CONTACT_FROM`, `PORTFOLIO_CONTACT_TO`, and the allowed origin before
 production use. Platform links are configured by `contact.links` in AppConfig.
 The handler bounds request size, validates fields and reports typed delivery errors.
+
+## Appearance and header
+
+Static Mono CSS and the optional Neutral/Mono preview are independent of
+light/dark/system. Header layout supports full-width and floating (default full
+width), an image brand, visible navigation configuration and a localized keyboard
+skip link. The preview lives entirely in src/demo/appearance; no application
+resource or component mounting depends on it.
+
+## Remove the appearance preview
+
+The optional preview, its bootstrap/state and all related tests live in
+`src/demo/appearance`. Remove its import and two explicit mounts from
+`src/app/[locale]/layout.tsx`, then delete that folder. The mounts are
+`<AppearanceDemoBootstrap />` and PortfolioFrame's
+`preferenceExtensions={<AppearanceDemoPicker />}` prop. No infra/site/resource
+changes are needed; language and theme controls remain.
+
+`src/styles/index.ts` selects the static styles. Mono works without any preview
+attribute, script or browser storage. For basic styling remove the shared Mono
+import and the site's `mono.css`, `projects/mono.css`, `contact/mono.css` imports.
+Custom CSS and token names are unrestricted. Component defaults use public
+`--ui-*` tokens; map yours to them or replace the component styles as needed.
+Project requests, readiness and mounted content do not depend on the preview.

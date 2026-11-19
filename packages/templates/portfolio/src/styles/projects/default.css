@@ -7,10 +7,10 @@
 }
 
 @layer ui-components {
-  .ui-mono-project-filters,
-  .ui-mono-project-categories,
-  .ui-mono-project-arrow,
-  .ui-mono-project-pagination-info {
+  .ui-project-filter-rail,
+  .ui-project-category-labels,
+  .ui-project-cover-arrow,
+  .ui-project-pagination-info {
     display: none;
   }
 }
