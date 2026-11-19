@@ -9,8 +9,9 @@ import { planResourceScope } from '../planning/scope-plan';
 import { splitScopeSnapshot, type ScopeSnapshots } from '../planning/snapshots';
 import type { ResourceKind } from '../constants/kinds';
 import type { ResourceScopeDefinition } from '../../../site/resource-scopes';
-import { contentSchemas } from '../../../site/content-schemas';
-import { createPreparedJsonResource } from '../json/resource';
+import { configSchemas, contentSchemas } from '../json/registry';
+import type { JsonReadView, JsonSchemas } from '@frontend/prepared-data/resource';
+import { createPreparedJsonResource } from '@frontend/resource-runtime/json';
 import { createContentReader, type ContentReadView } from '../json/content-reader';
 // Primitive cache keys deduplicate Layout/Page/metadata reads within this server request.
 const read = cache((kind: ResourceKind, url: string) =>
@@ -48,20 +49,33 @@ export async function serverText(
   ).createView(locale);
 }
 
-/** The server and browser restore the same validated Content snapshot and Text-reference reader. */
+async function serverJson<R extends JsonSchemas>(
+  kind: 'config' | 'content',
+  schemas: R,
+  scope: ResourceScopeDefinition,
+  locale?: TextLocale
+): Promise<JsonReadView<R>> {
+  const part = planResourceScope(scope, locale).parts.find((value) => value.kind === kind);
+  const snapshot = (await prepareScopeResources(scope, locale))[kind];
+  if (!part || !snapshot) throw new Error('Scope has no ' + kind + ' resources.');
+  return createPreparedJsonResource(
+    schemas,
+    kind,
+    restoreResourceSnapshot(part.plan, snapshot),
+    part.plan
+  ).createView();
+}
+/** Server and browser consume the same validated, language-independent Content artifacts. */
 export async function serverContent(
   scope: ResourceScopeDefinition,
   locale?: TextLocale
 ): Promise<ContentReadView<typeof contentSchemas>> {
-  const part = planResourceScope(scope, locale).parts.find((value) => value.kind === 'content');
-  const snapshot = (await prepareScopeResources(scope, locale)).content;
-  if (!part || !snapshot) throw new Error('Scope has no Content resources.');
-  return createContentReader(
-    createPreparedJsonResource(
-      contentSchemas,
-      'content',
-      restoreResourceSnapshot(part.plan, snapshot),
-      part.plan
-    ).createView()
-  );
+  return createContentReader(await serverJson('content', contentSchemas, scope, locale));
+}
+/** Reads prepared public configuration without source conversion or client Provider initialization. */
+export function serverConfig(
+  scope: ResourceScopeDefinition,
+  locale?: TextLocale
+): Promise<JsonReadView<typeof configSchemas>> {
+  return serverJson('config', configSchemas, scope, locale);
 }

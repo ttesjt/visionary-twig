@@ -4,7 +4,7 @@ import { projectSlugSchema } from '@frontend/portfolio/contracts';
 import { localeHref } from '../../../../infra/resources/routing';
 import { resourceRouteLocale } from '../../../../infra/resources/server';
 import { portfolioData } from '../../../../integrations/portfolio/runtime';
-import { projectMetadata } from '../../../../site/metadata';
+import { projectMetadata } from '../../../../features/projects/server';
 import { ProjectDetailView } from '../../../../features/projects/client';
 import { SITE_ROUTES } from '../../../../site/routes';
 import { projectMediaPath, projectPath } from '../../../../features/projects/sql';

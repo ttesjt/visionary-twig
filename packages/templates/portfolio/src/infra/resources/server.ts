@@ -1,5 +1,5 @@
 import 'server-only';
-export { prepareScopeResources, serverText, serverContent } from './services/server';
+export { prepareScopeResources, serverText, serverContent, serverConfig } from './services/server';
 export { readGeneratedText } from './text/server';
 export { resourceRouteLocale } from './services/route-locale';
 

@@ -83,8 +83,7 @@
         "text/client.ts",
         "routing.ts",
         "http/json.ts",
-        "http/text.ts",
-        "content-text.ts"
+        "http/text.ts"
       ],
       "shared": [
         "preparation/prepared.ts",

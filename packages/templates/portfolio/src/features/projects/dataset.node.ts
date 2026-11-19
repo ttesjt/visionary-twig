@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { JsonResource } from '@frontend/prepared-data/resource';
 import { TextResource, textContractSchema } from '@frontend/text-catalog/resource';
-import { createContentReader } from '../../infra/resources/content-text.ts';
+import { createContentReader } from '@frontend/text-catalog/resource/content';
 import { TEXT_LOCALES, TEXT_NAMESPACES } from '../../site/text.ts';
 import { PROJECT_FILE_INDEX, PROJECT_FILE_PAGES, projectFileSchemas } from './files/index.ts';
 import type { ProjectDataset } from './dataset-types.ts';
